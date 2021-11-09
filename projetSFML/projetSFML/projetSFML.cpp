@@ -63,8 +63,8 @@ int main()
 				entities.push_back(Entity(Vector2(400,300), dir, primaryColor, MinMax(5, 20)));
 			}
 
-			Deplacement(player, elapsedTime);
 		}
+		Deplacement(player, elapsedTime);
 
 		// Checks collision
 		std::vector<Entity*> touchingEntities;
@@ -81,7 +81,7 @@ int main()
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
-		window.draw(affichage);
+		//window.draw(affichage);
 
 		window.display();
 
