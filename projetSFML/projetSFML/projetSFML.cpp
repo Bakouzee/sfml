@@ -103,7 +103,7 @@ int main()
 				float speed = rand() % 25 + 50;
 				Vector2 dir = Vector2(cos(angle), sin(angle)) * speed;
 				bool primaryColor = rand() % 2 == 0;
-				entities.push_back(Entity(Vector2(400,300), dir, primaryColor, MinMax(5, 20)));
+				entities.push_back(Entity(Vector2(540,355), dir, primaryColor, MinMax(5, 20)));
 			}
 
 		}
