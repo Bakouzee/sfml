@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "windows.h"
+#include "Arthur.h"
 #include <iostream>
 
 std::string getAppPath() {
@@ -12,12 +13,14 @@ std::string getAppPath() {
 }
 
 std::string getAssetPath() {
-	return getAppPath() + "\\Assets";
+	return getAppPath() + "Assets\\";
 }
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "ChronoSpacer");
+
+
 	// Initialise everything below
 	// Game loop
 	while (window.isOpen()) {
@@ -33,4 +36,3 @@ int main()
 		window.display();
 	}
 }
-
