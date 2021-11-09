@@ -145,7 +145,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2D.cpp" />
+    <ClCompile Include="Entities.cpp" />
     <ClCompile Include="projetSFML.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2D.h" />
+    <ClInclude Include="Entities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
