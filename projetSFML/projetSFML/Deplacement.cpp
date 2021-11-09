@@ -5,7 +5,7 @@
 
 void Deplacement(sf::CircleShape &player, sf::Time elapsedTime)
 {
-	float speed = 100;
+	float speed = 200;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{

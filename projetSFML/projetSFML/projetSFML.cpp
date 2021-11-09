@@ -26,14 +26,27 @@ int main()
 
 	std::list<Entity> entities;
 
-	sf::Clock clock;
 	Vector2 screenResolution(800, 600);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
+	window.setVerticalSyncEnabled(true);
+
+	// Cercle du Jeu
+	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
+
+	//Actuel Player
+	sf::CircleShape player = PlayerCrea(20, circleGame);
+
+	//Clock
+	sf::Clock clock;
+
 	// Initialise everything below
 	// Game loop
 	while (window.isOpen()) {
-		clock.restart();
+
+		// Clock
+		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
+
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			// Process any input event here
@@ -49,6 +62,8 @@ int main()
 				bool primaryColor = rand() % 2 == 0;
 				entities.push_back(Entity(Vector2(400,300), dir, primaryColor, MinMax(5, 20)));
 			}
+
+			Deplacement(player, elapsedTime);
 		}
 
 		// Checks collision
@@ -58,14 +73,20 @@ int main()
 			// Do whattever you want to the entities touching stored in touchingEntities
 		}
 
+
 		window.clear();
 		// Whatever I want to draw goes here
 		DrawEntities(&entities, &window);
 
+		//Affichage Arthur
+		window.draw(circleGame);
+		window.draw(player);
+		window.draw(affichage);
+
 		window.display();
 
 		// Move entities
-		MoveEntities(&entities, clock.getElapsedTime().asSeconds());
+		MoveEntities(&entities, elapsedTime.asSeconds());
 
 		// Destroy entities if too far
 		DestroyFarEntities(middleScreen, 250, &entities);

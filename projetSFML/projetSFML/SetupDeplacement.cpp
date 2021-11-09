@@ -3,14 +3,14 @@
 #include "Arthur.h"
 #include <iostream>
 
-sf::CircleShape CircleGameCrea(float position)
+sf::CircleShape CircleGameCrea(float positionX, float positionY)
 {
 	sf::CircleShape circleGame;
 	circleGame.setRadius(circleRadius); //RAYON du cercle
 	circleGame.setFillColor(sf::Color(0, 0, 0, 0));
 	circleGame.setOutlineThickness(5);
 	circleGame.setOutlineColor(sf::Color(0, 0, 250, 255));
-	circleGame.setPosition(position, position);
+	circleGame.setPosition(positionX, positionY);
 	circleGame.setOrigin(circleRadius, circleRadius);
 	return circleGame;
 }
