@@ -35,7 +35,7 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
-	sf::CircleShape player = PlayerCrea(20, circleGame);
+	sf::CircleShape player = PlayerCrea(circleGame);
 
 	//Clock
 	sf::Clock clock;
@@ -68,9 +68,12 @@ int main()
 
 		// Checks collision
 		std::vector<Entity*> touchingEntities;
-		if(CheckCollisions(middleScreen, 250, &entities, &touchingEntities))
+		if(CheckCollisions(Vector2(CoordPlayer(player, circleGame).x, CoordPlayer(player, circleGame).y), playerRadius, &entities, &touchingEntities))
 		{
-			// Do whattever you want to the entities touching stored in touchingEntities
+			for(Entity* entite : touchingEntities)
+			{
+				DestroyEntity(entite, &entities);
+			}
 		}
 
 
@@ -81,7 +84,6 @@ int main()
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
-		//window.draw(affichage);
 
 		window.display();
 

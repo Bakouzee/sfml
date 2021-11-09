@@ -3,13 +3,14 @@
 
 const float PI = 3.14159265358979323846;
 const float circleRadius = 200.0f;
+const float playerRadius = 20.0f;
 
 void Deplacement(sf::CircleShape& player, sf::Time elapsedTime);
 
 sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
-sf::CircleShape PlayerCrea(float radius, sf::CircleShape circleGame);
+sf::CircleShape PlayerCrea(sf::CircleShape circleGame);
 
 
 ////PURE TESTING POUR AFFICHER LES COORD // A METTRE DANS LE MAIN SI BESOIN
