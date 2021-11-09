@@ -1,6 +1,5 @@
 #pragma once
 #include <list>
-#include <SFML/Graphics.hpp>
 #include "2D.h"
 
 struct MinMax
@@ -21,6 +20,7 @@ public:
 	Vector2* direction;
 
 	bool primaryColor;
+	// SetColors(newColors)
 
 	float GetRadius();
 
@@ -31,15 +31,23 @@ public:
 	std::string to_string();
 
 private:
+	// Colors colors;
 	MinMax radius;
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);
 
-void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr);
-void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime);
-bool CheckCollisions(Vector2 pos, float radius, std::list<Entity>* entitiesPtr, std::vector<Entity*>* collidingEntities);
+// General
 
-void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr);
+
+//void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr);
+//void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime);
+//bool CheckCollisions(Vector2 pos, float radius, std::list<Entity>* entitiesPtr, std::vector<Entity*>* collidingEntities);
+//void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr);
+//void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr);
+
+void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr);
+void MoveEntity(Entity* entityPtr, float deltaTime);
+bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius);
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr);
-void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr);
+void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, Vector2 playerPos, float playerRadius, float deltaTime, std::vector<Entity*>* entitiesTouchingPlayer);
