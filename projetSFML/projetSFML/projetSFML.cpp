@@ -81,7 +81,6 @@ int main()
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
-		window.draw(affichage);
 
 		window.display();
 
