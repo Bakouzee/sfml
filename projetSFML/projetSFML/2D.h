@@ -37,18 +37,11 @@ public:
 
 	static float GetDistance(Vector2 a, Vector2 b);
 	std::string ToString();
-	static Vector2 FromSFVector2f(sf::Vector2f vec2f)
-	{
-		return { vec2f.x, vec2f.y };
-	}
-	static sf::Vector2f ToSFVector2f(Vector2 vec)
-	{
-		return sf::Vector2f(vec.x, vec.y);
-	}
-	sf::Vector2f ToSFVector2f()
-	{
-		return sf::Vector2f(x, y);
-	}
+	static Vector2 FromSFVector2f(sf::Vector2f vec2f);
+
+	static sf::Vector2f ToSFVector2f(Vector2 vec);
+
+	sf::Vector2f ToSFVector2f();
 }; 
 
 // std::ostream.operator<< variant working with Vector2
