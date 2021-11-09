@@ -42,10 +42,10 @@ int main()
 	sf::CircleShape player = PlayerCrea(20, circleGame);
 	player.setOutlineThickness(5);
 
-
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
+	sf::Clock animTimer;
 	//sf::Clock timer;
 
 	//Score
@@ -54,7 +54,7 @@ int main()
 	sf::Text score;
 	score.setFont(arial);
 	score.setCharacterSize(20);
-	score.setPosition(500, 10);
+	score.setPosition(middleScreen.x, 15);
 	// Initialise everything below
 	 
 	
@@ -76,6 +76,17 @@ int main()
 
 		//Score
 		score.setString("Score : " + std::to_string((int)deltaTime));
+		float anim = animTimer.getElapsedTime().asSeconds();
+		//score.setOrigin(score.getString().getSize() / 2, score.getOrigin().y);
+		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
+		
+		if (anim <= 1.5) {
+			score.setCharacterSize(score.getCharacterSize() + 1);
+		}
+		else {
+			score.setCharacterSize(30);
+			animTimer.restart();
+		}
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
