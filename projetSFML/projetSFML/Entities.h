@@ -1,48 +1,40 @@
 #pragma once
-#include <iostream>
-#include "2D.h"
+#include <list>
 #include <SFML/Graphics.hpp>
+#include "2D.h"
 
 struct MinMax
 {
 	float min;
 	float max;
+
+	::MinMax& operator=(MinMax minMax);
+
+	MinMax();
+	MinMax(float min, float max);
 };
 
 struct Entity
 {
 public:
-	Vector2 position;
-	Vector2 direction;
+	Vector2* position;
+	Vector2* direction;
 
 	bool primaryColor;
 
-	float GetRadius()
-	{
-		const float distanceForMaxScale = 5.0;
-		const Vector2 middleScreen = { 480, 480 };
+	float GetRadius();
 
-		float t = std::min(distanceForMaxScale, GetDistance(position, middleScreen)) / distanceForMaxScale;
-		if (t >= 1) return radius.max;
+	void Move(float& deltaTime);
 
-		return radius.min + (radius.max - radius.min) * t;
-	}
+	Entity(Vector2 pos, Vector2 dir, bool primaryColor, MinMax radius);
 
-	Entity(Vector2 pos, Vector2 dir, bool primaryColor, MinMax radius)
-	{
-		position = pos;
-		direction = dir;
-		this->primaryColor = primaryColor;
-		this->radius = radius;
-
-		
-	}
-
-	void Log()
-	{
-		std::cout << "Entity = { pos: " << position.ToString() << "; dir: " << direction.ToString() << "; primaryColor: " << primaryColor << "currentRadius: " << GetRadius() << " }" << std::endl;
-	}
+	std::string to_string();
 
 private:
 	MinMax radius;
 };
+
+//std::ostream& operator<<(std::ostream& os, const Entity entity);
+
+void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr);
+void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime);
