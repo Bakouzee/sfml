@@ -2,6 +2,14 @@
 #include <list>
 #include "2D.h"
 
+///	How to use Entities:
+///	Create a container of entities
+///	Add/Remove all wanted entities of this container
+///
+/// Use HandleEntities function to Draw, Move, Delete if too far from a point, and Detect collision
+/// with a circle for each entities
+
+
 struct MinMax
 {
 	float min;
@@ -36,9 +44,6 @@ private:
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);
-
-// General
-
 
 //void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr);
 //void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime);

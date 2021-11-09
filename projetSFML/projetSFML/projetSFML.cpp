@@ -28,6 +28,7 @@ int main()
 
 	std::list<Entity> entities;
 
+	// Window
 	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
