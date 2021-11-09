@@ -6,4 +6,15 @@ struct Colors {
 	sf::Color secondary = sf::Color::White;
 };
 
-Colors ChangeColor(Colors& colorsToModify);
+//Initialiser la couleur ID en BLACK pour le début de la partie
+enum ColorID {
+	BLACK = 1,
+    WHITE = 2,
+	GREEN = 3,
+	RED = 4,
+	YELLOW = 5,
+	BLUE = 6,
+};
+
+Colors ChangeColorForEverything(Colors& colorsToModify, ColorID& colorToApply);
+Colors ChangeSide(Colors colorsPlayer);
