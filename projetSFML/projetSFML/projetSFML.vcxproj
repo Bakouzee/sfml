@@ -148,6 +148,7 @@
     <ClCompile Include="Deplacement.cpp" />
     <ClCompile Include="2D.cpp" />
     <ClCompile Include="Entities.cpp" />
+    <ClCompile Include="Colors.cpp" />
     <ClCompile Include="projetSFML.cpp" />
     <ClCompile Include="SetupDeplacement.cpp" />
   </ItemGroup>
@@ -157,6 +158,9 @@
   <ItemGroup>
     <ClInclude Include="2D.h" />
     <ClInclude Include="Entities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Colors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

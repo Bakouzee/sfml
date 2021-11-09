@@ -4,6 +4,8 @@
 #include <list>
 #include <vector>
 
+#include "Colors.h"
+
 #include "Arthur.h"
 #include "Entities.h"
 
@@ -26,7 +28,7 @@ int main()
 
 	std::list<Entity> entities;
 
-	Vector2 screenResolution(800, 600);
+	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
 	window.setVerticalSyncEnabled(true);
@@ -35,25 +37,66 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
+	//ColorID idC = ColorID::BLACK;
+	Colors playerColor = { sf::Color::Black, sf::Color::White };
 	sf::CircleShape player = PlayerCrea(20, circleGame);
+	player.setOutlineThickness(5);
 
 	//Clock
 	sf::Clock clock;
+	sf::Clock scoreGame;
+	sf::Clock animTimer;
+	//sf::Clock timer;
 
+	//Score
+	sf::Font arial;
+	arial.loadFromFile(getAssetPath() + "\\arial.ttf");
+	sf::Text score;
+	score.setFont(arial);
+	score.setCharacterSize(20);
+	score.setPosition(middleScreen.x, 15);
 	// Initialise everything below
+	 
+	
 	// Game loop
 	while (window.isOpen()) {
+		//Réinitialise la couleur du player
+		player.setFillColor(playerColor.primary);
+		player.setOutlineColor(playerColor.secondary);
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
+		float deltaTime = scoreGame.getElapsedTime().asSeconds();
+		deltaTime *= deltaTime;
+
+		//float timeChangingColors = timer.getElapsedTime().asSeconds();
+		//if (timeChangingColors >= 3) {
+		//	ChangeColorForEverything(playerColor, //color des entités, idC);
+		//}
+
+		//Score
+		score.setString("Score : " + std::to_string((int)deltaTime));
+		float anim = animTimer.getElapsedTime().asSeconds();
+		//score.setOrigin(score.getString().getSize() / 2, score.getOrigin().y);
+		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
+		
+		if (anim <= 1.5) {
+			score.setCharacterSize(score.getCharacterSize() + 1);
+		}
+		else {
+			score.setCharacterSize(30);
+			animTimer.restart();
+		}
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			// Process any input event here
-			if (event.type == sf::Event::Closed) {
+			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
 				window.close();
 			}
-
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
+				playerColor = ChangeSide(playerColor);
+			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
 				float angle = rand();
@@ -78,9 +121,13 @@ int main()
 		// Whatever I want to draw goes here
 		DrawEntities(&entities, &window);
 
+		//Affichage score
+		window.draw(score);
+
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
+
 		//window.draw(affichage);
 
 		window.display();
