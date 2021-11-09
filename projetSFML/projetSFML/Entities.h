@@ -38,3 +38,8 @@ private:
 
 void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr);
 void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime);
+bool CheckCollisions(Vector2 pos, float radius, std::list<Entity>* entitiesPtr, std::vector<Entity*>* collidingEntities);
+
+void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr);
+void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr);
+void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr);

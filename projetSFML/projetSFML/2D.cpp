@@ -8,9 +8,15 @@ std::string Vector2::ToString()
 	return "{" + std::to_string(static_cast<double>(x)) + ", " + std::to_string(static_cast<double>(y)) + "}";
 }
 
+bool Vector2::IsZero()
+{
+	return x == 0.0 && y == 0.0;
+}
+
 // Operators
 #pragma region Operators
 #pragma region Addition / Soustraction
+
 Vector2 Vector2::operator+(Vector2 vec)
 {
 	return { x + vec.x, y + vec.y };
@@ -108,5 +114,5 @@ Vector2::Vector2(float x, float y)
 
 float Vector2::GetDistance(Vector2 a, Vector2 b)
 {
-	return std::sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y));
+	return std::sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
 }

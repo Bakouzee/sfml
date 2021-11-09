@@ -7,6 +7,8 @@ public:
 	float x = 0;
 	float y = 0;
 
+	bool IsZero();
+
 	// Operators
 		// Plus
 	Vector2 operator+(Vector2 vec);
