@@ -8,6 +8,7 @@ std::string Vector2::ToString()
 	return "{" + std::to_string(static_cast<double>(x)) + ", " + std::to_string(static_cast<double>(y)) + "}";
 }
 
+
 bool Vector2::IsZero()
 {
 	return x == 0.0 && y == 0.0;
@@ -111,6 +112,20 @@ Vector2::Vector2(float x, float y)
 	this->y = y;
 }
 #pragma endregion
+
+// Casts from/to sf::Vector2f
+Vector2 Vector2::FromSFVector2f(sf::Vector2f vec2f)
+{
+	return { vec2f.x, vec2f.y };
+}
+sf::Vector2f Vector2::ToSFVector2f(Vector2 vec)
+{
+	return sf::Vector2f(vec.x, vec.y);
+}
+sf::Vector2f Vector2::ToSFVector2f()
+{
+	return sf::Vector2f(x, y);
+}
 
 float Vector2::GetDistance(Vector2 a, Vector2 b)
 {
