@@ -146,11 +146,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Deplacement.cpp" />
+    <ClCompile Include="2D.cpp" />
+    <ClCompile Include="Entities.cpp" />
     <ClCompile Include="projetSFML.cpp" />
     <ClCompile Include="SetupDeplacement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arthur.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2D.h" />
+    <ClInclude Include="Entities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
