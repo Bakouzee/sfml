@@ -3,6 +3,8 @@
 #include <iostream>
 #include <list>
 #include <vector>
+
+#include "Arthur.h"
 #include "Entities.h"
 
 std::string getAppPath() {
@@ -15,7 +17,7 @@ std::string getAppPath() {
 }
 
 std::string getAssetPath() {
-	return getAppPath() + "\\Assets";
+	return getAppPath() + "Assets\\";
 }
 
 int main()
@@ -69,4 +71,3 @@ int main()
 		DestroyFarEntities(middleScreen, 250, &entities);
 	}
 }
-
