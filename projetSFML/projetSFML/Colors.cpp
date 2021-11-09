@@ -2,49 +2,65 @@
 #include "Colors.h"
 
 //Mettre une condition dans le main pour savoir quand le score est égale à certains pourcentage ou autre, on change la couleur pour tous
-Colors ChangeColorForEverything(Colors& colorsToModify, ColorID& colorApplied) {
+void ChangeColorForEverything(Colors& colorsPlayer, Colors& colorsEntities, ColorID& colorApplied) {
 	// tous les multiples de 10 en score => nouvelle couleur !
 	int randomColor = 0;
-	randomColor = rand() + 1 % 6 + 1;
-	while (randomColor % 2 != 0 && randomColor != colorApplied) {
-		randomColor = rand() + 1 % 6 + 1;
+	randomColor = rand() % 6 + 1;
+	while (randomColor % 2 == 0 || randomColor == colorApplied) {
+		randomColor = rand() % 6 + 1;
+		std::cout << "Nope!" << std::endl;
 	}
+	std::cout << "Yes!" << std::endl;
+	std::cout << randomColor << std::endl;
+
+
 	// On applique la nouvelle couleur
 	switch (randomColor) {
 	case 1:
-		colorsToModify.primary = sf::Color::Black;
-		colorsToModify.secondary = sf::Color::White;
+		colorsPlayer.primary = sf::Color::Black;
+		colorsPlayer.secondary = sf::Color::White;
+		colorsEntities.primary = sf::Color::Black;
+		colorsEntities.secondary = sf::Color::White;
 		colorApplied = ColorID::BLACK;
 		break;
 	case 2:
-		colorsToModify.primary = sf::Color::White;
-		colorsToModify.secondary = sf::Color::Black;
+		colorsPlayer.primary = sf::Color::White;
+		colorsPlayer.secondary = sf::Color::Black;
+		colorsEntities.primary = sf::Color::White;
+		colorsEntities.secondary = sf::Color::Black;
 		colorApplied = ColorID::WHITE;
 		break;
 	case 3:
-		colorsToModify.primary = sf::Color::Green;
-		colorsToModify.secondary = sf::Color::Red;
+		colorsPlayer.primary = sf::Color::Green;
+		colorsPlayer.secondary = sf::Color::Red;
+		colorsEntities.primary = sf::Color::Green;
+		colorsEntities.secondary = sf::Color::Red;
 		colorApplied = ColorID::GREEN;
 		break;
 	case 4:
-		colorsToModify.primary = sf::Color::Red;
-		colorsToModify.secondary = sf::Color::Green;
+		colorsPlayer.primary = sf::Color::Red;
+		colorsPlayer.secondary = sf::Color::Green;
+		colorsEntities.primary = sf::Color::Red;
+		colorsEntities.secondary = sf::Color::Green;
 		colorApplied = ColorID::RED;
 		break;
 	case 5:
-		colorsToModify.primary = sf::Color::Yellow;
-		colorsToModify.secondary = sf::Color::Blue;
+		colorsPlayer.primary = sf::Color::Yellow;
+		colorsPlayer.secondary = sf::Color::Blue;
+		colorsEntities.primary = sf::Color::Yellow;
+		colorsEntities.secondary = sf::Color::Blue;
 		colorApplied = ColorID::YELLOW;
 		break;
 	case 6:
-		colorsToModify.primary = sf::Color::Blue;
-		colorsToModify.secondary = sf::Color::Yellow;
+		colorsPlayer.primary = sf::Color::Blue;
+		colorsPlayer.secondary = sf::Color::Yellow;
+		colorsEntities.primary = sf::Color::Blue;
+		colorsEntities.secondary = sf::Color::Yellow;
 		colorApplied = ColorID::BLUE;
 		break;
 	default:
 		break;
 	}
-	return colorsToModify;
 }
 
 //La fonction est utilisée pour changer la couleur du joueur en exécutant un input (E par exemple) --> à mettre dans les events

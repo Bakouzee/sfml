@@ -16,5 +16,5 @@ enum ColorID {
 	BLUE = 6,
 };
 
-Colors ChangeColorForEverything(Colors& colorsToModify, ColorID& colorToApply);
+void ChangeColorForEverything(Colors& colorsPlayer, Colors& colorsEntities, ColorID& colorToApply);
 Colors ChangeSide(Colors colorsPlayer);
