@@ -43,6 +43,7 @@ int main()
 	sf::CircleShape player = PlayerCrea(circleGame);
 	player.setOutlineThickness(5);
 
+
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
