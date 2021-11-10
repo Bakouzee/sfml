@@ -22,3 +22,12 @@ sf::CircleShape PlayerCrea(sf::CircleShape circleGame)
 	newPlayer.setOrigin(playerRadius / 2, (playerRadius / 2) - circleRadius);
 	return newPlayer;
 }
+
+sf::CircleShape BonusCrea(sf::CircleShape circleGame)
+{
+	sf::CircleShape newBonus(playerRadius, 4);
+	newBonus.setFillColor(sf::Color(150, 0, 0));
+	newBonus.setPosition(circleGame.getPosition());
+	newBonus.setOrigin(playerRadius, playerRadius + circleRadius);
+	return newBonus;
+}

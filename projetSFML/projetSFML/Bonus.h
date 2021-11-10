@@ -8,4 +8,4 @@ enum Bonus {
 	HEALTH_UP
 };
 
-void SpawnBonus();
+sf::CircleShape SpawnBonus(sf::CircleShape bonus, bool& showBonus, sf::Clock& timerBonus);

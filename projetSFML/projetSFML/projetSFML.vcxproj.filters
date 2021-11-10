@@ -33,10 +33,10 @@
     <ClCompile Include="Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bonus.cpp">
+    <ClCompile Include="Health.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Health.cpp">
+    <ClCompile Include="Bonus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

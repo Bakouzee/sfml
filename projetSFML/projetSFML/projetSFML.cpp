@@ -37,6 +37,8 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
 	window.setVerticalSyncEnabled(true);
 
+	bool isShowed = false;
+
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
@@ -55,12 +57,11 @@ int main()
 		xLife += 70;
 	}
 	
-
-
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
 	sf::Clock animTimer;
+	sf::Clock timerBonus;
 	//sf::Clock timer;
 
 	//Score
@@ -73,6 +74,11 @@ int main()
 	score.setOutlineColor(sf::Color::White);
 	score.setOutlineThickness(1);
 	score.setFillColor(sf::Color::Black);
+
+	//Bonus
+	sf::CircleShape bonus = BonusCrea(circleGame);
+	sf::CircleShape newBonus;
+	//bonus.setFillColor(sf::Color::Red);
 	// Initialise everything below
 
 
@@ -120,7 +126,8 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);					
+				playerColor = ChangeSide(playerColor);		
+				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
@@ -133,9 +140,17 @@ int main()
 
 		}
 		Deplacement(player, elapsedTime);
+		Deplacement(bonus, elapsedTime);
 
 		window.clear();
 		// Whatever I want to draw goes here
+		if (timerBonus.getElapsedTime().asSeconds() >= 3) {
+			isShowed = false;
+		}
+		if (isShowed) {
+			window.draw(newBonus);
+		}
+			
 
 		// Entities gestion
 		std::vector<Entity*> touchingEntities;
