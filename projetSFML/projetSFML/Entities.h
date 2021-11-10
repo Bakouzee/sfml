@@ -33,7 +33,6 @@ public:
 	void ResetSpeed();
 
 	bool primaryColor;
-	void SetColors(Colors newColors);
 
 	MinMax radiusMinMax;
 	float currentRadius;

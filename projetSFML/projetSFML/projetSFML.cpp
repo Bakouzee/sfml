@@ -204,22 +204,36 @@ int main()
 			&touchingPlayer1, &touchingPlayer2, colorEntities);
 
 		// Check if there is collider touching player 1
-		if(!touchingPlayer1.empty())
+		if (!touchingPlayer1.empty())
 		{
-			for(Entity* entite : touchingPlayer1)
+			bool takeDamage = false;
+
+			for (Entity* entite : touchingPlayer1)
 			{
-				DestroyEntity(entite, &entities);
+				sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
+				if (entityColor != playerColor.primary)
+				{
+					DestroyEntity(entite, &entities);
+					takeDamage = true;
+				}
 			}
-			setLife(playerOne, -1);
+			if (takeDamage) setLife(playerOne, -1);
 		}
 		// Check if there is collider touching player 2
-		if(!touchingPlayer2.empty())
+		if (!touchingPlayer2.empty())
 		{
-			for(Entity* entite : touchingPlayer2)
+			bool takeDamage = false;
+
+			for (Entity* entite : touchingPlayer2)
 			{
-				DestroyEntity(entite, &entities);
+				sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
+				if (entityColor != playerColor2.primary)
+				{
+					DestroyEntity(entite, &entities);
+					takeDamage = true;
+				}
 			}
-			setLife(playerTwo, -1);
+			if (takeDamage) setLife(playerTwo, -1);
 		}
 
 		//Affichage Arthur
