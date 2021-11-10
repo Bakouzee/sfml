@@ -41,7 +41,7 @@ void AttackPattern::SpawnWave(int waveIndex, Vector2 spawnPos, std::list<Entity>
 		}
 
 		// Add it to entities list
-		entitiesPtr->push_back(Entity(spawnPos, dir, projectileSpeed, primaryColor, MinMax(5.0, 15.0)));
+		entitiesPtr->push_back(Entity(spawnPos, dir, projectileSpeed, primaryColor, projectileMinMaxRadius));
 	}
 
 	currentWave++;
@@ -61,13 +61,14 @@ void AttackPattern::SpawnWaveIfFinished(Vector2 spawnPos, std::list<Entity>* ent
 	}
 }
 
-AttackPattern::AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, 
-	ColorsParameters colorsParam)
+AttackPattern::AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, 
+	float projectileSpeed, MinMax projRadiusMinMax, ColorsParameters colorsParam)
 {
 	this->waveCount = waveCount;
 	this->radWaveOffset = radWaveOffset;
 	this->waveDuration = waveDuration;
 	this->projectileNumber = projectileNumber;
+	this->projectileMinMaxRadius = projRadiusMinMax;
 	this->projectileSpeed = projectileSpeed;
 	this->colorsParam = colorsParam;
 

@@ -79,7 +79,6 @@ int main()
 	scorePlayerOneText.setFont(arial);
 	sf::Text scorePlayerTwoText = SetText(2, screenResolution.x);
 	scorePlayerTwoText.setFont(arial);
-	// Initialise everything below
 
 	//Initialize balck holes and attacks
 		// Creat possible attacks
@@ -87,9 +86,13 @@ int main()
 	ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
 	ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
 	ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
-	attacks.push_back(AttackPattern(4, 0, 0.5f, 5, 0.5 * circleRadius, primaryColorParam));
-	attacks.push_back(AttackPattern(4, -1, 0.5f, 5, 0.5 * circleRadius, secondaryColorParam));
-	attacks.push_back(AttackPattern(4, PI / 4, 0.5f, 5, 0.5 * circleRadius, mixedColorParam));
+	attacks.push_back(AttackPattern(5, PI/4, 0.05f, 4, 1.5 * circleRadius, MinMax(0.5, 15), primaryColorParam));
+	attacks.push_back(AttackPattern(4, 0, 0.2f, 5, 1.25 * circleRadius, MinMax(0.5, 15), primaryColorParam));
+	attacks.push_back(AttackPattern(4, -1, 0.2f, 5, 1.25 * circleRadius, MinMax(0.5, 15), secondaryColorParam));
+	attacks.push_back(AttackPattern(4, PI / 4, 0.2f, 5, 0.9 * circleRadius, MinMax(0.5, 15), mixedColorParam));
+	attacks.push_back(AttackPattern(8, 0, 0.2f, 10, 0.9 * circleRadius, MinMax(5, 10), primaryColorParam));
+	attacks.push_back(AttackPattern(6, PI / 16, 0.35f, 8, 0.9 * circleRadius, MinMax(0.5, 10), mixedColorParam));
+	attacks.push_back(AttackPattern(6, PI / 16, 0.35f, 8, 0.9 * circleRadius, MinMax(0.5, 10), mixedColorParam));
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, attacks);
 

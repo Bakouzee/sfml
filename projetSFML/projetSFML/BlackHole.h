@@ -32,6 +32,7 @@ private:
 
 	int projectileNumber;
 	float projectileSpeed;
+	MinMax projectileMinMaxRadius;
 
 	int currentWave;
 
@@ -44,7 +45,7 @@ public:
 	bool IsFinished();
 	void SpawnWaveIfFinished(Vector2 spawnPos, std::list<Entity>* entitiesPtr);
 
-	AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, ColorsParameters colorsParam);
+	AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, MinMax projRadiusMinMax, ColorsParameters colorsParam);
 
 	ColorsParameters colorsParam;
 
