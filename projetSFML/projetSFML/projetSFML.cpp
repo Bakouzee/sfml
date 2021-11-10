@@ -137,12 +137,25 @@ int main()
 		// Whatever I want to draw goes here
 
 		// Entities gestion
-		std::vector<Entity*> touchingEntities;
-		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
-		// Check if there is collider touching player
-		if(!touchingEntities.empty())
+		std::vector<Entity*> touchingPlayer1;
+		std::vector<Entity*> touchingPlayer2;
+		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
+			Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 
+			20,
+			&touchingPlayer1, &touchingPlayer2, playerColor);
+
+		// Check if there is collider touching player 1
+		if(!touchingPlayer1.empty())
 		{
-			for(Entity* entite : touchingEntities)
+			for(Entity* entite : touchingPlayer1)
+			{
+				DestroyEntity(entite, &entities);
+			}
+		}
+		if(!touchingPlayer2.empty())
+		{
+			for(Entity* entite : touchingPlayer2)
 			{
 				DestroyEntity(entite, &entities);
 			}

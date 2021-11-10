@@ -64,4 +64,7 @@ void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr);
 void MoveEntity(Entity* entityPtr, float deltaTime);
 bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius);
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr);
-void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, Vector2 playerPos, float playerRadius, float deltaTime, std::vector<Entity*>* entitiesTouchingPlayer);
+void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
+	Vector2 player1Pos, Vector2 player2Pos, float playerRadius,  
+	std::vector<Entity*>* entitiesTouchingPlayer1, std::vector<Entity*>* entitiesTouchingPlayer2,
+	Colors& colors);

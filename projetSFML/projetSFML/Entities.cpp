@@ -195,8 +195,10 @@ bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playe
 	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentRadius;
 }
 
-void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius,
-	Vector2 playerPos, float playerRadius, float deltaTime, std::vector<Entity*>* entitiesTouchingPlayer)
+void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
+	Vector2 player1Pos, Vector2 player2Pos, float playerRadius,
+	std::vector<Entity*>* entitiesTouchingPlayer1, std::vector<Entity*>* entitiesTouchingPlayer2,
+	Colors& colors)
 {
 	auto it = entities->begin();
 	while(it != entities->end())
@@ -224,11 +226,18 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 			// Move entity
 			MoveEntity(entityPtr, deltaTime);
 
-			// Check if entity enter in collision with player
-			if(IsInCollisionWithPlayer(entityPtr, playerPos, playerRadius))
+			// Check if entity enter in collision with player 1
+			if(IsInCollisionWithPlayer(entityPtr, player1Pos, playerRadius))
 			{
-				// Add it to the entities touching player output
-				entitiesTouchingPlayer->push_back(entityPtr);
+				// Add it to the entities touching player 1 output
+				entitiesTouchingPlayer1->push_back(entityPtr);
+			}
+
+			// Check if entity enter in collision with player 2
+			if(IsInCollisionWithPlayer(entityPtr, player2Pos, playerRadius))
+			{
+				// Add it to the entities touching player 2 output
+				entitiesTouchingPlayer2->push_back(entityPtr);
 			}
 
 			it++;
