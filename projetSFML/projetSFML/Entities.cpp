@@ -172,7 +172,7 @@ void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors)
 	// Set color
 	circle.setFillColor(entityPtr->primaryColor ? colors.primary : colors.secondary);
 	circle.setOutlineColor(!entityPtr->primaryColor ? colors.primary : colors.secondary);
-	circle.setOutlineThickness(2);
+	circle.setOutlineThickness(1);
 
 	// Draw
 	windowPtr->draw(circle);
