@@ -158,7 +158,7 @@ int main()
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
 				playerColor = ChangeSide(playerColor, 1);
-				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 				playerColor2 = ChangeSide(playerColor2, 2);
