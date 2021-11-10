@@ -32,7 +32,7 @@ public:
 	void MultiplySpeed(float multiplier);
 	void ResetSpeed();
 
-	void SetColors(Colors newColors);
+	bool primaryColor;
 
 	MinMax radiusMinMax;
 	float currentRadius;
@@ -49,7 +49,6 @@ private:
 	float normalSpeed;
 
 	Colors currentColors;
-	bool primaryColor;
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);
@@ -60,7 +59,7 @@ private:
 //void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr);
 //void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr);
 
-void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr);
+void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors);
 void MoveEntity(Entity* entityPtr, float deltaTime);
 bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius);
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr);

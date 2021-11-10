@@ -14,13 +14,23 @@ sf::CircleShape CircleGameCrea(float positionX, float positionY)
 	return circleGame;
 }
 
-sf::CircleShape PlayerCrea(sf::CircleShape circleGame)
+sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer)
 {
-	sf::CircleShape newPlayer(playerRadius, 3);
-	newPlayer.setFillColor(sf::Color(150, 0, 0));
-	newPlayer.setPosition(circleGame.getPosition());
-	newPlayer.setOrigin(playerRadius / 2, (playerRadius / 2) - circleRadius);
-	return newPlayer;
+	if (whatPlayer == 1) {
+		sf::CircleShape newPlayer(playerRadius, 3);
+		newPlayer.setFillColor(sf::Color(150, 0, 0));
+		newPlayer.setPosition(circleGame.getPosition());
+		newPlayer.setOrigin(playerRadius / 2, (playerRadius / 2) - circleRadius);
+		return newPlayer;
+	}
+	else {
+		sf::CircleShape newPlayer(playerRadius, 4);
+		newPlayer.setFillColor(sf::Color(150, 0, 0));
+		newPlayer.setPosition(circleGame.getPosition());
+		newPlayer.setOrigin(playerRadius / 2, (playerRadius / 2) - circleRadius);
+		return newPlayer;
+	}
+	
 }
 
 Player NewPlayer(sf::CircleShape shape, int life, int number)

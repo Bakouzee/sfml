@@ -10,15 +10,15 @@ struct Player
 };
 
 const float PI = 3.14159265358979323846;
-const float circleRadius = 200.0f;
-const float playerRadius = 20.0f;
+const float circleRadius = 250.0f;
+const float playerRadius = 15.0f;
 
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime);
 
 sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
-sf::CircleShape PlayerCrea(sf::CircleShape circleGame);
+sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer);
 Player NewPlayer(sf::CircleShape shape, int life, int number);
 sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 

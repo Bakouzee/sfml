@@ -43,12 +43,17 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
-	Player playerOne = NewPlayer(PlayerCrea(circleGame), 3, 1);
-	Player playerTwo = NewPlayer(PlayerCrea(circleGame), 3, 2);
+	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
+	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
 
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
+	Colors playerColor2 = { sf::Color::Black, sf::Color::White };
+	Colors colorEntities = { sf::Color::Black, sf::Color::White };
 	playerOne.player.setOutlineThickness(5);
+	playerTwo.player.setOutlineThickness(5);
+
+	ColorID idC = ColorID::BLACK;
 
 	//Point de vie Affichage
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
@@ -60,6 +65,7 @@ int main()
 	sf::Clock scorePlayerTwo;
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
+	sf::Clock timerColorChange;
 	//sf::Clock timer;
 
 	//Bonus
@@ -78,7 +84,12 @@ int main()
 	//Initialize balck holes and attacks
 		// Creat possible attacks
 	std::list<AttackPattern> attacks;
-	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius));
+	ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
+	ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
+	ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
+	attacks.push_back(AttackPattern(4, 0, 0.5f, 5, 0.5 * circleRadius, primaryColorParam));
+	attacks.push_back(AttackPattern(4, -1, 0.5f, 5, 0.5 * circleRadius, secondaryColorParam));
+	attacks.push_back(AttackPattern(4, PI / 4, 0.5f, 5, 0.5 * circleRadius, mixedColorParam));
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
@@ -87,6 +98,8 @@ int main()
 		//R�initialise la couleur du player
 		playerOne.player.setFillColor(playerColor.primary);
 		playerOne.player.setOutlineColor(playerColor.secondary);
+		playerTwo.player.setFillColor(playerColor2.primary);
+		playerTwo.player.setOutlineColor(playerColor2.secondary);
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
@@ -138,7 +151,7 @@ int main()
 				isAnimating = false;
 			}
 		}*/
-		
+
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -147,7 +160,11 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);		
+				playerColor = ChangeSide(playerColor, 1);
+				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+			}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
+				playerColor2 = ChangeSide(playerColor2, 2);
 				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
@@ -163,10 +180,15 @@ int main()
 				setLife(playerOne, 1);
 			}*/
 		}
-		Deplacement(playerOne, elapsedTime);
-		Deplacement(playerTwo, elapsedTime);
-		//Deplacement(bonus, elapsedTime);
 
+		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
+		if(playerTwo.actualLife > 0) Deplacement(playerTwo, elapsedTime);
+
+		//Deplacement(bonus, elapsedTime);
+		if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
+			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
+			timerColorChange.restart();
+		}
 		window.clear();
 		// Whatever I want to draw goes here
 		if (timerBonus.getElapsedTime().asSeconds() >= 3) {
@@ -175,39 +197,54 @@ int main()
 		if (isShowed) {
 			window.draw(newBonus);
 		}
-			
+
 
 		// Entities gestion
 		std::vector<Entity*> touchingPlayer1;
 		std::vector<Entity*> touchingPlayer2;
 		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
-			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)), 
-			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
 			20,
-			&touchingPlayer1, &touchingPlayer2, playerColor);
+			&touchingPlayer1, &touchingPlayer2, colorEntities);
 
 		// Check if there is collider touching player 1
-		if(!touchingPlayer1.empty())
+		if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
 		{
-			for(Entity* entite : touchingPlayer1)
+			bool takeDamage = false;
+
+			for (Entity* entite : touchingPlayer1)
 			{
-				DestroyEntity(entite, &entities);
+				sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
+				if (entityColor != playerColor.primary)
+				{
+					DestroyEntity(entite, &entities);
+					takeDamage = true;
+				}
 			}
-			setLife(playerOne, -1);
+			if (takeDamage) setLife(playerOne, -1);
 		}
-		if(!touchingPlayer2.empty())
+		// Check if there is collider touching player 2
+		if (!touchingPlayer2.empty() && playerTwo.actualLife > 0)
 		{
-			for(Entity* entite : touchingPlayer2)
+			bool takeDamage = false;
+
+			for (Entity* entite : touchingPlayer2)
 			{
-				DestroyEntity(entite, &entities);
+				sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
+				if (entityColor != playerColor2.primary)
+				{
+					DestroyEntity(entite, &entities);
+					takeDamage = true;
+				}
 			}
-			setLife(playerTwo, -1);
+			if (takeDamage) setLife(playerTwo, -1);
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
-		window.draw(playerOne.player);
-		window.draw(playerTwo.player);
+		if(playerOne.actualLife > 0) window.draw(playerOne.player);
+		if(playerTwo.actualLife > 0) window.draw(playerTwo.player);
 
 		for (int i = 0; i < 3; i++)
 		{
