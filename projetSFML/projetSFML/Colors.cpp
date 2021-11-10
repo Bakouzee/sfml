@@ -21,8 +21,8 @@ void ChangeColorForEverything(Colors& colorsPlayer, Colors& colorsPlayer2, Color
 		colorsPlayer.secondary = sf::Color::White;
 		colorsPlayer2.primary = sf::Color::Black;
 		colorsPlayer2.secondary = sf::Color::White;
-		colorsPlayer2.primary = sf::Color::Black;
-		colorsPlayer2.secondary = sf::Color::White;
+		colorEntities.primary = sf::Color::Black;
+		colorEntities.secondary = sf::Color::White;
 		colorApplied = ColorID::BLACK;
 		break;
 	case 2:
