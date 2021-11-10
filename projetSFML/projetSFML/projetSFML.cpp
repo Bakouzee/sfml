@@ -43,12 +43,17 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
-	Player playerOne = NewPlayer(PlayerCrea(circleGame), 3, 1);
-	Player playerTwo = NewPlayer(PlayerCrea(circleGame), 3, 2);
+	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
+	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
 
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
+	Colors playerColor2 = { sf::Color::Black, sf::Color::White };
+	Colors colorEntities = { sf::Color::Black, sf::Color::White };
 	playerOne.player.setOutlineThickness(5);
+	playerTwo.player.setOutlineThickness(5);
+
+	ColorID idC = ColorID::BLACK;
 
 	//Point de vie Affichage
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
@@ -61,6 +66,7 @@ int main()
 	sf::Clock scoreGame;
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
+	sf::Clock timerColorChange;
 	//sf::Clock timer;
 
 	//Bonus
@@ -94,6 +100,8 @@ int main()
 		//R�initialise la couleur du player
 		playerOne.player.setFillColor(playerColor.primary);
 		playerOne.player.setOutlineColor(playerColor.secondary);
+		playerTwo.player.setFillColor(playerColor2.primary);
+		playerTwo.player.setOutlineColor(playerColor2.secondary);
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
@@ -149,7 +157,11 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);
+				playerColor = ChangeSide(playerColor, 1);
+				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+			}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
+				playerColor2 = ChangeSide(playerColor2, 2);
 				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
@@ -168,7 +180,10 @@ int main()
 		Deplacement(playerOne, elapsedTime);
 		Deplacement(playerTwo, elapsedTime);
 		//Deplacement(bonus, elapsedTime);
-
+		if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
+			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
+			timerColorChange.restart();
+		}
 		window.clear();
 		// Whatever I want to draw goes here
 		if (timerBonus.getElapsedTime().asSeconds() >= 3) {
@@ -186,7 +201,7 @@ int main()
 			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
 			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
 			20,
-			&touchingPlayer1, &touchingPlayer2, playerColor);
+			&touchingPlayer1, &touchingPlayer2, colorEntities);
 
 		// Check if there is collider touching player 1
 		if(!touchingPlayer1.empty())

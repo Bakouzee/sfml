@@ -17,7 +17,7 @@ void Deplacement(Player& actualPlayer, sf::Time elapsedTime);
 sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
-sf::CircleShape PlayerCrea(sf::CircleShape circleGame);
+sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer);
 Player NewPlayer(sf::CircleShape shape, int life, int number);
 sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 
