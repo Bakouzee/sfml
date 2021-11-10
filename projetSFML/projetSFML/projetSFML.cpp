@@ -63,6 +63,10 @@ int main()
 	sf::Clock timerBonus;
 	//sf::Clock timer;
 
+	//Bonus
+	sf::CircleShape bonus = BonusCrea(circleGame);
+	sf::CircleShape newBonus;
+
 	//Score
 	sf::Font arial;
 	arial.loadFromFile(getAssetPath() + "\\arial.ttf");
@@ -156,7 +160,9 @@ int main()
 				setLife(playerOne, 1);
 			}*/
 		}
-		Deplacement(player, elapsedTime);
+		Deplacement(playerOne, elapsedTime);
+		Deplacement(playerTwo, elapsedTime);
+		//Deplacement(bonus, elapsedTime);
 
 		window.clear();
 		// Whatever I want to draw goes here
@@ -180,10 +186,11 @@ int main()
 		// Check if there is collider touching player 1
 		if(!touchingPlayer1.empty())
 		{
-			for(Entity* entite : touchingEntities)
+			for(Entity* entite : touchingPlayer1)
 			{
 				DestroyEntity(entite, &entities);
 			}
+			setLife(playerOne, -1);
 		}
 		if(!touchingPlayer2.empty())
 		{
@@ -196,9 +203,10 @@ int main()
 
 		//Affichage Arthur
 		window.draw(circleGame);
-		window.draw(player);
+		window.draw(playerOne.player);
+		window.draw(playerTwo.player);
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			window.draw(playerOne.tabLifeCircle[i]);
 			window.draw(playerTwo.tabLifeCircle[i]);
