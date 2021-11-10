@@ -24,6 +24,16 @@ MinMax::MinMax(float min, float max)
 #pragma endregion
 
 #pragma region Entity struct
+void Entity::MultiplySpeed(float multiplier)
+{
+	currentSpeed = normalSpeed * multiplier;
+}
+
+void Entity::ResetSpeed()
+{
+	currentSpeed = normalSpeed;
+}
+
 float Entity::GetRadius()
 {
 	float distanceForMaxScale = 200;
@@ -38,13 +48,15 @@ float Entity::GetRadius()
 
 void Entity::Move(float& deltaTime)
 {
-	*position += *direction * deltaTime;
+	*position += *direction * currentSpeed * deltaTime;
 }
 
-Entity::Entity(Vector2 pos, Vector2 dir, bool primaryColor, MinMax radiusMinMax)
+Entity::Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radiusMinMax)
 {
 	position = new Vector2(pos.x, pos.y);
 	direction = new Vector2(dir.x, dir.y);
+	*direction = direction->Normalize();
+	this->normalSpeed = speed;
 	this->primaryColor = primaryColor;
 	radius = MinMax(radiusMinMax.min, radiusMinMax.max);
 }
@@ -220,3 +232,4 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 //	os << "Entity = { pos: " /*<< entity.position << "; dir: " << entity.direction */ << "; primaryColor: " << entity.primaryColor << "currentRadius: " << const_cast<Entity&>(entity).GetRadius() << " }";
 //	return os;
 //}
+

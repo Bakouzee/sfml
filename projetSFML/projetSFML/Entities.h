@@ -27,6 +27,10 @@ public:
 	Vector2* position;
 	Vector2* direction;
 
+	float currentSpeed;
+	void MultiplySpeed(float multiplier);
+	void ResetSpeed();
+
 	bool primaryColor;
 	// SetColors(newColors)
 
@@ -34,13 +38,14 @@ public:
 
 	void Move(float& deltaTime);
 
-	Entity(Vector2 pos, Vector2 dir, bool primaryColor, MinMax radius);
+	Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radius);
 
 	std::string to_string();
 
 private:
 	// Colors colors;
 	MinMax radius;
+	float normalSpeed;
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);

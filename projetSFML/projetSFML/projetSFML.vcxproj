@@ -150,6 +150,7 @@
     <ClCompile Include="2D.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="Health.cpp" />
     <ClCompile Include="projetSFML.cpp" />
     <ClCompile Include="SetupDeplacement.cpp" />
   </ItemGroup>

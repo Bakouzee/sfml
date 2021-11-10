@@ -43,7 +43,7 @@ int main()
 	//Actuel Player
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
-	sf::CircleShape player = PlayerCrea(20, circleGame);
+	sf::CircleShape player = PlayerCrea(circleGame);
 	player.setOutlineThickness(5);
 
 	//Lifes
@@ -55,6 +55,7 @@ int main()
 		xLife += 70;
 	}
 	
+
 
 	//Clock
 	sf::Clock clock;
@@ -125,9 +126,9 @@ int main()
 			{
 				float angle = rand();
 				float speed = rand() % 25 + 50;
-				Vector2 dir = Vector2(cos(angle), sin(angle)) * speed;
+				Vector2 dir = Vector2(cos(angle), sin(angle));
 				bool primaryColor = rand() % 2 == 0;
-				entities.push_back(Entity(middleScreen, dir, primaryColor, MinMax(5, 20)));
+				entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
 			}
 
 		}
@@ -138,25 +139,17 @@ int main()
 
 		// Entities gestion
 		std::vector<Entity*> touchingEntities;
-		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)),
-			20, elapsedTime.asSeconds(), &touchingEntities);
-			// Check if there is collider touching player
+		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
+		// Check if there is collider touching player
 		if(!touchingEntities.empty())
 		{
 			// Here le code en cas de collision entre une entité et un joueur
-			lives.pop_back();
-			
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
 		//window.draw(affichage);
-		
-		//Affichage vies
-		for (auto it = lives.begin(); it != lives.end(); it++) {
-			window.draw(*it);
-		}
 
 		//Affichage score
 		window.draw(score);

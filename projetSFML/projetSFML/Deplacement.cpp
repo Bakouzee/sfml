@@ -19,5 +19,5 @@ void Deplacement(sf::CircleShape &player, sf::Time elapsedTime)
 
 sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame)
 {
-	return circleGame.getPosition() + sf::Vector2f(cos(player.getRotation() * (PI / 180)), sin(player.getRotation() * (PI / 180))) * circleRadius;
+	return circleGame.getPosition() + sf::Vector2f(-sin(player.getRotation() * (PI / 180)), cos(player.getRotation() * (PI / 180))) * circleRadius;
 }
