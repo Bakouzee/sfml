@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Colors.h"
+#include "Bonus.h"
 
 #include "Arthur.h"
 #include "Entities.h"
@@ -28,6 +29,8 @@ int main()
 
 	std::list<Entity> entities;
 
+	//bool isAnimating = false;
+
 	// Window
 	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
@@ -43,6 +46,16 @@ int main()
 	sf::CircleShape player = PlayerCrea(20, circleGame);
 	player.setOutlineThickness(5);
 
+	//Lifes
+	std::vector<sf::CircleShape> lives(3, sf::CircleShape(30, 3));
+	float xLife = 20;
+	for (auto it = lives.begin(); it != lives.end(); it++) {
+		(*it).setFillColor(sf::Color::Red);
+		(*it).setPosition(xLife, 650);
+		xLife += 70;
+	}
+	
+
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
@@ -56,6 +69,9 @@ int main()
 	score.setFont(arial);
 	score.setCharacterSize(20);
 	score.setPosition(middleScreen.x, 15);
+	score.setOutlineColor(sf::Color::White);
+	score.setOutlineThickness(1);
+	score.setFillColor(sf::Color::Black);
 	// Initialise everything below
 
 
@@ -68,7 +84,7 @@ int main()
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
 		float deltaTime = scoreGame.getElapsedTime().asSeconds();
-		deltaTime *= deltaTime;
+		deltaTime *= deltaTime * 100;
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
@@ -78,16 +94,23 @@ int main()
 		//Score
 		score.setString("Score : " + std::to_string((int)deltaTime));
 		float anim = animTimer.getElapsedTime().asSeconds();
-		//score.setOrigin(score.getString().getSize() / 2, score.getOrigin().y);
 		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
 
-		if (anim <= 1.5) {
-			score.setCharacterSize(score.getCharacterSize() + 1);
+		/*if ((int)deltaTime % 1000 == 0 && (int)deltaTime > 0) {
+			isAnimating = true;
+			std::cout << isAnimating << std::endl;
 		}
-		else {
-			score.setCharacterSize(30);
+
+		if (isAnimating) {
 			animTimer.restart();
-		}
+			if (anim <= 1.3f) {
+				score.setCharacterSize(score.getCharacterSize() + 1);
+			} else {
+				score.setCharacterSize(30);
+				isAnimating = false;
+			}
+		}*/
+		
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -96,7 +119,7 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);
+				playerColor = ChangeSide(playerColor);					
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
@@ -121,12 +144,19 @@ int main()
 		if(!touchingEntities.empty())
 		{
 			// Here le code en cas de collision entre une entité et un joueur
+			lives.pop_back();
+			
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
 		//window.draw(affichage);
+		
+		//Affichage vies
+		for (auto it = lives.begin(); it != lives.end(); it++) {
+			window.draw(*it);
+		}
 
 		//Affichage score
 		window.draw(score);
