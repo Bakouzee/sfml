@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include "2D.h"
+#include "Colors.h"
 
 ///	How to use Entities:
 ///	Create a container of entities
@@ -31,10 +32,11 @@ public:
 	void MultiplySpeed(float multiplier);
 	void ResetSpeed();
 
-	bool primaryColor;
-	// SetColors(newColors)
+	void SetColors(Colors newColors);
 
-	float GetRadius();
+	MinMax radiusMinMax;
+	float currentRadius;
+	void CalculateCurrantRadius(Vector2& gameCenter, float& gameRadius);
 
 	void Move(float& deltaTime);
 
@@ -44,8 +46,10 @@ public:
 
 private:
 	// Colors colors;
-	MinMax radius;
 	float normalSpeed;
+
+	Colors currentColors;
+	bool primaryColor;
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);

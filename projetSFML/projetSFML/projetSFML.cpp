@@ -7,7 +7,7 @@
 #include "Colors.h"
 
 #include "Arthur.h"
-#include "Entities.h"
+#include "BlackHole.h"
 
 std::string getAppPath() {
 	char cExeFilePath[256];
@@ -57,19 +57,41 @@ int main()
 	score.setFont(arial);
 	score.setCharacterSize(20);
 	score.setPosition(middleScreen.x, 15);
-	// Initialise everything below
+
+	//Initialize balck holes and attacks
+		// Creat possible attacks
+	std::list<AttackPattern> attacks;
+	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius));
+		// Create black hole
+	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
 
 	// Game loop
 	while (window.isOpen()) {
-		//R�initialise la couleur du player
-		player.setFillColor(playerColor.primary);
-		player.setOutlineColor(playerColor.secondary);
-
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
 		float deltaTime = scoreGame.getElapsedTime().asSeconds();
 		deltaTime *= deltaTime;
+
+		// Black hole gestion
+		if(blackHole.attackTimer <= 0)
+		{
+			blackHole.LaunchNewAttack(&entities);
+		}
+		else
+		{
+			blackHole.attackTimer = blackHole.attackTimer - elapsedTime.asSeconds();
+
+			blackHole.currentAttackPtr->waveTimer = blackHole.currentAttackPtr->waveTimer - elapsedTime.asSeconds();
+			blackHole.currentAttackPtr->SpawnWaveIfFinished(*(blackHole.position), &entities);
+		}
+
+		//std::cout << entities.size() << std::endl;
+
+		//R�initialise la couleur du player
+		player.setFillColor(playerColor.primary);
+		player.setOutlineColor(playerColor.secondary);
+
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
