@@ -8,7 +8,7 @@
 #include "Bonus.h"
 
 #include "Arthur.h"
-#include "Entities.h"
+#include "BlackHole.h"
 
 std::string getAppPath() {
 	char cExeFilePath[256];
@@ -43,20 +43,19 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
+	Player playerOne = NewPlayer(PlayerCrea(circleGame), 3, 1);
+	Player playerTwo = NewPlayer(PlayerCrea(circleGame), 3, 2);
+
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
-	sf::CircleShape player = PlayerCrea(circleGame);
-	player.setOutlineThickness(5);
+	playerOne.player.setOutlineThickness(5);
 
-	//Lifes
-	std::vector<sf::CircleShape> lives(3, sf::CircleShape(30, 3));
-	float xLife = 20;
-	for (auto it = lives.begin(); it != lives.end(); it++) {
-		(*it).setFillColor(sf::Color::Red);
-		(*it).setPosition(xLife, 650);
-		xLife += 70;
-	}
-	
+	//Point de vie Affichage
+	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
+	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
+	//TEMPORAIRE
+	int life = 3;
+
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
@@ -71,27 +70,42 @@ int main()
 	score.setFont(arial);
 	score.setCharacterSize(20);
 	score.setPosition(middleScreen.x, 15);
-	score.setOutlineColor(sf::Color::White);
-	score.setOutlineThickness(1);
-	score.setFillColor(sf::Color::Black);
-
-	//Bonus
-	sf::CircleShape bonus = BonusCrea(circleGame);
-	sf::CircleShape newBonus;
-	//bonus.setFillColor(sf::Color::Red);
 	// Initialise everything below
+
+	//Initialize balck holes and attacks
+		// Creat possible attacks
+	std::list<AttackPattern> attacks;
+	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius));
+		// Create black hole
+	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
 
 	// Game loop
 	while (window.isOpen()) {
 		//R�initialise la couleur du player
-		player.setFillColor(playerColor.primary);
-		player.setOutlineColor(playerColor.secondary);
+		playerOne.player.setFillColor(playerColor.primary);
+		playerOne.player.setOutlineColor(playerColor.secondary);
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
 		float deltaTime = scoreGame.getElapsedTime().asSeconds();
 		deltaTime *= deltaTime * 100;
+
+		// Black hole gestion
+		if(blackHole.attackTimer <= 0)
+		{
+			blackHole.LaunchNewAttack(&entities);
+		}
+		else
+		{
+			blackHole.attackTimer = blackHole.attackTimer - elapsedTime.asSeconds();
+
+			blackHole.currentAttackPtr->waveTimer = blackHole.currentAttackPtr->waveTimer - elapsedTime.asSeconds();
+			blackHole.currentAttackPtr->SpawnWaveIfFinished(*(blackHole.position), &entities);
+		}
+
+		//std::cout << entities.size() << std::endl;
+
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
@@ -137,10 +151,12 @@ int main()
 				bool primaryColor = rand() % 2 == 0;
 				entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
 			}
-
+			/*else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				setLife(playerOne, 1);
+			}*/
 		}
 		Deplacement(player, elapsedTime);
-		Deplacement(bonus, elapsedTime);
 
 		window.clear();
 		// Whatever I want to draw goes here
@@ -153,18 +169,40 @@ int main()
 			
 
 		// Entities gestion
-		std::vector<Entity*> touchingEntities;
-		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
-		// Check if there is collider touching player
-		if(!touchingEntities.empty())
+		std::vector<Entity*> touchingPlayer1;
+		std::vector<Entity*> touchingPlayer2;
+		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
+			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)), 
+			20,
+			&touchingPlayer1, &touchingPlayer2, playerColor);
+
+		// Check if there is collider touching player 1
+		if(!touchingPlayer1.empty())
 		{
-			// Here le code en cas de collision entre une entité et un joueur
+			for(Entity* entite : touchingEntities)
+			{
+				DestroyEntity(entite, &entities);
+			}
+		}
+		if(!touchingPlayer2.empty())
+		{
+			for(Entity* entite : touchingPlayer2)
+			{
+				DestroyEntity(entite, &entities);
+			}
+			setLife(playerTwo, -1);
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
-		//window.draw(affichage);
+
+		for(int i = 0; i < 3; i++)
+		{
+			window.draw(playerOne.tabLifeCircle[i]);
+			window.draw(playerTwo.tabLifeCircle[i]);
+		}
 
 		//Affichage score
 		window.draw(score);

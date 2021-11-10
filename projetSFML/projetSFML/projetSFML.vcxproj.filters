@@ -36,6 +36,9 @@
     <ClCompile Include="Health.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BlackHole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Bonus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,9 +52,6 @@
     </ClInclude>
     <ClInclude Include="Entities.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bonus.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

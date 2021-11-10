@@ -23,6 +23,19 @@ sf::CircleShape PlayerCrea(sf::CircleShape circleGame)
 	return newPlayer;
 }
 
+Player NewPlayer(sf::CircleShape shape, int life, int number)
+{
+	Player newPlayer;
+	newPlayer.player = shape;
+	newPlayer.actualLife = life;
+	newPlayer.numberPlayer = number;
+	for(int i = 0; i < 3; i++)
+	{
+		newPlayer.tabLifeCircle[i] = lifeCircle();
+	}
+	return newPlayer;
+}
+
 sf::CircleShape BonusCrea(sf::CircleShape circleGame)
 {
 	sf::CircleShape newBonus(playerRadius, 4);

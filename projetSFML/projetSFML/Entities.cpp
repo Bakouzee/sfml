@@ -34,36 +34,31 @@ void Entity::ResetSpeed()
 	currentSpeed = normalSpeed;
 }
 
-float Entity::GetRadius()
-{
-	float distanceForMaxScale = 200;
-	Vector2 middleScreen = { 400, 300 };
-
-	float t;
-	t = std::min(distanceForMaxScale, Vector2::GetDistance(*position, middleScreen)) / distanceForMaxScale;
-	if (t >= 1) return radius.max;
-
-	return radius.min + (radius.max - radius.min) * t;
-}
-
 void Entity::Move(float& deltaTime)
 {
+	
 	*position += *direction * currentSpeed * deltaTime;
 }
 
 Entity::Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radiusMinMax)
 {
 	position = new Vector2(pos.x, pos.y);
+
 	direction = new Vector2(dir.x, dir.y);
 	*direction = direction->Normalize();
+
 	this->normalSpeed = speed;
+	currentSpeed = speed;
+
 	this->primaryColor = primaryColor;
-	radius = MinMax(radiusMinMax.min, radiusMinMax.max);
+
+	this->radiusMinMax = MinMax(radiusMinMax.min, radiusMinMax.max);
+	this->currentRadius = this->radiusMinMax.min;
 }
 
 std::string Entity::to_string()
 {
-	return "Entity = { pos: " + position->ToString() + "; dir = " + direction->ToString() + "; primaryColor: " + std::to_string(primaryColor) + "currentRadius: " + std::to_string(GetRadius()) + " }";
+	return "Entity = { pos: " + position->ToString() + "; dir = " + direction->ToString() + "; primaryColor: " + std::to_string(primaryColor) + "currentRadius: " + std::to_string(currentRadius) + " }";
 }
 
 
@@ -155,15 +150,26 @@ std::string Entity::to_string()
 //}
 #pragma endregion
 
+void Entity::CalculateCurrantRadius(Vector2& gameCenter, float& gameRadius)
+{
+	float t = std::min(gameRadius, Vector2::GetDistance(*position, gameCenter)) / gameRadius;
+
+	if (t >= 1) currentRadius = radiusMinMax.max;
+	else currentRadius = radiusMinMax.min + (radiusMinMax.max - radiusMinMax.min) * t;
+}
 void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr)
 {
-	float radius = entityPtr->GetRadius();
-	sf::CircleShape circle(radius);
-	circle.setOrigin(radius, radius);
+	float entityRadius = entityPtr->currentRadius;
 
+	// Set circle shape
+	sf::CircleShape circle(entityRadius);
+	circle.setOrigin(entityRadius, entityRadius);
+
+	// Set pos
 	sf::Vector2f position(entityPtr->position->x, entityPtr->position->y);
 	circle.setPosition(position);
 
+	// Draw
 	windowPtr->draw(circle);
 }
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr)
@@ -186,25 +192,31 @@ void MoveEntity(Entity* entityPtr, float deltaTime)
 }
 bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius)
 {
-	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->GetRadius();
+	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentRadius;
 }
 
-void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius,
-	Vector2 playerPos, float playerRadius, float deltaTime, std::vector<Entity*>* entitiesTouchingPlayer)
+void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
+	Vector2 player1Pos, Vector2 player2Pos, float playerRadius,
+	std::vector<Entity*>* entitiesTouchingPlayer1, std::vector<Entity*>* entitiesTouchingPlayer2,
+	Colors& colors)
 {
 	auto it = entities->begin();
 	while(it != entities->end())
 	{
 		Entity* entityPtr = &(*it);
 
+		// Set Entity current radius
+		entityPtr->CalculateCurrantRadius(gameCenter, gameRadius);
+
 		// Draw entity
 		DrawEntity(entityPtr, windowPtr);
 
 		// Check if too far --> destroy
 		// else continue the entity update
-		if (Vector2::GetDistance(*entityPtr->position, gameCenter) >= gameRadius)
+		if (Vector2::GetDistance(*(entityPtr->position), gameCenter) >= gameRadius)
 		{
 			// Destroy
+			std::cout << *(entityPtr->position) << " " << gameCenter << "too far so destroyed: " << Vector2::GetDistance(*entityPtr->position, gameCenter)  << std::endl;
 			it = entities->erase(it);
 		}
 		else
@@ -214,11 +226,18 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 			// Move entity
 			MoveEntity(entityPtr, deltaTime);
 
-			// Check if entity enter in collision with player
-			if(IsInCollisionWithPlayer(entityPtr, playerPos, playerRadius))
+			// Check if entity enter in collision with player 1
+			if(IsInCollisionWithPlayer(entityPtr, player1Pos, playerRadius))
 			{
-				// Add it to the entities touching player output
-				entitiesTouchingPlayer->push_back(entityPtr);
+				// Add it to the entities touching player 1 output
+				entitiesTouchingPlayer1->push_back(entityPtr);
+			}
+
+			// Check if entity enter in collision with player 2
+			if(IsInCollisionWithPlayer(entityPtr, player2Pos, playerRadius))
+			{
+				// Add it to the entities touching player 2 output
+				entitiesTouchingPlayer2->push_back(entityPtr);
 			}
 
 			it++;
