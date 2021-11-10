@@ -15,7 +15,6 @@ void setLife(Player& actualPlayer, int lifeChange)
 		actualPlayer.tabLifeCircle[actualPlayer.actualLife - 1].setFillColor(sf::Color(0, 0, 0, 0));
 		actualPlayer.actualLife += lifeChange;
 	}
-	std::cout << "Le player numero " << actualPlayer.numberPlayer << " a " << actualPlayer.actualLife << " de vie." << std::endl;
 }
 
 sf::CircleShape lifeCircle()

@@ -99,10 +99,6 @@ int main()
 
 		//std::cout << entities.size() << std::endl;
 
-		//R�initialise la couleur du player
-		player.setFillColor(playerColor.primary);
-		player.setOutlineColor(playerColor.secondary);
-
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
@@ -155,8 +151,8 @@ int main()
 		std::vector<Entity*> touchingPlayer1;
 		std::vector<Entity*> touchingPlayer2;
 		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
-			Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 
-			Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)), 
 			20,
 			&touchingPlayer1, &touchingPlayer2, playerColor);
 
@@ -167,6 +163,7 @@ int main()
 			{
 				DestroyEntity(entite, &entities);
 			}
+			setLife(playerOne, -1);
 		}
 		if(!touchingPlayer2.empty())
 		{
