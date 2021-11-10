@@ -177,8 +177,10 @@ int main()
 				setLife(playerOne, 1);
 			}*/
 		}
-		Deplacement(playerOne, elapsedTime);
-		Deplacement(playerTwo, elapsedTime);
+
+		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
+		if(playerTwo.actualLife > 0) Deplacement(playerTwo, elapsedTime);
+
 		//Deplacement(bonus, elapsedTime);
 		if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
 			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
@@ -204,7 +206,7 @@ int main()
 			&touchingPlayer1, &touchingPlayer2, colorEntities);
 
 		// Check if there is collider touching player 1
-		if (!touchingPlayer1.empty())
+		if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
 		{
 			bool takeDamage = false;
 
@@ -220,7 +222,7 @@ int main()
 			if (takeDamage) setLife(playerOne, -1);
 		}
 		// Check if there is collider touching player 2
-		if (!touchingPlayer2.empty())
+		if (!touchingPlayer2.empty() && playerTwo.actualLife > 0)
 		{
 			bool takeDamage = false;
 
@@ -238,8 +240,8 @@ int main()
 
 		//Affichage Arthur
 		window.draw(circleGame);
-		window.draw(playerOne.player);
-		window.draw(playerTwo.player);
+		if(playerOne.actualLife > 0) window.draw(playerOne.player);
+		if(playerTwo.actualLife > 0) window.draw(playerTwo.player);
 
 		for (int i = 0; i < 3; i++)
 		{

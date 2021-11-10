@@ -5,7 +5,7 @@
 
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime)
 {
-	float speed = 200;
+	float speed = 100;
 
 	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && actualPlayer.numberPlayer == 2) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && actualPlayer.numberPlayer == 1))
 	{
