@@ -79,7 +79,12 @@ int main()
 	//Initialize balck holes and attacks
 		// Creat possible attacks
 	std::list<AttackPattern> attacks;
-	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius));
+	ColorsParameters primaryColorParam(ColorsParameters::Primary);
+	ColorsParameters secondaryColorParam(ColorsParameters::Secondary);
+	ColorsParameters mixedColorParam(ColorsParameters::Mixed, 1);
+	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, primaryColorParam));
+	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, secondaryColorParam));
+	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, mixedColorParam));
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
@@ -135,7 +140,7 @@ int main()
 				isAnimating = false;
 			}
 		}*/
-		
+
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -144,7 +149,7 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);		
+				playerColor = ChangeSide(playerColor);
 				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
@@ -172,14 +177,14 @@ int main()
 		if (isShowed) {
 			window.draw(newBonus);
 		}
-			
+
 
 		// Entities gestion
 		std::vector<Entity*> touchingPlayer1;
 		std::vector<Entity*> touchingPlayer2;
 		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
-			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)), 
-			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)), 
+			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
 			20,
 			&touchingPlayer1, &touchingPlayer2, playerColor);
 
@@ -192,6 +197,7 @@ int main()
 			}
 			setLife(playerOne, -1);
 		}
+		// Check if there is collider touching player 2
 		if(!touchingPlayer2.empty())
 		{
 			for(Entity* entite : touchingPlayer2)

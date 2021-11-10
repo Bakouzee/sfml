@@ -7,6 +7,22 @@
 /// <summary>
 /// How to use
 /// </summary>
+struct ColorsParameters
+{
+public:
+	enum ColorType
+	{
+		Primary,
+		Secondary,
+		Mixed
+	};
+
+	ColorType colorType;
+	int step;
+
+	ColorsParameters(ColorType colorType, int step = 1);
+	ColorsParameters();
+};
 struct AttackPattern
 {
 private:
@@ -28,7 +44,9 @@ public:
 	bool IsFinished();
 	void SpawnWaveIfFinished(Vector2 spawnPos, std::list<Entity>* entitiesPtr);
 
-	AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed);
+	AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, ColorsParameters colorsParam);
+
+	ColorsParameters colorsParam;
 
 	void Reset()
 	{

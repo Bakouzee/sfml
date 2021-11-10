@@ -157,7 +157,7 @@ void Entity::CalculateCurrantRadius(Vector2& gameCenter, float& gameRadius)
 	if (t >= 1) currentRadius = radiusMinMax.max;
 	else currentRadius = radiusMinMax.min + (radiusMinMax.max - radiusMinMax.min) * t;
 }
-void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr)
+void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors)
 {
 	float entityRadius = entityPtr->currentRadius;
 
@@ -168,6 +168,11 @@ void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr)
 	// Set pos
 	sf::Vector2f position(entityPtr->position->x, entityPtr->position->y);
 	circle.setPosition(position);
+
+	// Set color
+	circle.setFillColor(entityPtr->primaryColor ? colors.primary : colors.secondary);
+	circle.setOutlineColor(!entityPtr->primaryColor ? colors.primary : colors.secondary);
+	circle.setOutlineThickness(2);
 
 	// Draw
 	windowPtr->draw(circle);
@@ -209,7 +214,7 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 		entityPtr->CalculateCurrantRadius(gameCenter, gameRadius);
 
 		// Draw entity
-		DrawEntity(entityPtr, windowPtr);
+		DrawEntity(entityPtr, windowPtr, colors);
 
 		// Check if too far --> destroy
 		// else continue the entity update
