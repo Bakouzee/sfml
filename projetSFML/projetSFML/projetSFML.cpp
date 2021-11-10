@@ -85,12 +85,12 @@ int main()
 	//Initialize balck holes and attacks
 		// Creat possible attacks
 	std::list<AttackPattern> attacks;
-	ColorsParameters primaryColorParam(ColorsParameters::Primary);
-	ColorsParameters secondaryColorParam(ColorsParameters::Secondary);
-	ColorsParameters mixedColorParam(ColorsParameters::Mixed, 1);
-	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, primaryColorParam));
-	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, secondaryColorParam));
-	attacks.push_back(AttackPattern(4, 1, 0.5f, 5, 0.5 * circleRadius, mixedColorParam));
+	ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
+	ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
+	ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
+	attacks.push_back(AttackPattern(4, 0, 0.5f, 5, 0.5 * circleRadius, primaryColorParam));
+	attacks.push_back(AttackPattern(4, -1, 0.5f, 5, 0.5 * circleRadius, secondaryColorParam));
+	attacks.push_back(AttackPattern(4, PI / 4, 0.5f, 5, 0.5 * circleRadius, mixedColorParam));
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
