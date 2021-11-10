@@ -222,7 +222,7 @@ int main()
 					takeDamage = true;
 				}
 			}
-			if (takeDamage) setLife(playerOne, -1);
+			if (takeDamage) setLife(playerOne, -1, scorePlayerOne);
 		}
 		// Check if there is collider touching player 2
 		if (!touchingPlayer2.empty() && playerTwo.actualLife > 0)
@@ -238,7 +238,7 @@ int main()
 					takeDamage = true;
 				}
 			}
-			if (takeDamage) setLife(playerTwo, -1);
+			if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);
 		}
 
 		//Affichage Arthur

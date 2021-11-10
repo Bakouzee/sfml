@@ -3,7 +3,7 @@
 #include "Arthur.h"
 #include <iostream>
 
-void setLife(Player& actualPlayer, int lifeChange)
+void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer)
 {
 	if(lifeChange == 1 && actualPlayer.actualLife != 3)
 	{
@@ -14,6 +14,7 @@ void setLife(Player& actualPlayer, int lifeChange)
 	{
 		actualPlayer.tabLifeCircle[actualPlayer.actualLife - 1].setFillColor(sf::Color(0, 0, 0, 0));
 		actualPlayer.actualLife += lifeChange;
+		clockPlayer.restart();
 	}
 }
 

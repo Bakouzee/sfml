@@ -22,7 +22,7 @@ sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer);
 Player NewPlayer(sf::CircleShape shape, int life, int number);
 sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 
-void setLife(Player& actualPlayer, int lifeChange);
+void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer);
 sf::CircleShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
 
