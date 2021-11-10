@@ -153,6 +153,7 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="projetSFML.cpp" />
+    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="SetupDeplacement.cpp" />
   </ItemGroup>
   <ItemGroup>

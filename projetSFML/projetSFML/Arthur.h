@@ -6,6 +6,7 @@ struct Player
 	sf::CircleShape player;
 	int actualLife;
 	sf::CircleShape tabLifeCircle[3];
+	int scorePlayer = 0;
 };
 
 const float PI = 3.14159265358979323846;
@@ -24,6 +25,9 @@ sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 void setLife(Player& actualPlayer, int lifeChange);
 sf::CircleShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
+
+sf::Text SetText(int numberPlayer, float screenResolutionX);
+void SetScore(float actualTime, sf::Text& actualText, int numberPlayer);
 
 
 ////PURE TESTING POUR AFFICHER LES COORD // A METTRE DANS LE MAIN SI BESOIN

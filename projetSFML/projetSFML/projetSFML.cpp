@@ -53,12 +53,11 @@ int main()
 	//Point de vie Affichage
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
 	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
-	//TEMPORAIRE
-	int life = 3;
 
 	//Clock
 	sf::Clock clock;
-	sf::Clock scoreGame;
+	sf::Clock scorePlayerOne;
+	sf::Clock scorePlayerTwo;
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
 	//sf::Clock timer;
@@ -70,10 +69,10 @@ int main()
 	//Score
 	sf::Font arial;
 	arial.loadFromFile(getAssetPath() + "\\arial.ttf");
-	sf::Text score;
-	score.setFont(arial);
-	score.setCharacterSize(20);
-	score.setPosition(middleScreen.x, 15);
+	sf::Text scorePlayerOneText = SetText(1, screenResolution.x);
+	scorePlayerOneText.setFont(arial);
+	sf::Text scorePlayerTwoText = SetText(2, screenResolution.x);
+	scorePlayerTwoText.setFont(arial);
 	// Initialise everything below
 
 	//Initialize balck holes and attacks
@@ -83,7 +82,6 @@ int main()
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, attacks);
 
-
 	// Game loop
 	while (window.isOpen()) {
 		//R�initialise la couleur du player
@@ -92,8 +90,14 @@ int main()
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
-		float deltaTime = scoreGame.getElapsedTime().asSeconds();
-		deltaTime *= deltaTime * 100;
+		if(playerOne.actualLife > 0)
+		{
+			SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1);
+		}
+		if (playerTwo.actualLife > 0)
+		{
+			SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2);
+		}
 
 		// Black hole gestion
 		if(blackHole.attackTimer <= 0)
@@ -116,10 +120,9 @@ int main()
 		//	ChangeColorForEverything(playerColor, //color des entit�s, idC);
 		//}
 
-		//Score
-		score.setString("Score : " + std::to_string((int)deltaTime));
-		float anim = animTimer.getElapsedTime().asSeconds();
-		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
+		//Score Animation
+		//float anim = animTimer.getElapsedTime().asSeconds();
+		//score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
 
 		/*if ((int)deltaTime % 1000 == 0 && (int)deltaTime > 0) {
 			isAnimating = true;
@@ -213,7 +216,8 @@ int main()
 		}
 
 		//Affichage score
-		window.draw(score);
+		window.draw(scorePlayerOneText);
+		window.draw(scorePlayerTwoText);
 
 		window.display();
 	}
