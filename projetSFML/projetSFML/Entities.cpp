@@ -221,7 +221,7 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 		if (Vector2::GetDistance(*(entityPtr->position), gameCenter) >= gameRadius)
 		{
 			// Destroy
-			std::cout << *(entityPtr->position) << " " << gameCenter << "too far so destroyed: " << Vector2::GetDistance(*entityPtr->position, gameCenter)  << std::endl;
+			//std::cout << *(entityPtr->position) << " " << gameCenter << "too far so destroyed: " << Vector2::GetDistance(*entityPtr->position, gameCenter)  << std::endl;
 			it = entities->erase(it);
 		}
 		else
