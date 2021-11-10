@@ -50,8 +50,8 @@ int main()
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
 	Colors playerColor2 = { sf::Color::Black, sf::Color::White };
 	Colors colorEntities = { sf::Color::Black, sf::Color::White };
-	playerOne.player.setOutlineThickness(5);
-	playerTwo.player.setOutlineThickness(5);
+	playerOne.player.setOutlineThickness(3);
+	playerTwo.player.setOutlineThickness(3);
 
 	ColorID idC = ColorID::BLACK;
 
