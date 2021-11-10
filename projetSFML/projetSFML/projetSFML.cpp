@@ -38,11 +38,18 @@ int main()
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
 	//Actuel Player
+	Player playerOne = NewPlayer(PlayerCrea(circleGame), 3, 1);
+	Player playerTwo = NewPlayer(PlayerCrea(circleGame), 3, 2);
+
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
-	sf::CircleShape player = PlayerCrea(circleGame);
-	player.setOutlineThickness(5);
+	playerOne.player.setOutlineThickness(5);
 
+	//Point de vie Affichage
+	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
+	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
+	//TEMPORAIRE
+	int life = 3;
 
 	//Clock
 	sf::Clock clock;
@@ -63,8 +70,8 @@ int main()
 	// Game loop
 	while (window.isOpen()) {
 		//R�initialise la couleur du player
-		player.setFillColor(playerColor.primary);
-		player.setOutlineColor(playerColor.secondary);
+		playerOne.player.setFillColor(playerColor.primary);
+		playerOne.player.setOutlineColor(playerColor.secondary);
 
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
@@ -107,16 +114,22 @@ int main()
 				bool primaryColor = rand() % 2 == 0;
 				entities.push_back(Entity(middleScreen, dir, primaryColor, MinMax(5, 20)));
 			}
-
+			/*else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				setLife(playerOne, 1);
+			}*/
 		}
-		Deplacement(player, elapsedTime);
+		Deplacement(playerOne, elapsedTime);
+		Deplacement(playerTwo, elapsedTime);
 
 		window.clear();
 		// Whatever I want to draw goes here
 
 		// Entities gestion
 		std::vector<Entity*> touchingEntities;
-		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
+
+		//Check collision Joueur 1
+		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
 		// Check if there is collider touching player
 		if(!touchingEntities.empty())
 		{
@@ -124,11 +137,31 @@ int main()
 			{
 				DestroyEntity(entite, &entities);
 			}
+			setLife(playerOne, -1);
+		}
+
+		//Check collision Joueur 2
+		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)), 20, elapsedTime.asSeconds(), &touchingEntities);
+		// Check if there is collider touching player
+		if(!touchingEntities.empty())
+		{
+			for(Entity* entite : touchingEntities)
+			{
+				DestroyEntity(entite, &entities);
+			}
+			setLife(playerTwo, -1);
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
-		window.draw(player);
+		window.draw(playerOne.player);
+		window.draw(playerTwo.player);
+
+		for(int i = 0; i < 3; i++)
+		{
+			window.draw(playerOne.tabLifeCircle[i]);
+			window.draw(playerTwo.tabLifeCircle[i]);
+		}
 
 		//Affichage score
 		window.draw(score);
