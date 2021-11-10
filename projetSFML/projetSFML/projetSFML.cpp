@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Colors.h"
+#include "Bonus.h"
 
 #include "Arthur.h"
 #include "Entities.h"
@@ -28,11 +29,15 @@ int main()
 
 	std::list<Entity> entities;
 
+	//bool isAnimating = false;
+
 	// Window
 	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
 	window.setVerticalSyncEnabled(true);
+
+	bool isShowed = false;
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -43,11 +48,20 @@ int main()
 	sf::CircleShape player = PlayerCrea(circleGame);
 	player.setOutlineThickness(5);
 
-
+	//Lifes
+	std::vector<sf::CircleShape> lives(3, sf::CircleShape(30, 3));
+	float xLife = 20;
+	for (auto it = lives.begin(); it != lives.end(); it++) {
+		(*it).setFillColor(sf::Color::Red);
+		(*it).setPosition(xLife, 650);
+		xLife += 70;
+	}
+	
 	//Clock
 	sf::Clock clock;
 	sf::Clock scoreGame;
 	sf::Clock animTimer;
+	sf::Clock timerBonus;
 	//sf::Clock timer;
 
 	//Score
@@ -57,6 +71,14 @@ int main()
 	score.setFont(arial);
 	score.setCharacterSize(20);
 	score.setPosition(middleScreen.x, 15);
+	score.setOutlineColor(sf::Color::White);
+	score.setOutlineThickness(1);
+	score.setFillColor(sf::Color::Black);
+
+	//Bonus
+	sf::CircleShape bonus = BonusCrea(circleGame);
+	sf::CircleShape newBonus;
+	//bonus.setFillColor(sf::Color::Red);
 	// Initialise everything below
 
 
@@ -69,7 +91,7 @@ int main()
 		// Clock
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
 		float deltaTime = scoreGame.getElapsedTime().asSeconds();
-		deltaTime *= deltaTime;
+		deltaTime *= deltaTime * 100;
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
@@ -79,16 +101,23 @@ int main()
 		//Score
 		score.setString("Score : " + std::to_string((int)deltaTime));
 		float anim = animTimer.getElapsedTime().asSeconds();
-		//score.setOrigin(score.getString().getSize() / 2, score.getOrigin().y);
 		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
 
-		if (anim <= 1.5) {
-			score.setCharacterSize(score.getCharacterSize() + 1);
+		/*if ((int)deltaTime % 1000 == 0 && (int)deltaTime > 0) {
+			isAnimating = true;
+			std::cout << isAnimating << std::endl;
 		}
-		else {
-			score.setCharacterSize(30);
+
+		if (isAnimating) {
 			animTimer.restart();
-		}
+			if (anim <= 1.3f) {
+				score.setCharacterSize(score.getCharacterSize() + 1);
+			} else {
+				score.setCharacterSize(30);
+				isAnimating = false;
+			}
+		}*/
+		
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -97,7 +126,8 @@ int main()
 				window.close();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-				playerColor = ChangeSide(playerColor);
+				playerColor = ChangeSide(playerColor);		
+				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
@@ -110,9 +140,17 @@ int main()
 
 		}
 		Deplacement(player, elapsedTime);
+		Deplacement(bonus, elapsedTime);
 
 		window.clear();
 		// Whatever I want to draw goes here
+		if (timerBonus.getElapsedTime().asSeconds() >= 3) {
+			isShowed = false;
+		}
+		if (isShowed) {
+			window.draw(newBonus);
+		}
+			
 
 		// Entities gestion
 		std::vector<Entity*> touchingEntities;
@@ -120,15 +158,13 @@ int main()
 		// Check if there is collider touching player
 		if(!touchingEntities.empty())
 		{
-			for(Entity* entite : touchingEntities)
-			{
-				DestroyEntity(entite, &entities);
-			}
+			// Here le code en cas de collision entre une entité et un joueur
 		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
+		//window.draw(affichage);
 
 		//Affichage score
 		window.draw(score);

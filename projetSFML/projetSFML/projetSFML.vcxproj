@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Deplacement.cpp" />
     <ClCompile Include="2D.cpp" />
     <ClCompile Include="Entities.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D.h" />
+    <ClInclude Include="Bonus.h" />
     <ClInclude Include="Entities.h" />
   </ItemGroup>
   <ItemGroup>

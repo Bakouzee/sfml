@@ -11,6 +11,7 @@ sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
 sf::CircleShape PlayerCrea(sf::CircleShape circleGame);
+sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 
 int setLife(int actualLife, int lifeChange, sf::CircleShape tabLifeCircle[]);
 sf::CircleShape lifeCircle();
