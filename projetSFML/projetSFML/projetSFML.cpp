@@ -103,9 +103,9 @@ int main()
 			{
 				float angle = rand();
 				float speed = rand() % 25 + 50;
-				Vector2 dir = Vector2(cos(angle), sin(angle)) * speed;
+				Vector2 dir = Vector2(cos(angle), sin(angle));
 				bool primaryColor = rand() % 2 == 0;
-				entities.push_back(Entity(middleScreen, dir, primaryColor, MinMax(5, 20)));
+				entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
 			}
 
 		}

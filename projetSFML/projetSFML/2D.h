@@ -36,6 +36,7 @@ public:
 	Vector2(float x, float y);
 
 	static float GetDistance(Vector2 a, Vector2 b);
+	Vector2 Normalize();
 	std::string ToString();
 
 	// Casts
