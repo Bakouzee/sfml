@@ -28,6 +28,7 @@ int main()
 
 	std::list<Entity> entities;
 
+	// Window
 	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "ChronoSpacer");
@@ -56,11 +57,11 @@ int main()
 	score.setCharacterSize(20);
 	score.setPosition(middleScreen.x, 15);
 	// Initialise everything below
-	 
-	
+
+
 	// Game loop
 	while (window.isOpen()) {
-		//Réinitialise la couleur du player
+		//Rï¿½initialise la couleur du player
 		player.setFillColor(playerColor.primary);
 		player.setOutlineColor(playerColor.secondary);
 
@@ -71,7 +72,7 @@ int main()
 
 		//float timeChangingColors = timer.getElapsedTime().asSeconds();
 		//if (timeChangingColors >= 3) {
-		//	ChangeColorForEverything(playerColor, //color des entités, idC);
+		//	ChangeColorForEverything(playerColor, //color des entitï¿½s, idC);
 		//}
 
 		//Score
@@ -79,7 +80,7 @@ int main()
 		float anim = animTimer.getElapsedTime().asSeconds();
 		//score.setOrigin(score.getString().getSize() / 2, score.getOrigin().y);
 		score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
-		
+
 		if (anim <= 1.5) {
 			score.setCharacterSize(score.getCharacterSize() + 1);
 		}
@@ -103,39 +104,33 @@ int main()
 				float speed = rand() % 25 + 50;
 				Vector2 dir = Vector2(cos(angle), sin(angle)) * speed;
 				bool primaryColor = rand() % 2 == 0;
-				entities.push_back(Entity(Vector2(400,300), dir, primaryColor, MinMax(5, 20)));
+				entities.push_back(Entity(middleScreen, dir, primaryColor, MinMax(5, 20)));
 			}
 
 		}
 		Deplacement(player, elapsedTime);
 
-		// Checks collision
-		std::vector<Entity*> touchingEntities;
-		if(CheckCollisions(middleScreen, 250, &entities, &touchingEntities))
-		{
-			// Do whattever you want to the entities touching stored in touchingEntities
-		}
-
-
 		window.clear();
 		// Whatever I want to draw goes here
-		DrawEntities(&entities, &window);
 
-		//Affichage score
-		window.draw(score);
+		// Entities gestion
+		std::vector<Entity*> touchingEntities;
+		HandleEntities(&entities, &window, middleScreen, 250, Vector2::FromSFVector2f(CoordPlayer(player, circleGame)),
+			20, elapsedTime.asSeconds(), &touchingEntities);
+			// Check if there is collider touching player
+		if(!touchingEntities.empty())
+		{
+			// Here le code en cas de collision entre une entitÃ© et un joueur
+		}
 
 		//Affichage Arthur
 		window.draw(circleGame);
 		window.draw(player);
-
 		//window.draw(affichage);
 
+		//Affichage score
+		window.draw(score);
+
 		window.display();
-
-		// Move entities
-		MoveEntities(&entities, elapsedTime.asSeconds());
-
-		// Destroy entities if too far
-		DestroyFarEntities(middleScreen, 250, &entities);
 	}
 }

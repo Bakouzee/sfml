@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <SFML/Graphics.hpp>
 
 struct Vector2
 {
@@ -36,6 +37,11 @@ public:
 
 	static float GetDistance(Vector2 a, Vector2 b);
 	std::string ToString();
+
+	// Casts
+	static Vector2 FromSFVector2f(sf::Vector2f vec2f);
+	static sf::Vector2f ToSFVector2f(Vector2 vec);
+	sf::Vector2f ToSFVector2f();
 }; 
 
 // std::ostream.operator<< variant working with Vector2
