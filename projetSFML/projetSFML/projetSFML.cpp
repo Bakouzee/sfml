@@ -34,9 +34,9 @@ int main()
 	//bool isAnimating = false;
 
 	// Window
-	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
-	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole");
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
@@ -52,6 +52,7 @@ int main()
 	//Actuel Player
 	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
 	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
+	Player playerCollide;
 
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
@@ -79,7 +80,7 @@ int main()
 	//sf::Clock timer;
 
 	//Bonus
-	sf::CircleShape bonus = BonusCrea(circleGame);
+	sf::CircleShape bonus;
 	sf::CircleShape newBonus;
 
 	//Score
@@ -162,11 +163,25 @@ int main()
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
 				playerColor = ChangeSide(playerColor, 1);
+				//bonus pour 2j
+				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+				if (distancePlayers <= 180.f) {
+					bonus.setRotation(distancePlayers - 180.f);
+				}
+				else {
+					bonus.setRotation(distancePlayers + 180.f);
+				}
+				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
 				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 				playerColor2 = ChangeSide(playerColor2, 2);
-				newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+				//bonus pour 1J
+				bonus = BonusCrea1J(playerOne.player, circleGame);
+				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
+
+				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
@@ -196,8 +211,9 @@ int main()
 			isShowed = false;
 		}
 		if (isShowed) {
-			window.draw(newBonus);
+			window.draw(bonus);
 		}
+
 
 
 		// Entities gestion
