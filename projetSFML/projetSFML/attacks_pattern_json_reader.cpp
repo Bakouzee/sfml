@@ -1,10 +1,21 @@
+//#define BUILD
 #include "attacks_pattern_json_reader.h"
 
 std::vector<AttackPattern> GetAllAttacks()
 {
 	std::vector<AttackPattern> results;
 
-	std::ifstream reader(getAssetPath() + "attacks.json");
+	std::ifstream reader(
+#ifdef BUILD
+		getAppPath()
+#endif
+#ifndef BUILD
+		getWorkingDir()
+#endif
+		+ "attacks.json"
+	);
+
+	std::cout << getWorkingDir() << std::endl;
 	json j;
 	reader >> j;
 	reader.close();
