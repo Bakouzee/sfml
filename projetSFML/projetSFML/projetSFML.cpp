@@ -40,6 +40,11 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
+	float comboJ1 = 1.f;
+	float comboJ2 = 1.f;
+	float scoreJ1 = 0.f;
+	float scoreJ2 = 0.f;
+
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -68,6 +73,9 @@ int main()
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
 	sf::Clock timerColorChange;
+	sf::Clock timerComboJ1;
+	sf::Clock timerComboJ2;
+
 	//sf::Clock timer;
 
 	//Bonus
@@ -98,11 +106,11 @@ int main()
 		sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
 		if(playerOne.actualLife > 0)
 		{
-			SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1);
+			scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
 		}
 		if (playerTwo.actualLife > 0)
 		{
-			SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2);
+			scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
 		}
 
 		// Black hole gestion
@@ -213,6 +221,14 @@ int main()
 				{
 					DestroyEntity(entite, &entities);
 					takeDamage = true;
+					comboJ1 = 0.f;
+				}
+				else {
+					comboJ1 += 0.3f;
+					timerComboJ1.restart();
+					if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
+						comboJ1 = 0.f;
+					}
 				}
 			}
 			if (takeDamage) setLife(playerOne, -1, scorePlayerOne);
@@ -229,6 +245,14 @@ int main()
 				{
 					DestroyEntity(entite, &entities);
 					takeDamage = true;
+					comboJ2 = 0.f;
+				}
+				else {
+					comboJ2 += 0.3f;
+					timerComboJ2.restart();
+					if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
+						comboJ2 = 0.f;
+					}
 				}
 			}
 			if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);

@@ -27,7 +27,7 @@ sf::CircleShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
 
 sf::Text SetText(int numberPlayer, float screenResolutionX);
-void SetScore(float actualTime, sf::Text& actualText, int numberPlayer);
+float SetScore(float actualTime, sf::Text& actualText, int numberPlayer, float combo, float score);
 
 
 ////PURE TESTING POUR AFFICHER LES COORD // A METTRE DANS LE MAIN SI BESOIN
