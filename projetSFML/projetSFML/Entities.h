@@ -35,10 +35,10 @@ public:
 	bool primaryColor;
 
 	MinMax radiusMinMax;
-	float currentRadius;
-	void CalculateCurrantRadius(Vector2& gameCenter, float& gameRadius);
+	float currentPixelRadius;
+	void UpdateCurrentPixelRadius(Vector2& gameCenter, float& gameRadius);
 
-	void Move(float& deltaTime);
+	void Move(float& deltaTime, float gameRadius);
 
 	Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radius);
 

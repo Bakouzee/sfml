@@ -10,8 +10,8 @@ struct Player
 };
 
 const float PI = 3.14159265358979323846;
-const float circleRadius = 250.0f;
-const float playerRadius = 15.0f;
+const float circleRadius = 425.0f;
+const float playerRadius = 25.0f;
 
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime);
 

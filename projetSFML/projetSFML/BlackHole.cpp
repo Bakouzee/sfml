@@ -77,32 +77,41 @@ AttackPattern::AttackPattern(int waveCount, float radWaveOffset, float waveDurat
 }
 
 
-BlackHole::BlackHole(Vector2 pos, float timeBetweenAttacks, std::list<AttackPattern>& attacks)
+BlackHole::BlackHole(Vector2 pos, float timeBetweenAttacks)
 {
 	this->position = new Vector2(pos.x, pos.y);
-	possibleAttacks = attacks;
 
 	attackTimer = 0;
 	this->timeBetweenAttacks = timeBetweenAttacks;
 
-	currentAttackPtr = &(possibleAttacks.front());
+	currentAttackPtr = GetRandomAttack();
 }
 
 void BlackHole::LaunchNewAttack(std::list<Entity>* entitiesPtr)
 {
-	int newAttackIndex = rand() % possibleAttacks.size();
-	auto it = possibleAttacks.begin();
-	for (int i = 0; i < possibleAttacks.size(); ++i)
-	{
-		if(newAttackIndex == i)
-		{
-			currentAttackPtr = &(*it);
-		}
-		else it++;
-	}
+	// Choose new attack and reset it
+	currentAttackPtr = GetRandomAttack();
 
+	// Set attack timer
 	attackTimer = currentAttackPtr->GetAttackDuration() + timeBetweenAttacks;
+
 	currentAttackPtr->Reset();
 
+	// Spawn first wave
 	currentAttackPtr->SpawnWave(0, *position, entitiesPtr);
+}
+
+
+AttackPattern allAttacks[] = {
+	AttackPattern(5, PI / 4, 0.05f, 4, 1.5f, stdRadius, primaryColorParam),
+	AttackPattern(4, 0, 0.2f, 5, 1.25f, stdRadius, primaryColorParam),
+	AttackPattern(4, -1, 0.2f, 5, 1.25f, stdRadius, secondaryColorParam),
+	AttackPattern(4, PI / 4, 0.2f, 5, 0.9f, littleRadius, mixedColorParam),
+	AttackPattern(8, 0, 0.2f, 10, 0.9f, littleRadius, primaryColorParam),
+	AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
+	AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
+};
+AttackPattern* GetRandomAttack()
+{
+	return &allAttacks[rand() % (sizeof(allAttacks) / sizeof(AttackPattern))];
 }

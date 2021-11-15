@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D.h" />
+    <ClInclude Include="BlackHole.h" />
     <ClInclude Include="Entities.h" />
   </ItemGroup>
   <ItemGroup>

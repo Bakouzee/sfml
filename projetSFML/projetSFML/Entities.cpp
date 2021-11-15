@@ -34,10 +34,9 @@ void Entity::ResetSpeed()
 	currentSpeed = normalSpeed;
 }
 
-void Entity::Move(float& deltaTime)
+void Entity::Move(float& deltaTime, float gameRadius)
 {
-	
-	*position += *direction * currentSpeed * deltaTime;
+	*position += *direction * currentSpeed * gameRadius * deltaTime;
 }
 
 Entity::Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radiusMinMax)
@@ -53,12 +52,12 @@ Entity::Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax 
 	this->primaryColor = primaryColor;
 
 	this->radiusMinMax = MinMax(radiusMinMax.min, radiusMinMax.max);
-	this->currentRadius = this->radiusMinMax.min;
+	this->currentPixelRadius = this->radiusMinMax.min;
 }
 
 std::string Entity::to_string()
 {
-	return "Entity = { pos: " + position->ToString() + "; dir = " + direction->ToString() + "; primaryColor: " + std::to_string(primaryColor) + "currentRadius: " + std::to_string(currentRadius) + " }";
+	return "Entity = { pos: " + position->ToString() + "; dir = " + direction->ToString() + "; primaryColor: " + std::to_string(primaryColor) + "currentRadius: " + std::to_string(currentPixelRadius) + " }";
 }
 
 
@@ -150,16 +149,18 @@ std::string Entity::to_string()
 //}
 #pragma endregion
 
-void Entity::CalculateCurrantRadius(Vector2& gameCenter, float& gameRadius)
+void Entity::UpdateCurrentPixelRadius(Vector2& gameCenter, float& gameRadius)
 {
 	float t = std::min(gameRadius, Vector2::GetDistance(*position, gameCenter)) / gameRadius;
 
-	if (t >= 1) currentRadius = radiusMinMax.max;
-	else currentRadius = radiusMinMax.min + (radiusMinMax.max - radiusMinMax.min) * t;
+	if (t >= 1) currentPixelRadius = radiusMinMax.max;
+	else currentPixelRadius = radiusMinMax.min + (radiusMinMax.max - radiusMinMax.min) * t;
+
+	currentPixelRadius *= gameCenter.x * 2 / 1920;
 }
 void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors)
 {
-	float entityRadius = entityPtr->currentRadius;
+	float entityRadius = entityPtr->currentPixelRadius;
 
 	// Set circle shape
 	sf::CircleShape circle(entityRadius);
@@ -190,14 +191,14 @@ void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr)
 		else it++;
 	}
 }
-void MoveEntity(Entity* entityPtr, float deltaTime)
+void MoveEntity(Entity* entityPtr, float deltaTime, float gameRadius)
 {
 	if (entityPtr->direction->IsZero()) return;
-	entityPtr->Move(deltaTime);
+	entityPtr->Move(deltaTime, gameRadius);
 }
 bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius)
 {
-	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentRadius;
+	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentPixelRadius;
 }
 
 void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
@@ -210,8 +211,8 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 	{
 		Entity* entityPtr = &(*it);
 
-		// Set Entity current radius
-		entityPtr->CalculateCurrantRadius(gameCenter, gameRadius);
+		// Update entity pixel radius
+		entityPtr->UpdateCurrentPixelRadius(gameCenter, gameRadius);
 
 		// Draw entity
 		DrawEntity(entityPtr, windowPtr, colors);
@@ -224,12 +225,12 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 			//std::cout << *(entityPtr->position) << " " << gameCenter << "too far so destroyed: " << Vector2::GetDistance(*entityPtr->position, gameCenter)  << std::endl;
 			it = entities->erase(it);
 		}
-		else
+		
+		else // Continue entity update
 		{
-			// Continue entity update
 
 			// Move entity
-			MoveEntity(entityPtr, deltaTime);
+			MoveEntity(entityPtr, deltaTime, gameRadius);
 
 			// Check if entity enter in collision with player 1
 			if(IsInCollisionWithPlayer(entityPtr, player1Pos, playerRadius))

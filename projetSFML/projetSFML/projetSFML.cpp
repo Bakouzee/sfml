@@ -8,6 +8,8 @@
 #include "Bonus.h"
 
 #include "Arthur.h"
+#include "2D.h"
+#include "Entities.h"
 #include "BlackHole.h"
 
 std::string getAppPath() {
@@ -32,9 +34,9 @@ int main()
 	//bool isAnimating = false;
 
 	// Window
-	Vector2 screenResolution(1080, 720);
+	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
-	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole");
+	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
@@ -81,20 +83,8 @@ int main()
 	scorePlayerTwoText.setFont(arial);
 
 	//Initialize balck holes and attacks
-		// Creat possible attacks
-	std::list<AttackPattern> attacks;
-	ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
-	ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
-	ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
-	attacks.push_back(AttackPattern(5, PI/4, 0.05f, 4, 1.5 * circleRadius, MinMax(0.5, 15), primaryColorParam));
-	attacks.push_back(AttackPattern(4, 0, 0.2f, 5, 1.25 * circleRadius, MinMax(0.5, 15), primaryColorParam));
-	attacks.push_back(AttackPattern(4, -1, 0.2f, 5, 1.25 * circleRadius, MinMax(0.5, 15), secondaryColorParam));
-	attacks.push_back(AttackPattern(4, PI / 4, 0.2f, 5, 0.9 * circleRadius, MinMax(0.5, 15), mixedColorParam));
-	attacks.push_back(AttackPattern(8, 0, 0.2f, 10, 0.9 * circleRadius, MinMax(5, 10), primaryColorParam));
-	attacks.push_back(AttackPattern(6, PI / 16, 0.35f, 8, 0.9 * circleRadius, MinMax(0.5, 10), mixedColorParam));
-	attacks.push_back(AttackPattern(6, PI / 16, 0.35f, 8, 0.9 * circleRadius, MinMax(0.5, 10), mixedColorParam));
 		// Create black hole
-	BlackHole blackHole(middleScreen, 0.5f, attacks);
+	BlackHole blackHole(middleScreen, 0.5f);
 
 	// Game loop
 	while (window.isOpen()) {
@@ -205,7 +195,7 @@ int main()
 		// Entities gestion
 		std::vector<Entity*> touchingPlayer1;
 		std::vector<Entity*> touchingPlayer2;
-		HandleEntities(&entities, &window, middleScreen, 250, elapsedTime.asSeconds(),
+		HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
 			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
 			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
 			20,

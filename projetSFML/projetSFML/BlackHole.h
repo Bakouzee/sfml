@@ -4,9 +4,6 @@
 
 #include "Entities.h"
 
-/// <summary>
-/// How to use
-/// </summary>
 struct ColorsParameters
 {
 public:
@@ -23,6 +20,7 @@ public:
 	ColorsParameters(ColorType colorType, int step = 1);
 	ColorsParameters();
 };
+
 struct AttackPattern
 {
 private:
@@ -64,12 +62,19 @@ public:
 
 	AttackPattern* currentAttackPtr;
 
-	BlackHole(Vector2 pos, float timeBetweenAttacks, std::list<AttackPattern>& attacks);
+	BlackHole(Vector2 pos, float timeBetweenAttacks);
 
 	void LaunchNewAttack(std::list<Entity>* entitiesPtr);
 
 private:
-	std::list<AttackPattern> possibleAttacks;
-
 	float timeBetweenAttacks;
 };
+
+const ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
+const ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
+const ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
+
+const MinMax stdRadius(10, 30);
+const MinMax littleRadius(10, 15);
+
+AttackPattern* GetRandomAttack();
