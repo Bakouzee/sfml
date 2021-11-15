@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlackHole.cpp" />
     <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Deplacement.cpp" />
     <ClCompile Include="2D.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="projetSFML.cpp" />
+    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="SetupDeplacement.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D.h" />
-    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="BlackHole.h" />
     <ClInclude Include="Entities.h" />
   </ItemGroup>
   <ItemGroup>

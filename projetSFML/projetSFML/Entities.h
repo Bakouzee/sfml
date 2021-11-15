@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include "2D.h"
+#include "Colors.h"
 
 ///	How to use Entities:
 ///	Create a container of entities
@@ -32,11 +33,12 @@ public:
 	void ResetSpeed();
 
 	bool primaryColor;
-	// SetColors(newColors)
 
-	float GetRadius();
+	MinMax radiusMinMax;
+	float currentPixelRadius;
+	void UpdateCurrentPixelRadius(Vector2& gameCenter, float& gameRadius);
 
-	void Move(float& deltaTime);
+	void Move(float& deltaTime, float gameRadius);
 
 	Entity(Vector2 pos, Vector2 dir, float speed, bool primaryColor, MinMax radius);
 
@@ -44,8 +46,9 @@ public:
 
 private:
 	// Colors colors;
-	MinMax radius;
 	float normalSpeed;
+
+	Colors currentColors;
 };
 
 //std::ostream& operator<<(std::ostream& os, const Entity entity);
@@ -56,8 +59,11 @@ private:
 //void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr);
 //void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr);
 
-void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr);
+void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors);
 void MoveEntity(Entity* entityPtr, float deltaTime);
 bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius);
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr);
-void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, Vector2 playerPos, float playerRadius, float deltaTime, std::vector<Entity*>* entitiesTouchingPlayer);
+void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
+	Vector2 player1Pos, Vector2 player2Pos, float playerRadius,  
+	std::vector<Entity*>* entitiesTouchingPlayer1, std::vector<Entity*>* entitiesTouchingPlayer2,
+	Colors& colors);

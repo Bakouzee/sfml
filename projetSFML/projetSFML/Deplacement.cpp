@@ -3,17 +3,17 @@
 #include "Arthur.h"
 #include <iostream>
 
-void Deplacement(sf::CircleShape &player, sf::Time elapsedTime)
+void Deplacement(Player& actualPlayer, sf::Time elapsedTime)
 {
-	float speed = 200;
+	float speed = 100;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && actualPlayer.numberPlayer == 2) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && actualPlayer.numberPlayer == 1))
 	{
-		player.setRotation(player.getRotation() + 1 * elapsedTime.asSeconds() * speed);
+		actualPlayer.player.setRotation(actualPlayer.player.getRotation() + 1 * elapsedTime.asSeconds() * speed);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) && actualPlayer.numberPlayer == 2 || (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && actualPlayer.numberPlayer == 1))
 	{
-		player.setRotation(player.getRotation() - 1 * elapsedTime.asSeconds() * speed);
+		actualPlayer.player.setRotation(actualPlayer.player.getRotation() - 1 * elapsedTime.asSeconds() * speed);
 	}
 }
 
