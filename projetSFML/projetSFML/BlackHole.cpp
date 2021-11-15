@@ -21,7 +21,7 @@ float AttackPattern::GetAttackDuration()
 void AttackPattern::SpawnWave(int waveIndex, Vector2 spawnPos, std::list<Entity>* entitiesPtr)
 {
 	std::cout << waveIndex << std::endl;
-	float waveAngleOffset = waveIndex * radWaveOffset;
+	float waveAngleOffset = waveIndex * radWaveOffset + globalRadOffset;
 
 	// For each projectile of the wave
 	for (int i = 0; i < projectileNumber; ++i)
@@ -35,7 +35,7 @@ void AttackPattern::SpawnWave(int waveIndex, Vector2 spawnPos, std::list<Entity>
 		// Set color
 		bool primaryColor = true;
 		if (colorsParam.colorType == ColorsParameters::ColorType::Secondary) primaryColor = false;
-		else if(colorsParam.colorType == ColorsParameters::ColorType::Mixed)
+		else if (colorsParam.colorType == ColorsParameters::ColorType::Mixed)
 		{
 			primaryColor = i % (colorsParam.step * 2) < colorsParam.step;
 		}
@@ -55,16 +55,17 @@ bool AttackPattern::IsFinished()
 
 void AttackPattern::SpawnWaveIfFinished(Vector2 spawnPos, std::list<Entity>* entitiesPtr)
 {
-	if(IsFinished())
+	if (IsFinished())
 	{
 		SpawnWave(currentWave, spawnPos, entitiesPtr);
 	}
 }
 
-AttackPattern::AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, 
+AttackPattern::AttackPattern(int waveCount, float globalRadOffset, float radWaveOffset, float waveDuration, int projectileNumber,
 	float projectileSpeed, MinMax projRadiusMinMax, ColorsParameters colorsParam)
 {
 	this->waveCount = waveCount;
+	this->globalRadOffset = globalRadOffset;
 	this->radWaveOffset = radWaveOffset;
 	this->waveDuration = waveDuration;
 	this->projectileNumber = projectileNumber;
@@ -77,20 +78,28 @@ AttackPattern::AttackPattern(int waveCount, float radWaveOffset, float waveDurat
 }
 
 
-BlackHole::BlackHole(Vector2 pos, float timeBetweenAttacks)
+void BlackHole::ChooseRandomAttack()
+{
+	currentAttackPtr = &possibleAttacks->at(rand() % numberOfAttack);
+}
+
+BlackHole::BlackHole(Vector2 pos, float timeBetweenAttacks, std::vector<AttackPattern>* possibleAttacks)
 {
 	this->position = new Vector2(pos.x, pos.y);
 
 	attackTimer = 0;
 	this->timeBetweenAttacks = timeBetweenAttacks;
 
-	currentAttackPtr = GetRandomAttack();
+	// Attacks
+	this->numberOfAttack = possibleAttacks->size();
+	this->possibleAttacks = possibleAttacks;
+	ChooseRandomAttack();
 }
 
 void BlackHole::LaunchNewAttack(std::list<Entity>* entitiesPtr)
 {
 	// Choose new attack and reset it
-	currentAttackPtr = GetRandomAttack();
+	ChooseRandomAttack();
 
 	// Set attack timer
 	attackTimer = currentAttackPtr->GetAttackDuration() + timeBetweenAttacks;
@@ -101,17 +110,55 @@ void BlackHole::LaunchNewAttack(std::list<Entity>* entitiesPtr)
 	currentAttackPtr->SpawnWave(0, *position, entitiesPtr);
 }
 
+#pragma region All Attacks pattern definition
 
+// Colors parameters
+ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
+ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
+ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
+
+// Radius
+MinMax stdRadius(10, 30);
+MinMax littleRadius(10, 15);
+
+// All Attacks
+/// AttackPattern( nombre de waves, rotation par wave en radians, durée d'une wave,
+/// nombre de projectile dans une wave, vitesse des projectiles, MinMax du radius des proj,
+/// Paramètres de couleurs (primary/secondary/mixed) )
 AttackPattern allAttacks[] = {
-	AttackPattern(5, PI / 4, 0.05f, 4, 1.5f, stdRadius, primaryColorParam),
-	AttackPattern(4, 0, 0.2f, 5, 1.25f, stdRadius, primaryColorParam),
-	AttackPattern(4, -1, 0.2f, 5, 1.25f, stdRadius, secondaryColorParam),
-	AttackPattern(4, PI / 4, 0.2f, 5, 0.9f, littleRadius, mixedColorParam),
-	AttackPattern(8, 0, 0.2f, 10, 0.9f, littleRadius, primaryColorParam),
-	AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
-	AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
+	// Star pattern
+	AttackPattern(
+		5, // Wave count
+		0, // Start rotation
+		0, // Rotation per wave
+		0.05f, // Wave duration (time before next wave)
+		8, // Number of proj in a wave
+		1.5f, // Proj speed
+		stdRadius, // Min Max proj radius
+		primaryColorParam // Proj colors parameters
+	),
+
+	// Star pattern
+	AttackPattern(
+		5,
+		0,
+		PI / 4, 
+		0.2f, 
+		4, 
+		1.0f, 
+		stdRadius, 
+		primaryColorParam 
+	)
+
+	//AttackPattern(4, 0, 0.2f, 5, 1.25f, stdRadius, primaryColorParam),
+	//AttackPattern(4, -1, 0.2f, 5, 1.25f, stdRadius, secondaryColorParam),
+	//AttackPattern(4, PI / 4, 0.2f, 5, 0.9f, littleRadius, mixedColorParam),
+	//AttackPattern(8, 0, 0.2f, 10, 0.9f, littleRadius, primaryColorParam),
+	//AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
+	//AttackPattern(6, PI / 16, 0.35f, 8, 0.9f, littleRadius, mixedColorParam),
 };
-AttackPattern* GetRandomAttack()
+#pragma endregion
+void GetRandomAttack()
 {
-	return &allAttacks[rand() % (sizeof(allAttacks) / sizeof(AttackPattern))];
+	 
 }

@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../external/SFML-2.5.1/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\json-master\single_include;../external/SFML-2.5.1/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="attacks_pattern_json_reader.cpp" />
     <ClCompile Include="BlackHole.cpp" />
     <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Deplacement.cpp" />
@@ -165,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D.h" />
+    <ClInclude Include="attacks_pattern_json_reader.h" />
     <ClInclude Include="BlackHole.h" />
     <ClInclude Include="Entities.h" />
   </ItemGroup>
