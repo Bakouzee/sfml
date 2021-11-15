@@ -172,18 +172,16 @@ int main()
 				else {
 					bonus.setRotation(distancePlayers + 180.f);
 				}
-				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
-				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, isShowed, timerBonus);
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 				playerColor2 = ChangeSide(playerColor2, 2);
-				//bonus pour 1J
+				//bonus pour 1j
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, isShowed, timerBonus);
 
-				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
-			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+			else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
 				float angle = rand();
 				float speed = rand() % 25 + 50;
@@ -195,6 +193,25 @@ int main()
 			{
 				setLife(playerOne, 1);
 			}*/
+		}
+		
+		/*if (Vector2::GetDistance(Vector2::FromSFVector2f(playerOne.player.getPosition()), Vector2::FromSFVector2f(bonus.getPosition())) == 0) {
+			std::cout << "hit" << std::endl;
+			setLife(playerOne, 1, timerBonus);
+			isShowed = false;
+		}*/
+
+
+		//Distance à calculer entre la position du joueur et la position du bonus!!!!
+		if (bonus.getFillColor() == sf::Color::Red && ((int)playerOne.player.getRotation() - (int)bonus.getRotation()) <= 5) {
+			std::cout << "hit" << std::endl;
+			setLife(playerOne, 1, timerBonus);
+			isShowed = false;
+		}
+		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
+			std::cout << "hit" << std::endl;
+			setLife(playerTwo, 1, timerBonus);
+			isShowed = false;
 		}
 
 		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
