@@ -20,7 +20,7 @@ float AttackPattern::GetAttackDuration()
 
 void AttackPattern::SpawnWave(int waveIndex, Vector2 spawnPos, std::list<Entity>* entitiesPtr)
 {
-	std::cout << waveIndex << std::endl;
+	//std::cout << waveIndex << std::endl;
 	float waveAngleOffset = waveIndex * radWaveOffset + globalRadOffset;
 
 	// For each projectile of the wave

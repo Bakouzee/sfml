@@ -8,10 +8,10 @@ void ChangeColorForEverything(Colors& colorsPlayer, Colors& colorsPlayer2, Color
 	randomColor = rand() % 6 + 1;
 	while (randomColor % 2 == 0 || randomColor == colorApplied) {
 		randomColor = rand() % 6 + 1;
-		std::cout << "Nope!" << std::endl;
+		//std::cout << "Nope!" << std::endl;
 	}
-	std::cout << "Yes!" << std::endl;
-	std::cout << randomColor << std::endl;
+	//std::cout << "Yes!" << std::endl;
+	//std::cout << randomColor << std::endl;
 
 
 	// On applique la nouvelle couleur

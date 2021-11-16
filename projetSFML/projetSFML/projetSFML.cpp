@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 
+#include "AudioManager.h"
 #include "Colors.h"
 #include "Bonus.h"
 
@@ -23,16 +24,7 @@ int main()
 {
 	std::cout << std::boolalpha;
 
-	// Declare a new music
-	sf::Music music;
-	if (!music.openFromFile(getAssetPath() + "test.wav"))
-	{
-		// Error
-		std::cout << "Music not loaded blablabla";
-		return -1;
-	}
-	// Open it from an audio file
-	//music.play();
+	SetUpAudios();
 
 	std::list<Entity> entities;
 
@@ -236,6 +228,11 @@ int main()
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 					playerColor2 = ChangeSide(playerColor2, 2);
 					newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+				}
+				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
+
+					PlayHurtSound();
+
 				}
 				else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 				{

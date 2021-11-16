@@ -15,7 +15,6 @@ std::vector<AttackPattern> GetAllAttacks()
 		+ "attacks.json"
 	);
 
-	std::cout << getWorkingDir() << std::endl;
 	json j;
 	reader >> j;
 	reader.close();
@@ -23,9 +22,6 @@ std::vector<AttackPattern> GetAllAttacks()
 	for (const auto& attack : j["attacks"].items())
 	{
 		const auto& value = attack.value();
-
-		std::cout << attack.key() << " // " << attack.value() << std::endl;
-
 
 		MinMax radiusMinMax(value["radiusMin"], value["radiusMax"]);
 		ColorsParameters colorsParam;
