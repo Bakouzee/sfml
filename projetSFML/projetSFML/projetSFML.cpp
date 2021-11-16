@@ -33,7 +33,9 @@ int main()
 	// Window
 	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
-	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole"); //, sf::Style::Fullscreen
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Default, settings); //, sf::Style::Fullscreen
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
