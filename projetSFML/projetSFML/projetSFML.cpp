@@ -156,9 +156,7 @@ int main()
 				setChangeColor(J2Button, J2Text, color1, color2);
 				setChangeColor(quitButton, quitText, color1, color2);
 				timerColorChangeMenu.restart();
-			} 
-
-			affichage.setString(std::to_string(yolo.getString().getSize()));
+			}
 
 			window.clear();
 
