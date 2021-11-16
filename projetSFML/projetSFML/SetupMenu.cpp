@@ -25,6 +25,6 @@ void SetButton(sf::RectangleShape& button, sf::Vector2f positionButton, sf::Vect
 	textButton.setFillColor(colorText);
 	textButton.setCharacterSize(sizeText);
 	textButton.setString(texte);
-	textButton.setOrigin(textButton.getLocalBounds().width / 2, textButton.getLocalBounds().height / 2);
+	textButton.setOrigin(textButton.getGlobalBounds().width / 2, textButton.getGlobalBounds().height / 2 + 5);
 	textButton.setPosition(positionButton.x + (sizeButton.x / 2), positionButton.y + (sizeButton.y / 2));
 }

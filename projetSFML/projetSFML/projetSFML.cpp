@@ -28,7 +28,7 @@ int main()
 	// Window
 	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
-	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole"); //, sf::Style::Fullscreen
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
@@ -82,10 +82,21 @@ int main()
 
 
 	//GESTION DU MENU
-	sf::RectangleShape playButton;
-	sf::Text playText;
-	playText.setFont(arial);
-	SetButton(playButton, sf::Vector2f(200, 200), sf::Vector2f(400, 200), sf::Color(0, 100, 150), sf::Color(255, 255, 255), playText, "LANCE MOI CA", sf::Color(150, 150, 0), 20);
+	sf::RectangleShape J1Button;
+	sf::Text J1Text;
+	J1Text.setFont(arial);
+	SetButton(J1Button, sf::Vector2f(screenResolution.x / 2 - (screenResolution.x / 5 + screenResolution.x / 50), screenResolution.y / 2), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, J1Text, "1 Joueur", sf::Color::White, 30);
+
+	sf::RectangleShape J2Button;
+	sf::Text J2Text;
+	J2Text.setFont(arial);
+	SetButton(J2Button, sf::Vector2f(screenResolution.x / 2 + screenResolution.x / 50, screenResolution.y / 2), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, J2Text, "2 Joueurs", sf::Color::White, 30);
+	bool isPlayerTwo = false;
+
+	sf::RectangleShape quitButton;
+	sf::Text quitText;
+	quitText.setFont(arial);
+	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 10, screenResolution.y / 2 + screenResolution.y / 8 + screenResolution.y / 30), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, quitText, "Quitter", sf::Color::White, 50);
 
 
 	//PURE TESTING POUR AFFICHER LES COORD // A METTRE DANS LE MAIN SI BESOIN
@@ -108,12 +119,17 @@ int main()
 			sf::Event event;
 			while (window.pollEvent(event))
 			{
-				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
+				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || isButtonPressed(quitButton.getPosition(), quitButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
 					window.close();
 				}
-				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(playButton.getPosition(), playButton.getSize(), event.mouseButton.x, event.mouseButton.y))
+				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(J1Button.getPosition(), J1Button.getSize(), event.mouseButton.x, event.mouseButton.y))
 				{
 					setGameState(GameState::JEU);
+				}
+				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(J2Button.getPosition(), J2Button.getSize(), event.mouseButton.x, event.mouseButton.y))
+				{
+					setGameState(GameState::JEU);
+					isPlayerTwo = true;
 				}
 			}
 
@@ -122,8 +138,12 @@ int main()
 			window.clear();
 
 			//Affichage Arthur
-			window.draw(playButton);
-			window.draw(playText);
+			window.draw(J1Button);
+			window.draw(J2Button);
+			window.draw(quitButton);
+			window.draw(J1Text);
+			window.draw(J2Text);
+			window.draw(quitText);
 
 			window.display();
 		}
@@ -132,8 +152,11 @@ int main()
 			//R�initialise la couleur du player
 			playerOne.player.setFillColor(playerColor.primary);
 			playerOne.player.setOutlineColor(playerColor.secondary);
-			playerTwo.player.setFillColor(playerColor2.primary);
-			playerTwo.player.setOutlineColor(playerColor2.secondary);
+			if(isPlayerTwo)
+			{
+				playerTwo.player.setFillColor(playerColor2.primary);
+				playerTwo.player.setOutlineColor(playerColor2.secondary);
+			}
 
 			// Clock
 			sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
@@ -141,7 +164,7 @@ int main()
 			{
 				SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1);
 			}
-			if (playerTwo.actualLife > 0)
+			if (playerTwo.actualLife > 0 && isPlayerTwo)
 			{
 				SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2);
 			}
@@ -209,14 +232,10 @@ int main()
 					bool primaryColor = rand() % 2 == 0;
 					entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
 				}
-				/*else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-				{
-					setLife(playerOne, 1);
-				}*/
 			}
 
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
-			if(playerTwo.actualLife > 0) Deplacement(playerTwo, elapsedTime);
+			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
 
 			//Deplacement(bonus, elapsedTime);
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
@@ -277,17 +296,19 @@ int main()
 			//Affichage Arthur
 			window.draw(circleGame);
 			if(playerOne.actualLife > 0) window.draw(playerOne.player);
-			if(playerTwo.actualLife > 0) window.draw(playerTwo.player);
+			if(playerTwo.actualLife > 0 && isPlayerTwo) window.draw(playerTwo.player);
 
 			for (int i = 0; i < 3; i++)
 			{
 				window.draw(playerOne.tabLifeCircle[i]);
-				window.draw(playerTwo.tabLifeCircle[i]);
+				if (isPlayerTwo)
+					window.draw(playerTwo.tabLifeCircle[i]);
 			}
 
 			//Affichage score
 			window.draw(scorePlayerOneText);
-			window.draw(scorePlayerTwoText);
+			if (isPlayerTwo)
+				window.draw(scorePlayerTwoText);
 
 			window.display();
 
