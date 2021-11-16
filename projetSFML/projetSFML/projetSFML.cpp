@@ -1,16 +1,18 @@
+#include <SFML/Graphics.hpp>
+#include "windows.h"
+#include <iostream>
+#include <list>
+#include <vector>
+
 #include "Colors.h"
-#include "Bonus.h"
-#include "Gamefeel.h"
 
 #include "Arthur.h"
 #include "2D.h"
 #include "Entities.h"
 #include "BlackHole.h"
 
-#include "windows.h"
-#include <iostream>
-#include <list>
-#include <vector>
+#include "Bonus.h"
+#include "Gamefeel.h"
 
 
 

@@ -1,5 +1,6 @@
 #pragma once
-#include "Arthur.h"
 #include <SFML/Graphics.hpp>
+#include "Arthur.h"
+
 
 void InitializeArray(float middleScreenX, float middleScreenY);
