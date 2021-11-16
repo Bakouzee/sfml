@@ -1,3 +1,4 @@
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "windows.h"
 #include <iostream>
@@ -17,9 +18,21 @@
 
 #include "attacks_pattern_json_reader.h"
 
+
 int main()
 {
 	std::cout << std::boolalpha;
+
+	// Declare a new music
+	sf::Music music;
+	if (!music.openFromFile(getAssetPath() + "test.wav"))
+	{
+		// Error
+		std::cout << "Music not loaded blablabla";
+		return -1;
+	}
+	// Open it from an audio file
+	//music.play();
 
 	std::list<Entity> entities;
 
