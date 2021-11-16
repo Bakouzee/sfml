@@ -151,6 +151,7 @@
     <ClCompile Include="2D.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="Gamefeel.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="projetSFML.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arthur.h" />
+    <ClInclude Include="Gamefeel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D.h" />

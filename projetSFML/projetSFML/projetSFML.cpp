@@ -1,16 +1,18 @@
-#include <SFML/Graphics.hpp>
-#include "windows.h"
-#include <iostream>
-#include <list>
-#include <vector>
-
 #include "Colors.h"
 #include "Bonus.h"
+#include "Gamefeel.h"
 
 #include "Arthur.h"
 #include "2D.h"
 #include "Entities.h"
 #include "BlackHole.h"
+
+#include "windows.h"
+#include <iostream>
+#include <list>
+#include <vector>
+
+
 
 std::string getAppPath() {
 	char cExeFilePath[256];
@@ -66,6 +68,19 @@ int main()
 	//Point de vie Affichage
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
 	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
+
+	//Gamefeel
+	//sf::VertexArray tabGradient(sf::LinesStrip, 360);
+	int x = middleScreen.x - circleRadius;
+	int y = middleScreen.y;
+	bool arcHG = false;
+	bool arcHD = false;
+	bool arcBD = false;
+	bool arcBG = false;
+
+	
+
+
 
 	//Clock
 	sf::Clock clock;
@@ -197,6 +212,19 @@ int main()
 			}*/
 		}
 
+
+		//Distance à calculer entre la position du joueur et la position du bonus!!!!
+		if (bonus.getFillColor() == sf::Color::Red && ((int)playerOne.player.getRotation() - (int)bonus.getRotation()) <= 5) {
+			std::cout << "hit" << std::endl;
+			setLife(playerOne, 1, timerBonus);
+			isShowed = false;
+		}
+		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
+			std::cout << "hit" << std::endl;
+			setLife(playerTwo, 1, timerBonus);
+			isShowed = false;
+		}
+
 		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 		if(playerTwo.actualLife > 0) Deplacement(playerTwo, elapsedTime);
 
@@ -285,10 +313,69 @@ int main()
 			window.draw(playerTwo.tabLifeCircle[i]);
 		}
 
+		//Gamefeel
+		for (int i = 0; i < 360; i++) {
+			sf::Vertex vertexCenter;
+			vertexCenter.position = sf::Vector2f(middleScreen.x, middleScreen.y);
+			vertexCenter.color = sf::Color::Black;
+
+			sf::Vertex vertexCircle;
+			vertexCircle.position = sf::Vector2f(x, y);
+			vertexCircle.color = sf::Color::Red;
+
+			sf::VertexArray line(sf::LineStrip, 2);
+			line[0].position = vertexCenter.position;
+			line[0].color = vertexCenter.color;
+			line[1].position = vertexCircle.position;
+			line[1].color = vertexCircle.color;
+
+			window.draw(line);
+
+			if (x == middleScreen.x - circleRadius && y == middleScreen.y) {
+				arcHG = true;
+				arcHD = false;
+				arcBD = false;
+				arcBG = false;
+			}
+			if (arcHG) {
+				x += 1;
+				y -= 1;
+			}
+			if (x == middleScreen.x && y == middleScreen.y - circleRadius) {
+				arcHG = false;
+				arcHD = true;
+				arcBD = false;
+				arcBG = false;
+			}
+			if (arcHD) {
+				x += 1;
+				y += 1;
+			}
+			if (x == middleScreen.x + circleRadius && y == middleScreen.y) {
+				arcHG = false;
+				arcHD = false;
+				arcBD = true;
+				arcBG = false;
+			}
+			if (arcBD) {
+				x -= 1;
+				y += 1;
+			}
+			if (x == middleScreen.x && y == middleScreen.y + circleRadius) {
+				arcHG = false;
+				arcHD = false;
+				arcBD = false;
+				arcBG = true;
+			}
+			if (arcBG) {
+				x -= 1;
+				y -= 1;
+			}
+		}
+
 		//Affichage score
 		window.draw(scorePlayerOneText);
 		window.draw(scorePlayerTwoText);
-
 		window.display();
 	}
 }
