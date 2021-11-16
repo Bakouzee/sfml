@@ -26,6 +26,8 @@ GameState getState();
 //SetupMenu.cpp
 bool isButtonPressed(sf::Vector2f position, sf::Vector2f size, int mousePositionX, int mousePositionY);
 void SetButton(sf::RectangleShape& button, sf::Vector2f positionButton, sf::Vector2f sizeButton, sf::Color colorButton, sf::Color colorButtonThick, sf::Text& textButton, sf::String texte, sf::Color colorText, int sizeText);
+void changeColor(int& actualColor, sf::Color& color1, sf::Color& color2);
+void setChangeColor(sf::RectangleShape& button, sf::Text& textButton, sf::Color color1, sf::Color color2);
 
 //Deplacement.cpp
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime);

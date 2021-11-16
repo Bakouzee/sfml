@@ -28,3 +28,34 @@ void SetButton(sf::RectangleShape& button, sf::Vector2f positionButton, sf::Vect
 	textButton.setOrigin(textButton.getGlobalBounds().width / 2, textButton.getGlobalBounds().height / 2 + 5);
 	textButton.setPosition(positionButton.x + (sizeButton.x / 2), positionButton.y + (sizeButton.y / 2));
 }
+
+void changeColor(int& actualColor, sf::Color& color1, sf::Color& color2)
+{
+	actualColor++;
+
+	switch(actualColor)
+	{
+	case 1 :
+		color1 = sf::Color::Black;
+		color2 = sf::Color::White;
+		break;
+	case 2:
+		color1 = sf::Color::Green;
+		color2 = sf::Color::Red;
+		break;
+	case 3:
+		color1 = sf::Color::Blue;
+		color2 = sf::Color::Yellow;
+		actualColor = 0;
+		break;
+	default:
+		break;
+	}
+}
+
+void setChangeColor(sf::RectangleShape& button, sf::Text& textButton, sf::Color color1, sf::Color color2)
+{
+	button.setFillColor(color1);
+	button.setOutlineColor(color2);
+	textButton.setFillColor(color2);
+}

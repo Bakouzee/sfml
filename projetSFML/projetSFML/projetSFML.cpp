@@ -56,6 +56,7 @@ int main()
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
 	sf::Clock timerColorChange;
+	sf::Clock timerColorChangeMenu;
 	//sf::Clock timer;
 
 	//Bonus
@@ -76,34 +77,38 @@ int main()
 
 
 	//GESTION DU MENU
+	int actualColor = 1;
+
+	sf::Font titlefont;
+	titlefont.loadFromFile(getAssetPath() + "\\TitreFont.otf");
+	sf::Text titleText;
+	titleText.setFont(titlefont);
+	titleText.setFillColor(sf::Color::Black);
+	titleText.setOutlineThickness(3);
+	titleText.setOutlineColor(sf::Color::White);
+	titleText.setCharacterSize(150);
+	titleText.setString("Mega Black Hole");
+	titleText.setOrigin(titleText.getGlobalBounds().width / 2, titleText.getGlobalBounds().height / 2 + 5);
+	titleText.setPosition(screenResolution.x / 2, screenResolution.y / 5);
+
+	float tailleButtonX = screenResolution.x / 8;
+	float tailleButtonY = screenResolution.y / 12;
+
 	sf::RectangleShape J1Button;
 	sf::Text J1Text;
-	J1Text.setFont(arial);
-	SetButton(J1Button, sf::Vector2f(screenResolution.x / 2 - (screenResolution.x / 5 + screenResolution.x / 50), screenResolution.y / 2), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, J1Text, "1 Joueur", sf::Color::White, 30);
+	J1Text.setFont(titlefont);
+	SetButton(J1Button, sf::Vector2f(screenResolution.x / 2 - (tailleButtonX + screenResolution.x / 50), screenResolution.y / 2), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, J1Text, "1 Player", sf::Color::White, 40);
 
 	sf::RectangleShape J2Button;
 	sf::Text J2Text;
-	J2Text.setFont(arial);
-	SetButton(J2Button, sf::Vector2f(screenResolution.x / 2 + screenResolution.x / 50, screenResolution.y / 2), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, J2Text, "2 Joueurs", sf::Color::White, 30);
+	J2Text.setFont(titlefont);
+	SetButton(J2Button, sf::Vector2f(screenResolution.x / 2 + screenResolution.x / 50, screenResolution.y / 2), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, J2Text, "2 Players", sf::Color::White, 40);
 	bool isPlayerTwo = false;
 
 	sf::RectangleShape quitButton;
 	sf::Text quitText;
-	quitText.setFont(arial);
-	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 10, screenResolution.y / 2 + screenResolution.y / 8 + screenResolution.y / 30), sf::Vector2f(screenResolution.x / 5, screenResolution.y / 8), sf::Color::Black, sf::Color::White, quitText, "Quitter", sf::Color::White, 50);
-
-
-	//PURE TESTING POUR AFFICHER LES COORD // A METTRE DANS LE MAIN SI BESOIN
-	sf::Font test;
-	test.loadFromFile(getAssetPath() + "PIXEAB__.TTF");
-	sf::Text affichage;
-	affichage.setFont(test);
-	affichage.setPosition(100, 300);
-
-	sf::Text yolo;
-	yolo.setString("salutcava");
-	yolo.setFont(test);
-	yolo.setPosition(100, 300);
+	quitText.setFont(titlefont);
+	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, quitText, "Quit", sf::Color::White, 40);
 
 
 	// Game loop
@@ -127,11 +132,27 @@ int main()
 				}
 			}
 
+			if (timerColorChangeMenu.getElapsedTime().asSeconds() > 5)
+			{
+				sf::Color color1;
+				sf::Color color2;
+				changeColor(actualColor, color1, color2);
+
+				//titleText.setFillColor(color1);
+				//titleText.setOutlineColor(color2);
+
+				setChangeColor(J1Button, J1Text, color1, color2);
+				setChangeColor(J2Button, J2Text, color1, color2);
+				setChangeColor(quitButton, quitText, color1, color2);
+				timerColorChangeMenu.restart();
+			} 
+
 			affichage.setString(std::to_string(yolo.getString().getSize()));
 
 			window.clear();
 
 			//Affichage Arthur
+			window.draw(titleText);
 			window.draw(J1Button);
 			window.draw(J2Button);
 			window.draw(quitButton);
