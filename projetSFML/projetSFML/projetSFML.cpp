@@ -203,16 +203,29 @@ int main()
 
 
 		//Distance à calculer entre la position du joueur et la position du bonus!!!!
-		if (bonus.getFillColor() == sf::Color::Red && ((int)playerOne.player.getRotation() - (int)bonus.getRotation()) <= 5) {
-			std::cout << "hit" << std::endl;
+		sf::Vector2f coordPlayerOne = CoordPlayer(playerOne.player, circleGame);
+		sf::Vector2f coordBonus = CoordPlayer(bonus, circleGame);
+
+		float x = (coordPlayerOne.x - coordBonus.x * (coordPlayerOne.x - coordBonus.x));
+		float y = (coordPlayerOne.y - coordBonus.y) * (coordPlayerOne.y - coordBonus.y) + x;
+		float distBonusPlayer = sqrt(y);
+		std::cout << "Bonus : " << coordBonus.x << ", " << coordBonus.y << std::endl;
+
+		std::cout << "Player One : " << coordPlayerOne.x << ", " << coordPlayerOne.y << std::endl;
+
+		if (distBonusPlayer <= 0) {
 			setLife(playerOne, 1, timerBonus);
+			std::cout << "hit" << std::endl;
 			isShowed = false;
+		}
+
+		/*if (bonus.getFillColor() == sf::Color::Red && ((int)playerOne.player.getRotation() - (int)bonus.getRotation()) <= 5) {
 		}
 		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
 			std::cout << "hit" << std::endl;
 			setLife(playerTwo, 1, timerBonus);
 			isShowed = false;
-		}
+		}*/
 
 		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 		if(playerTwo.actualLife > 0) Deplacement(playerTwo, elapsedTime);
