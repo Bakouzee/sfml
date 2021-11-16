@@ -1,0 +1,30 @@
+{
+  "attacks":[
+    {
+      "name": "Croix simple",
+      "waveCount": 4,
+      "startRotation": 0,
+      "rotationPerWave": 10,
+      "timeBeforeNextWave": 0.05,
+      "projNumber": 4,
+      "projSpeed": 0.75,
+      "radiusMin": 10,
+      "radiusMax": 30,
+      "colors": "primary",
+      "colorsStep": 0
+    },
+    {
+      "name": "JSP",
+      "waveCount": 4,
+      "startRotation": 0,
+      "rotationPerWave": 10,
+      "timeBeforeNextWave": 0.05,
+      "projNumber": 5,
+      "projSpeed": 0.75,
+      "radiusMin": 10,
+      "radiusMax": 30,
+      "colors": "mixed",
+      "colorsStep": 1
+    }
+  ]
+}

@@ -1,9 +1,13 @@
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "windows.h"
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <vector>
+#include <string>
 
+#include "AudioManager.h"
 #include "Colors.h"
 #include "Bonus.h"
 
@@ -13,9 +17,14 @@
 #include "BlackHole.h"
 #include "AssetsPath.h"
 
+#include "attacks_pattern_json_reader.h"
+
+
 int main()
 {
 	std::cout << std::boolalpha;
+
+	SetUpAudios();
 
 	std::list<Entity> entities;
 
@@ -72,8 +81,10 @@ int main()
 	scorePlayerTwoText.setFont(arial);
 
 	//Initialize balck holes and attacks
+		// Create attack
+	std::vector<AttackPattern> results = GetAllAttacks();
 		// Create black hole
-	BlackHole blackHole(middleScreen, 0.5f);
+	BlackHole blackHole(middleScreen, 0.5f, &results);
 
 
 	//GESTION DU MENU
@@ -239,6 +250,11 @@ int main()
 					playerColor2 = ChangeSide(playerColor2, 2);
 					newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 				}
+				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
+
+					PlayHurtSound();
+
+				}
 				else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 				{
 					float angle = rand();
@@ -326,7 +342,7 @@ int main()
 				window.draw(scorePlayerTwoText);
 
 			window.display();
-				
+
 		}
 	}
 }
