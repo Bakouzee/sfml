@@ -31,6 +31,7 @@ std::string getAssetPath() {
 
 int main()
 {
+	int k = 0;
 	std::cout << std::boolalpha;
 
 	std::list<Entity> entities;
@@ -189,15 +190,12 @@ int main()
 					bonus.setRotation(distancePlayers + 180.f);
 				}
 				ChooseBonus(bonus, isShowed, timerBonus);
-				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 				playerColor2 = ChangeSide(playerColor2, 2);
 				//bonus pour 1J
 				bonus = BonusCrea1J(playerOne.player, circleGame);
 				ChooseBonus(bonus, isShowed, timerBonus);
-
-				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 			{
@@ -207,39 +205,32 @@ int main()
 				bool primaryColor = rand() % 2 == 0;
 				entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
 			}
-			/*else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-			{
-				setLife(playerOne, 1);
-			}*/
 		}
 
 
 		//Distance à calculer entre la position du joueur et la position du bonus!!!!
-		if (bonus.getFillColor() == sf::Color::Red){
-			
+		if (bonus.getFillColor() == sf::Color::Red) {
+
 			float rotationBonusMin = bonus.getRotation() - 5;
 			float rotationBonusMax = bonus.getRotation() + 5;
 
 			std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
 			std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
 			if (playerOne.player.getRotation() <= 180) {
-				std::cout << " - 180" << std::endl;
 				if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
-					std::cout << "hit" << std::endl;
+					k += 1;
+					std::cout << "K =  " <<  k << std::endl;
 					setLife(playerOne, 1, timerBonus);
 					isShowed = false;
 				}
 			}
-			else {
-
+			if (playerTwo.player.getRotation() <= 180) {
+				if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
+					std::cout << "hit" << std::endl;
+					setLife(playerTwo, 1, timerBonus);
+					isShowed = false;
+				}
 			}
-
-			
-		}
-		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
-			std::cout << "hit" << std::endl;
-			setLife(playerTwo, 1, timerBonus);
-			isShowed = false;
 		}
 
 		if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
