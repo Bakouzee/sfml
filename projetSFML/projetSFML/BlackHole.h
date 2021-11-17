@@ -25,6 +25,7 @@ struct AttackPattern
 {
 private:
 	int waveCount;
+	float globalRadOffset;
 	float radWaveOffset;
 	float waveDuration;
 
@@ -33,6 +34,12 @@ private:
 	MinMax projectileMinMaxRadius;
 
 	int currentWave;
+
+	struct RotationParameters
+	{
+		float initalRotation;
+		float rotationPerWave;
+	};
 
 public:
 	float GetAttackDuration();
@@ -43,7 +50,7 @@ public:
 	bool IsFinished();
 	void SpawnWaveIfFinished(Vector2 spawnPos, std::list<Entity>* entitiesPtr);
 
-	AttackPattern(int waveCount, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, MinMax projRadiusMinMax, ColorsParameters colorsParam);
+	AttackPattern(int waveCount, float globalRadOffset, float radWaveOffset, float waveDuration, int projectileNumber, float projectileSpeed, MinMax projRadiusMinMax, ColorsParameters colorsParam);
 
 	ColorsParameters colorsParam;
 
@@ -61,20 +68,15 @@ public:
 	float attackTimer;
 
 	AttackPattern* currentAttackPtr;
+	void ChooseRandomAttack();
 
-	BlackHole(Vector2 pos, float timeBetweenAttacks);
+	BlackHole(Vector2 pos, float timeBetweenAttacks, std::vector<AttackPattern>* possibleAttacks);
 
 	void LaunchNewAttack(std::list<Entity>* entitiesPtr);
 
 private:
 	float timeBetweenAttacks;
+
+	std::vector<AttackPattern>* possibleAttacks;
+	int numberOfAttack;
 };
-
-const ColorsParameters primaryColorParam(ColorsParameters::ColorType::Primary);
-const ColorsParameters secondaryColorParam(ColorsParameters::ColorType::Secondary);
-const ColorsParameters mixedColorParam(ColorsParameters::ColorType::Mixed, 1);
-
-const MinMax stdRadius(10, 30);
-const MinMax littleRadius(10, 15);
-
-AttackPattern* GetRandomAttack();

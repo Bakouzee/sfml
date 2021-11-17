@@ -18,15 +18,34 @@ void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer)
 	}
 }
 
-sf::CircleShape lifeCircle()
+sf::ConvexShape lifeCircle()
 {
+	sf::ConvexShape heart;
+	heart.setPointCount(242);
+	int o = 0;
+	for (float t = 0; t <= 60; t += 0.5f)
+	{
+		float x = -0.01f * (-pow(t, 2) + 40 * t + 1200) * sin(PI * t / 180);
+		float y = 0.01f * (-pow(t, 2) + 40 * t + 1200) * cos(PI * t / 180);
+
+		heart.setPoint(o, sf::Vector2f(x * 3, -y * 3));
+		o++;
+	}
+	for (float t = 60; t >= 0; t -= 0.5f)
+	{
+		float x = 0.01f * (-pow(t, 2) + 40 * t + 1200) * sin(PI * t / 180);
+		float y = 0.01f * (-pow(t, 2) + 40 * t + 1200) * cos(PI * t / 180);
+
+		heart.setPoint(o, sf::Vector2f(x * 3, -y * 3));
+		o++;
+	}
+
 	float circleLifeRadius = 20;
-	sf::CircleShape newLifeCircle(circleLifeRadius, 100);
-	newLifeCircle.setFillColor(sf::Color(180,0,0, 255));
-	newLifeCircle.setOutlineThickness(2);
-	newLifeCircle.setOutlineColor(sf::Color(255, 255, 255, 255));
-	newLifeCircle.setOrigin(circleLifeRadius, circleLifeRadius);
-	return newLifeCircle;
+	heart.setFillColor(sf::Color::Red);
+	heart.setOutlineThickness(2);
+	heart.setOutlineColor(sf::Color::White);
+	//newLifeCircle.setOrigin(circleLifeRadius, circleLifeRadius);
+	return heart;
 }
 
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX)
@@ -50,7 +69,7 @@ void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float s
 
 	for(int i = 0; i < 3; i++)
 	{
-		actualPlayer.tabLifeCircle[i].setPosition(posX, 100);
+		actualPlayer.tabLifeCircle[i].setPosition(posX, 120);
 		posX += multiplicateur * circleLifeRadius * 2 + offSet;
 	}
 }
