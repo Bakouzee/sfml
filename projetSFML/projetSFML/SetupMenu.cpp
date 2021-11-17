@@ -59,3 +59,14 @@ void setChangeColor(sf::RectangleShape& button, sf::Text& textButton, sf::Color 
 	button.setOutlineColor(color2);
 	textButton.setFillColor(color2);
 }
+
+void setTitle(sf::Text& titleText, sf::Vector2f screenResolution)
+{
+	titleText.setFillColor(sf::Color::Black);
+	titleText.setOutlineThickness(3);
+	titleText.setOutlineColor(sf::Color::White);
+	titleText.setCharacterSize(150);
+	titleText.setString("Mega Black Hole");
+	titleText.setOrigin(titleText.getGlobalBounds().width / 2, titleText.getGlobalBounds().height / 2 + 5);
+	titleText.setPosition(screenResolution.x / 2, screenResolution.y / 5);
+}
