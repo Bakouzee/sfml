@@ -14,7 +14,7 @@ std::string getAppPath() {
 }
 
 std::string getAssetPath() {
-	return getAppPath() + "Assets\\";
+	return getRelativePath() + "Assets\\";
 }
 
 std::string getWorkingDir()
