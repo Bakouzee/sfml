@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\external\json-master\single_include;../external/SFML-2.5.1/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../external/SFML-2.5.1/include;../external/json-master/single_include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\external\json-master\single_include;../external/SFML-2.5.1/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../external/SFML-2.5.1/include;../external/json-master/single_include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +153,7 @@
     <ClCompile Include="2D.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="Gamefeel.cpp" />
     <ClCompile Include="GetAssetsPath.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="projetSFML.cpp" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arthur.h" />
+    <ClInclude Include="Gamefeel.h" />
     <ClInclude Include="AssetsPath.h" />
   </ItemGroup>
   <ItemGroup>

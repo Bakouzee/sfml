@@ -18,8 +18,9 @@ sf::Text SetText(int numberPlayer, float screenResolutionX)
 	return actualText;
 }
 
-void SetScore(float actualTime, sf::Text& actualText, int numberPlayer)
+float SetScore(float actualTime, sf::Text& actualText, int numberPlayer, float combo, float score)
 {
-	float score = actualTime * actualTime * 100;
+	score += actualTime * actualTime * 10 * combo;
 	actualText.setString("Score J" + std::to_string(numberPlayer) + " : " + std::to_string((int)score));
+	return score;
 }
