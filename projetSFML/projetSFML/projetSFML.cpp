@@ -224,12 +224,16 @@ int main()
 			std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
 			if (playerOne.player.getRotation() <= 180) {
 				std::cout << " - 180" << std::endl;
-				if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMax) {
+				if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
 					std::cout << "hit" << std::endl;
 					setLife(playerOne, 1, timerBonus);
 					isShowed = false;
 				}
 			}
+			else {
+
+			}
+
 			
 		}
 		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
