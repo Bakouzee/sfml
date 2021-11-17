@@ -410,6 +410,7 @@ int main()
 						comboJ1 = 0.f;
 					} else {
 						comboJ1 += 0.3f;
+						DestroyEntity(entite, &entities);
 						timerComboJ1.restart();
 						if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
 							comboJ1 = 0.f;
@@ -433,6 +434,7 @@ int main()
 						comboJ2 = 0.f;
 					} else {
 						comboJ2 += 0.3f;
+						DestroyEntity(entite, &entities);
 						timerComboJ2.restart();
 						if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
 							comboJ2 = 0.f;
