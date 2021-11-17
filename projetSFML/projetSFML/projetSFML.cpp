@@ -20,7 +20,7 @@
 #include "Bonus.h"
 #include "Gamefeel.h"
 
-#include "attacks_pattern_json_reader.h"
+#include "file_reader.h"
 
 int main()
 {
