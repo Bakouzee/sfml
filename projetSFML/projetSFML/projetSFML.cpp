@@ -56,7 +56,6 @@ int main()
 	//Actuel Player
 	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
 	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
-	Player playerCollide;
 
 	//ColorID idC = ColorID::BLACK;
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
@@ -189,14 +188,14 @@ int main()
 				else {
 					bonus.setRotation(distancePlayers + 180.f);
 				}
-				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, isShowed, timerBonus);
 				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 				playerColor2 = ChangeSide(playerColor2, 2);
 				//bonus pour 1J
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(playerCollide, bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, isShowed, timerBonus);
 
 				//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
 			}
@@ -216,10 +215,22 @@ int main()
 
 
 		//Distance à calculer entre la position du joueur et la position du bonus!!!!
-		if (bonus.getFillColor() == sf::Color::Red && ((int)playerOne.player.getRotation() - (int)bonus.getRotation()) <= 5) {
-			std::cout << "hit" << std::endl;
-			setLife(playerOne, 1, timerBonus);
-			isShowed = false;
+		if (bonus.getFillColor() == sf::Color::Red){
+			
+			float rotationBonusMin = bonus.getRotation() - 5;
+			float rotationBonusMax = bonus.getRotation() + 5;
+
+			std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
+			std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
+			if (playerOne.player.getRotation() <= 180) {
+				std::cout << " - 180" << std::endl;
+				if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMax) {
+					std::cout << "hit" << std::endl;
+					setLife(playerOne, 1, timerBonus);
+					isShowed = false;
+				}
+			}
+			
 		}
 		else if (bonus.getFillColor() == sf::Color::Red && ((int)playerTwo.player.getRotation() - (int)bonus.getRotation()) <= 5) {
 			std::cout << "hit" << std::endl;
@@ -316,7 +327,7 @@ int main()
 		}
 
 		//Gamefeel
-		for (int i = 0; i < 360; i++) {
+		/*for (int i = 0; i < 360; i++) {
 			sf::Vertex vertexCenter;
 			vertexCenter.position = sf::Vector2f(middleScreen.x, middleScreen.y);
 			vertexCenter.color = sf::Color::Black;
@@ -373,7 +384,7 @@ int main()
 				x -= 1;
 				y -= 1;
 			}
-		}
+		}*/
 
 		//Affichage score
 		window.draw(scorePlayerOneText);

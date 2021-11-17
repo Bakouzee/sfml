@@ -7,4 +7,4 @@ enum Bonus {
 	HEALTH_UP
 };
 
-void ChooseBonus(Player& playerCollide, sf::CircleShape& bonus, bool& showBonus, sf::Clock& timerBonus);
+void ChooseBonus(sf::CircleShape& bonus, bool& showBonus, sf::Clock& timerBonus);
