@@ -9,7 +9,6 @@
 
 #include "AudioManager.h"
 #include "Colors.h"
-#include "Bonus.h"
 
 #include "Arthur.h"
 #include "2D.h"
@@ -17,13 +16,19 @@
 #include "BlackHole.h"
 #include "AssetsPath.h"
 
+#include "file_reader.h"
+#include "Bonus.h"
+#include "Gamefeel.h"
+
 #include "attacks_pattern_json_reader.h"
 
 int main()
 {
 	std::cout << std::boolalpha;
 
+	// Audio and music
 	SetUpAudios();
+	PlayGameMusic();
 
 	std::list<Entity> entities;
 
@@ -38,6 +43,11 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
+	float comboJ1 = 1.f;
+	float comboJ2 = 1.f;
+	float scoreJ1 = 0.f;
+	float scoreJ2 = 0.f;
+
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -61,19 +71,30 @@ int main()
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
 	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
 
+	//Gamefeel
+	int x = middleScreen.x - circleRadius;
+	int y = middleScreen.y;
+	bool arcHG = false;
+	bool arcHD = false;
+	bool arcBD = false;
+	bool arcBG = false;
+
 	//Clock
 	sf::Clock clock;
 	sf::Clock scorePlayerOne;
 	sf::Clock scorePlayerTwo;
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
+	sf::Clock timerSpawnBonus;
 	sf::Clock timerColorChange;
+	sf::Clock timerComboJ1;
+	sf::Clock timerComboJ2;
+
 	sf::Clock timerColorChangeMenu;
 	//sf::Clock timer;
 
 	//Bonus
-	sf::CircleShape bonus = BonusCrea(circleGame);
-	sf::CircleShape newBonus;
+	sf::CircleShape bonus;
 
 	//Score
 	sf::Font arial;
@@ -191,13 +212,13 @@ int main()
 
 			// Clock
 			sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
-			if(playerOne.actualLife > 0)
+			if (playerOne.actualLife > 0)
 			{
-				SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1);
+				scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
 			}
 			if (playerTwo.actualLife > 0 && isPlayerTwo)
 			{
-				SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2);
+				scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
 			}
 
 			// Black hole gestion
@@ -249,18 +270,28 @@ int main()
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
 					playerColor = ChangeSide(playerColor, 1);
-					//newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+					//bonus pour 2j
+					bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+					float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+					if (distancePlayers <= 180.f) {
+						bonus.setRotation(distancePlayers - 180.f);
+					}
+					else {
+						bonus.setRotation(distancePlayers + 180.f);
+					}
+					ChooseBonus(bonus, isShowed, timerBonus);
+
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 					playerColor2 = ChangeSide(playerColor2, 2);
-					newBonus = SpawnBonus(bonus, isShowed, timerBonus);
+					//bonus pour 1J
+					bonus = BonusCrea1J(playerOne.player, circleGame);
+					ChooseBonus(bonus, isShowed, timerBonus);
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
-
 					PlayHurtSound();
-
 				}
-				else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+				else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 				{
 					float angle = rand();
 					float speed = rand() % 25 + 50;
@@ -270,10 +301,80 @@ int main()
 				}
 			}
 
+			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
+			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
+			timerColorChange.restart();
+		}
+			window.clear();
+
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
+				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+				if (distancePlayers <= 180.f) {
+					bonus.setRotation(distancePlayers - 180.f);
+				}
+				else {
+					bonus.setRotation(distancePlayers + 180.f);
+				}
+				ChooseBonus(bonus, isShowed, timerBonus);
+				timerSpawnBonus.restart();
+			}
+			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+				bonus = BonusCrea1J(playerOne.player, circleGame);
+				ChooseBonus(bonus, isShowed, timerBonus);
+				timerSpawnBonus.restart();
+			}
+
+			//Bonus Behavior
+			if (bonus.getFillColor() == sf::Color::Red) {
+
+				float rotationBonusMin = bonus.getRotation() - 5;
+				float rotationBonusMax = bonus.getRotation() + 5;
+
+				std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
+				std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
+				if (playerOne.player.getRotation() <= 180) {
+					std::cout << " - 180" << std::endl;
+					if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
+						std::cout << "hit" << std::endl;
+						setLife(playerOne, 1, timerBonus);
+						isShowed = false;
+					}
+				}
+				else {
+					if (playerOne.player.getRotation() - 180 <= rotationBonusMax && playerOne.player.getRotation() - 180 >= rotationBonusMin) {
+						std::cout << "hit" << std::endl;
+						setLife(playerOne, 1, timerBonus);
+						isShowed = false;
+					}
+				}
+				if (playerTwo.player.getRotation() <= 180) {
+					std::cout << " - 180" << std::endl;
+					if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
+						std::cout << "hit" << std::endl;
+						setLife(playerTwo, 1, timerBonus);
+						isShowed = false;
+					}
+				} else {
+					if (playerTwo.player.getRotation() - 180 <= rotationBonusMax && playerTwo.player.getRotation() - 180 >= rotationBonusMin) {
+						std::cout << "hit" << std::endl;
+						setLife(playerTwo, 1, timerBonus);
+						isShowed = false;
+					}
+				}
+			}
+
+			// Whatever I want to draw goes here
+			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
+				isShowed = false;
+			}
+			if (isShowed) {
+				window.draw(bonus);
+			}				
+
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
 
-			//Deplacement(bonus, elapsedTime);
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
 				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 				timerColorChange.restart();
@@ -284,17 +385,15 @@ int main()
 				isShowed = false;
 			}
 			if (isShowed) {
-				window.draw(newBonus);
+				window.draw(bonus);
 			}
 
 			// Entities gestion
 			std::vector<Entity*> touchingPlayer1;
 			std::vector<Entity*> touchingPlayer2;
 			HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
-				Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
-				Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
-				20,
-				&touchingPlayer1, &touchingPlayer2, colorEntities);
+			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	20,	&touchingPlayer1, &touchingPlayer2, colorEntities);
 
 			// Check if there is collider touching player 1
 			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
@@ -308,9 +407,16 @@ int main()
 					{
 						DestroyEntity(entite, &entities);
 						takeDamage = true;
+						comboJ1 = 0.f;
+					} else {
+						comboJ1 += 0.3f;
+						timerComboJ1.restart();
+						if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
+							comboJ1 = 0.f;
+						}
 					}
 				}
-				if (takeDamage) setLife(playerOne, -1, scorePlayerOne);
+				if (takeDamage) setLife(playerOne, -1, scorePlayerOne);				
 			}
 			// Check if there is collider touching player 2
 			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0)
@@ -324,9 +430,16 @@ int main()
 					{
 						DestroyEntity(entite, &entities);
 						takeDamage = true;
+						comboJ2 = 0.f;
+					} else {
+						comboJ2 += 0.3f;
+						timerComboJ2.restart();
+						if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
+							comboJ2 = 0.f;
+						}
 					}
 				}
-				if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);
+				if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);				
 			}
 
 			//Affichage Arthur
@@ -352,7 +465,7 @@ int main()
 				setGameState(GameState::FIN);
 				initEnd = false;
 			}
-
+			
 			for (int i = 0; i < 3; i++)
 			{
 				window.draw(playerOne.tabLifeCircle[i]);
@@ -360,12 +473,75 @@ int main()
 					window.draw(playerTwo.tabLifeCircle[i]);
 			}
 
-			//Affichage score
-			window.draw(scorePlayerOneText);
-			if (isPlayerTwo)
-				window.draw(scorePlayerTwoText);
+		//Gamefeel
+		/*for (int i = 0; i < 360; i++) {
+			sf::Vertex vertexCenter;
+			vertexCenter.position = sf::Vector2f(middleScreen.x, middleScreen.y);
+			vertexCenter.color = sf::Color::Black;
 
-			window.display();
+			sf::Vertex vertexCircle;
+			vertexCircle.position = sf::Vector2f(x, y);
+			vertexCircle.color = sf::Color::Red;
+
+			sf::VertexArray line(sf::LineStrip, 2);
+			line[0].position = vertexCenter.position;
+			line[0].color = vertexCenter.color;
+			line[1].position = vertexCircle.position;
+			line[1].color = vertexCircle.color;
+
+			window.draw(line);
+
+			if (x == middleScreen.x - circleRadius && y == middleScreen.y) {
+				arcHG = true;
+				arcHD = false;
+				arcBD = false;
+				arcBG = false;
+			}
+			if (arcHG) {
+				x += 1;
+				y -= 1;
+			}
+			if (x == middleScreen.x && y == middleScreen.y - circleRadius) {
+				arcHG = false;
+				arcHD = true;
+				arcBD = false;
+				arcBG = false;
+			}
+			if (arcHD) {
+				x += 1;
+				y += 1;
+			}
+			if (x == middleScreen.x + circleRadius && y == middleScreen.y) {
+				arcHG = false;
+				arcHD = false;
+				arcBD = true;
+				arcBG = false;
+			}
+			if (arcBD) {
+				x -= 1;
+				y += 1;
+			}
+			if (x == middleScreen.x && y == middleScreen.y + circleRadius) {
+				arcHG = false;
+				arcHD = false;
+				arcBD = false;
+				arcBG = true;
+			}
+			if (arcBG) {
+				x -= 1;
+				y -= 1;
+			}
+		}*/
+
+		//Affichage score
+		window.draw(scorePlayerOneText);
+		window.draw(scorePlayerTwoText);
+		//Affichage score
+		window.draw(scorePlayerOneText);
+		if (isPlayerTwo)
+			window.draw(scorePlayerTwoText);
+
+		window.display();
 
 		}
 		else if (getState() == GameState::FIN)

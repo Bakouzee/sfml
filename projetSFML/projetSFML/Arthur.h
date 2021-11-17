@@ -41,7 +41,8 @@ sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
 sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer);
 Player NewPlayer(sf::CircleShape shape, int life, int number);
-sf::CircleShape BonusCrea(sf::CircleShape circleGame);
+sf::CircleShape BonusCrea1J(sf::CircleShape player1, sf::CircleShape circleGame);
+sf::CircleShape BonusCrea2J(sf::CircleShape player1, sf::CircleShape player2, sf::CircleShape circleGame);
 
 //Health.cpp
 void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer);
@@ -50,7 +51,7 @@ void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float s
 
 //ScoreManager.cpp
 sf::Text SetText(int numberPlayer, float screenResolutionX);
-void SetScore(float actualTime, sf::Text& actualText, int numberPlayer);
+float SetScore(float actualTime, sf::Text& actualText, int numberPlayer, float combo, float score);
 
 
 

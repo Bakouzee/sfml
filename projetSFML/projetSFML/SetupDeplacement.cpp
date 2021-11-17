@@ -46,10 +46,18 @@ Player NewPlayer(sf::CircleShape shape, int life, int number)
 	return newPlayer;
 }
 
-sf::CircleShape BonusCrea(sf::CircleShape circleGame)
+sf::CircleShape BonusCrea1J(sf::CircleShape player1, sf::CircleShape circleGame) {
+	sf::CircleShape newBonus(playerRadius, 4);
+	newBonus.setPosition(circleGame.getPosition());
+	newBonus.setOrigin(playerRadius, playerRadius + circleRadius);
+	newBonus.setRotation(player1.getRotation() + 360);
+	return newBonus;
+}
+
+
+sf::CircleShape BonusCrea2J(sf::CircleShape player1, sf::CircleShape player2, sf::CircleShape circleGame)
 {
 	sf::CircleShape newBonus(playerRadius, 4);
-	newBonus.setFillColor(sf::Color(150, 0, 0));
 	newBonus.setPosition(circleGame.getPosition());
 	newBonus.setOrigin(playerRadius, playerRadius + circleRadius);
 	return newBonus;

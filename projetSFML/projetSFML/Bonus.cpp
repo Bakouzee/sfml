@@ -1,6 +1,7 @@
 #include "Bonus.h"
 
-sf::CircleShape SpawnBonus(sf::CircleShape bonus, bool& showBonus, sf::Clock& timerBonus) {
+void ChooseBonus(sf::CircleShape& bonus, bool& showBonus, sf::Clock& timerBonus) {
+
 	int randBonus = rand() % 2 + 1;
 	switch (randBonus) {
 	case 1:
@@ -14,5 +15,4 @@ sf::CircleShape SpawnBonus(sf::CircleShape bonus, bool& showBonus, sf::Clock& ti
 	}
 	timerBonus.restart();
 	showBonus = true;
-	return bonus;
 }

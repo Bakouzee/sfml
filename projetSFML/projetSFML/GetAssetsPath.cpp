@@ -1,6 +1,8 @@
+//#define BUILD
 #include <SFML/Graphics.hpp>
 #include "windows.h"
 #include "AssetsPath.h"
+
 
 std::string getAppPath() {
 	char cExeFilePath[256];
@@ -12,7 +14,7 @@ std::string getAppPath() {
 }
 
 std::string getAssetPath() {
-	return getAppPath() + "Assets\\";
+	return getRelativePath() + "Assets\\";
 }
 
 std::string getWorkingDir()
@@ -20,4 +22,14 @@ std::string getWorkingDir()
 	char buf[256];
 	GetCurrentDirectoryA(256, buf);
 	return std::string(buf) + '\\';
+}
+
+std::string getRelativePath()
+{
+#ifdef BUILD
+	return getAppPath();
+#endif // BUILD
+#ifndef BUILD
+	return getWorkingDir();
+#endif // !BUILD
 }
