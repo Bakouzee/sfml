@@ -65,90 +65,6 @@ std::string Entity::to_string()
 
 #pragma region Entities
 
-#pragma region Deprected
-//void DrawEntities(std::list<Entity>* entitiesPtr, sf::RenderWindow* windowPtr)
-//{
-//	sf::CircleShape circle(0.5f);
-//	for (Entity entity : *entitiesPtr)
-//	{
-//		float radius = entity.GetRadius();
-//		circle.setRadius(std::round(radius));
-//
-//		circle.setOrigin(radius, radius);
-//
-//		sf::Vector2f position(entity.position->x, entity.position->y);
-//		circle.setPosition(position);
-//
-//		windowPtr->draw(circle);
-//	}
-//}
-//void MoveEntities(std::list<Entity>* entitiesPtr, float deltaTime)
-//{
-//	for (Entity entity : *entitiesPtr)
-//	{
-//		if (entity.position->IsZero()) continue;
-//		entity.Move(deltaTime);
-//	}
-//}
-//bool CheckCollisions(Vector2 pos, float radius, std::list<Entity>* entitiesPtr, std::vector<Entity*>* collidingEntities)
-//{
-//	bool hasCollision = false;
-//
-//	for (auto it = entitiesPtr->begin(); it != entitiesPtr->end(); ++it)
-//	{
-//		Vector2 entityPos = *((*it).position);
-//		if (Vector2::GetDistance(pos, entityPos) < radius + it->GetRadius())
-//		{
-//			// Collision
-//			if (!hasCollision) hasCollision = true;
-//
-//			collidingEntities->push_back(&(*it));
-//		}
-//	}
-//
-//	return hasCollision;
-//}
-
-// Breaking the game --> probably infinity loop
-//void DestroyEntities(std::vector<Entity*>* toDeleteEntities, std::list<Entity>* entitiesPtr)
-//{
-//	// Loop in the entities
-//	auto it = entitiesPtr->begin();
-//	while (it != entitiesPtr->end())
-//	{
-//		bool deleted = false;
-//
-//		// Check if we want to delete it
-//		auto it2 = toDeleteEntities->begin();
-//		while(it2 != toDeleteEntities->end())
-//		{
-//			// Found
-//			if (*it2 == &(*it))
-//			{
-//				it = entitiesPtr->erase(it);
-//				//it2 = toDeleteEntities->erase(it2);
-//				deleted = true;
-//				break;
-//			}
-//		}
-//
-//		if(!deleted) it++;
-//	}
-//}
-//void DestroyFarEntities(Vector2 middle, float minDistance, std::list<Entity>* entitiesPtr)
-//{
-//	auto it = entitiesPtr->begin();
-//	while(it != entitiesPtr->end())
-//	{
-//		if (Vector2::GetDistance(middle, *it->position) >= minDistance)
-//		{
-//			it = entitiesPtr->erase(it);
-//		}
-//		else it++;
-//	}
-//}
-#pragma endregion
-
 void Entity::UpdateCurrentPixelRadius(Vector2& gameCenter, float& gameRadius)
 {
 	float t = std::min(gameRadius, Vector2::GetDistance(*position, gameCenter)) / gameRadius;
@@ -251,10 +167,3 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 	}
 }
 #pragma endregion
-
-//std::ostream& operator<<(std::ostream& os, const Entity entity)
-//{
-//	os << "Entity = { pos: " /*<< entity.position << "; dir: " << entity.direction */ << "; primaryColor: " << entity.primaryColor << "currentRadius: " << const_cast<Entity&>(entity).GetRadius() << " }";
-//	return os;
-//}
-

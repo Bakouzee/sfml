@@ -1,30 +1,95 @@
 {
   "attacks":[
     {
-      "name": "Croix simple",
-      "waveCount": 4,
+      "name": "Six bullet",
+      "waveCount": 5,
       "startRotation": 0,
-      "rotationPerWave": 10,
-      "timeBeforeNextWave": 0.05,
-      "projNumber": 4,
-      "projSpeed": 0.75,
-      "radiusMin": 10,
-      "radiusMax": 30,
-      "colors": "primary",
-      "colorsStep": 0
-    },
-    {
-      "name": "JSP",
-      "waveCount": 4,
-      "startRotation": 0,
-      "rotationPerWave": 10,
-      "timeBeforeNextWave": 0.05,
-      "projNumber": 5,
+      "rotationPerWave": 0.2,
+      "timeBeforeNextWave": 0.2,
+      "projNumber": 6,
       "projSpeed": 0.75,
       "radiusMin": 10,
       "radiusMax": 30,
       "colors": "mixed",
       "colorsStep": 1
+    },
+    {
+      "name": "2nd six bullet",
+      "waveCount": 5,
+      "startRotation": 0.78539816339744830961566084581988,
+      "rotationPerWave": 0.2,
+      "timeBeforeNextWave": 0.2,
+      "projNumber": 6,
+      "projSpeed": 0.75,
+      "radiusMin": 10,
+      "radiusMax": 30,
+      "colors": "mixed",
+      "colorsStep": 1
+    },
+    {
+      "name": "Star",
+      "waveCount": 5,
+      "startRotation": 0,
+      "rotationPerWave": 0.15,
+      "timeBeforeNextWave": 0.35,
+      "projNumber": 8,
+      "projSpeed": 0.5,
+      "radiusMin": 10,
+      "radiusMax": 25,
+      "colors": "mixed",
+      "colorsStep": 2
+    },
+    {
+      "name": "Reversed star",
+      "waveCount": 5,
+      "startRotation": 0.39269908169872415480783042290994,
+      "rotationPerWave": 0.15,
+      "timeBeforeNextWave": 0.30,
+      "projNumber": 8,
+      "projSpeed": 0.5,
+      "radiusMin": 10,
+      "radiusMax": 25,
+      "colors": "mixed",
+      "colorsStep": 2
+    },
+    {
+      "name": "Rotating star - little proj",
+      "waveCount": 5,
+      "startRotation": 0,
+      "rotationPerWave": 0.39269908169872415480783042290994,
+      "timeBeforeNextWave": 0.20,
+      "projNumber": 6,
+      "projSpeed": 0.5,
+      "radiusMin": 5,
+      "radiusMax": 20,
+      "colors": "mixed",
+      "colorsStep": 1
+    },
+    {
+      "name": "Rotating star - little proj - slower",
+      "waveCount": 5,
+      "startRotation": 0,
+      "rotationPerWave": 0.3,
+      "timeBeforeNextWave": 0.35,
+      "projNumber": 6,
+      "projSpeed": 0.33,
+      "radiusMin": 5,
+      "radiusMax": 20,
+      "colors": "mixed",
+      "colorsStep": 2
+    },
+    {
+      "name": "Circle",
+      "waveCount": 1,
+      "startRotation": 0,
+      "rotationPerWave": 0,
+      "timeBeforeNextWave": 0.15,
+      "projNumber": 16,
+      "projSpeed": 0.45,
+      "radiusMin": 15,
+      "radiusMax": 20,
+      "colors": "mixed",
+      "colorsStep": 2
     }
   ]
 }
