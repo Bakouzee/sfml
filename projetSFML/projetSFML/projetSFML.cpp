@@ -80,6 +80,7 @@ int main()
 	sf::Clock scorePlayerTwo;
 	sf::Clock animTimer;
 	sf::Clock timerBonus;
+	sf::Clock timerSpawnBonus;
 	sf::Clock timerColorChange;
 	sf::Clock timerComboJ1;
 	sf::Clock timerComboJ2;
@@ -296,6 +297,25 @@ int main()
 		}
 			window.clear();
 
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
+				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+				if (distancePlayers <= 180.f) {
+					bonus.setRotation(distancePlayers - 180.f);
+				}
+				else {
+					bonus.setRotation(distancePlayers + 180.f);
+				}
+				ChooseBonus(bonus, isShowed, timerBonus);
+				timerSpawnBonus.restart();
+			}
+			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+				bonus = BonusCrea1J(playerOne.player, circleGame);
+				ChooseBonus(bonus, isShowed, timerBonus);
+				timerSpawnBonus.restart();
+			}
+
+			//Bonus Behavior
 			if (bonus.getFillColor() == sf::Color::Red) {
 
 				float rotationBonusMin = bonus.getRotation() - 5;
