@@ -9,7 +9,7 @@ struct Player
 	int numberPlayer;
 	sf::CircleShape player;
 	int actualLife;
-	sf::CircleShape tabLifeCircle[3];
+	sf::ConvexShape tabLifeCircle[3];
 	int scorePlayer = 0;
 };
 
@@ -41,7 +41,7 @@ sf::CircleShape BonusCrea(sf::CircleShape circleGame);
 
 //Health.cpp
 void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer);
-sf::CircleShape lifeCircle();
+sf::ConvexShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
 
 //ScoreManager.cpp

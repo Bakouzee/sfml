@@ -19,8 +19,6 @@
 
 #include "attacks_pattern_json_reader.h"
 
-// https://we.tl/t-kYCS2o7Jho
-
 int main()
 {
 	std::cout << std::boolalpha;
@@ -123,7 +121,6 @@ int main()
 	sf::Text quitText;
 	quitText.setFont(titlefont);
 	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, quitText, "Quit", sf::Color::White, 40);
-
 
 	// Game loop
 	while (window.isOpen()) {
