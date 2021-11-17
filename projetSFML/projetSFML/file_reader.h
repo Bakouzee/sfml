@@ -9,3 +9,6 @@
 using json = nlohmann::json;
 
 std::vector<AttackPattern> GetAllAttacks();
+
+int GetBestScore();
+void SetBestScore(int newValue);

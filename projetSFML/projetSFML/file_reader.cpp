@@ -1,19 +1,10 @@
-//#define BUILD
-#include "attacks_pattern_json_reader.h"
+#include "file_reader.h"
 
 std::vector<AttackPattern> GetAllAttacks()
 {
 	std::vector<AttackPattern> results;
 
-	std::ifstream reader(
-#ifdef BUILD
-		getAppPath()
-#endif
-#ifndef BUILD
-		getWorkingDir()
-#endif
-		+ "attacks.json"
-	);
+	std::ifstream reader(getRelativePath() + "attacks.json");
 
 	json j;
 	reader >> j;
@@ -39,3 +30,35 @@ std::vector<AttackPattern> GetAllAttacks()
 
 	return results;
 }
+
+std::string bestScorePath = "bestScore.txt";
+int GetBestScore()
+{
+	int result = -1;
+
+	std::ifstream reader(getRelativePath() + bestScorePath);
+	if(reader.is_open())
+	{
+		std::string line;
+		getline(reader, line);
+
+		return std::stoi(line);
+	}
+	else
+	{
+		std::cout << "Best score file couldn't be opened";
+		return -1;
+	} 
+}
+
+void SetBestScore(int newValue)
+{
+	std::ofstream writer(getRelativePath() + bestScorePath);
+	if (writer.is_open())
+	{
+		writer << std::to_string(newValue);
+	}
+	else std::cout << "Best score file couldn't be opened";
+}
+
+

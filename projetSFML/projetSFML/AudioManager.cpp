@@ -2,6 +2,7 @@
 
 sf::Sound sound;
 sf::SoundBuffer hurtBuffer;
+sf::SoundBuffer playerDeathBuffer;
 sf::SoundBuffer playerColorSwapBuffer;
 sf::SoundBuffer worldColorSwapBuffer;
 sf::SoundBuffer bonusBuffer;
@@ -17,16 +18,44 @@ void PlaySoundFromBuffer(const sf::SoundBuffer& soundBuffer)
 
 void SetUpAudios()
 {
-	gameMusic.openFromFile(getAssetPath() + "test.wav");
-	//hurtBuffer.loadFromFile(getAssetPath() + "hurt.wav");
-	//i.colorSwapBuffer.loadFromFile(getAssetPath() + "colorSwap.wav");
+	gameMusic.openFromFile(getAssetPath() + "music.wav");
+	hurtBuffer.loadFromFile(getAssetPath() + "hurt.wav");
+	playerDeathBuffer.loadFromFile(getAssetPath() + "explosion.wav");
+	//colorSwapBuffer.loadFromFile(getAssetPath() + "colorSwap.wav");
 }
 
-// Play 
+// Play
+	// PLayer health
 void PlayHurtSound()
 {
 	PlaySoundFromBuffer(hurtBuffer);
-	std::cout << "hurt" << std::endl;
-	//i.sound.setBuffer(i.hurtBuffer);
-	//i.sound.play();
+}
+void PlayPlayerDeathSound()
+{
+	PlaySoundFromBuffer(playerDeathBuffer);
+}
+	// Colors swap
+void PlayPlayerColorSwapSound()
+{
+	PlaySoundFromBuffer(playerColorSwapBuffer);
+}
+void PlayWorldColorSwapSound()
+{
+	PlaySoundFromBuffer(worldColorSwapBuffer);
+}
+	// Bonus
+void PlayBonusSound()
+{
+	PlaySoundFromBuffer(bonusBuffer);
+}
+
+// Music
+void PlayGameMusic()
+{
+	gameMusic.setLoop(true);
+	gameMusic.play();
+}
+void StopGameMusic()
+{
+	gameMusic.stop();
 }

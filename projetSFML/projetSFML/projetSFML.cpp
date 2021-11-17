@@ -17,13 +17,15 @@
 #include "BlackHole.h"
 #include "AssetsPath.h"
 
-#include "attacks_pattern_json_reader.h"
+#include "file_reader.h"
 
 int main()
 {
 	std::cout << std::boolalpha;
 
+	// Audio and music
 	SetUpAudios();
+	PlayGameMusic();
 
 	std::list<Entity> entities;
 
