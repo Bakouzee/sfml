@@ -16,16 +16,19 @@
 #include "BlackHole.h"
 #include "AssetsPath.h"
 
+#include "file_reader.h"
 #include "Bonus.h"
 #include "Gamefeel.h"
 
-#include "attacks_pattern_json_reader.h"
+#include "file_reader.h"
 
 int main()
 {
 	std::cout << std::boolalpha;
 
+	// Audio and music
 	SetUpAudios();
+	PlayGameMusic();
 
 	std::list<Entity> entities;
 
@@ -49,7 +52,9 @@ int main()
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
 
-	//Actuel Player
+	//Player
+	int playerInGame = 0;
+	bool isPlayerTwo = false;
 	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
 	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
 
@@ -113,13 +118,7 @@ int main()
 	titlefont.loadFromFile(getAssetPath() + "\\TitreFont.otf");
 	sf::Text titleText;
 	titleText.setFont(titlefont);
-	titleText.setFillColor(sf::Color::Black);
-	titleText.setOutlineThickness(3);
-	titleText.setOutlineColor(sf::Color::White);
-	titleText.setCharacterSize(150);
-	titleText.setString("Mega Black Hole");
-	titleText.setOrigin(titleText.getGlobalBounds().width / 2, titleText.getGlobalBounds().height / 2 + 5);
-	titleText.setPosition(screenResolution.x / 2, screenResolution.y / 5);
+	setTitle(titleText, screenResolution.ToSFVector2f());
 
 	float tailleButtonX = screenResolution.x / 8;
 	float tailleButtonY = screenResolution.y / 12;
@@ -133,12 +132,20 @@ int main()
 	sf::Text J2Text;
 	J2Text.setFont(titlefont);
 	SetButton(J2Button, sf::Vector2f(screenResolution.x / 2 + screenResolution.x / 50, screenResolution.y / 2), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, J2Text, "2 Players", sf::Color::White, 40);
-	bool isPlayerTwo = false;
 
 	sf::RectangleShape quitButton;
 	sf::Text quitText;
 	quitText.setFont(titlefont);
 	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, quitText, "Quit", sf::Color::White, 40);
+
+
+	//GESTION MENU DE FIN
+	bool initEnd = false;
+
+	sf::RectangleShape retryButton;
+	sf::Text retryText;
+	retryText.setFont(titlefont);
+	SetButton(retryButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, retryText, "Retry", sf::Color::White, 40);
 
 	// Game loop
 	while (window.isOpen()) {
@@ -152,12 +159,15 @@ int main()
 				}
 				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(J1Button.getPosition(), J1Button.getSize(), event.mouseButton.x, event.mouseButton.y))
 				{
+					playerInGame = 1;
+					playerTwo.isDead = true;
 					setGameState(GameState::JEU);
 				}
 				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(J2Button.getPosition(), J2Button.getSize(), event.mouseButton.x, event.mouseButton.y))
 				{
-					setGameState(GameState::JEU);
+					playerInGame = 2;
 					isPlayerTwo = true;
+					setGameState(GameState::JEU);
 				}
 			}
 
@@ -432,18 +442,36 @@ int main()
 				if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);				
 			}
 
-		//Affichage Arthur
-		window.draw(circleGame);
-		if (playerOne.actualLife > 0)
-			window.draw(playerOne.player);
-		if (playerTwo.actualLife > 0)
-			window.draw(playerTwo.player);
-		for (int i = 0; i < 3; i++)
-		{
-			window.draw(playerOne.tabLifeCircle[i]);
-			if (isPlayerTwo)
-				window.draw(playerTwo.tabLifeCircle[i]);
-		}
+			//Affichage Arthur
+			window.draw(circleGame);
+
+			if (playerOne.actualLife > 0)
+				window.draw(playerOne.player);
+			else if(!playerOne.isDead)
+			{
+				playerInGame--;
+				playerOne.isDead = true;
+			}
+
+			if(playerTwo.actualLife > 0 && isPlayerTwo)
+				window.draw(playerTwo.player);
+			else if(!playerTwo.isDead){
+				playerInGame--;
+				playerTwo.isDead = true;
+			}
+
+			if(playerInGame == 0)
+			{
+				setGameState(GameState::FIN);
+				initEnd = false;
+			}
+			
+			for (int i = 0; i < 3; i++)
+			{
+				window.draw(playerOne.tabLifeCircle[i]);
+				if (isPlayerTwo)
+					window.draw(playerTwo.tabLifeCircle[i]);
+			}
 
 		//Gamefeel
 		/*for (int i = 0; i < 360; i++) {
@@ -515,6 +543,24 @@ int main()
 
 		window.display();
 
+		}
+		else if (getState() == GameState::FIN)
+		{
+			if(!initEnd)
+			{
+				initEnd = true;
+				quitButton.setPosition(quitButton.getPosition().x, quitButton.getPosition().y + tailleButtonY + screenResolution.y / 30);
+				quitText.setPosition(quitButton.getPosition().x + (tailleButtonX / 2), quitButton.getPosition().y + (tailleButtonY / 2));
+			}
+
+
+			window.clear();
+			window.draw(quitButton);
+			window.draw(quitText);
+
+			window.draw(retryButton);
+			window.draw(retryText);
+			window.display();
 		}
 	}
 }

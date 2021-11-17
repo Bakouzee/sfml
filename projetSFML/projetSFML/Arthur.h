@@ -11,12 +11,15 @@ struct Player
 	int actualLife;
 	sf::ConvexShape tabLifeCircle[3];
 	int scorePlayer = 0;
+	bool isDead = false;
 };
 
 enum GameState
 {
 	MENU,
-	JEU
+	JEU,
+	FIN,
+	INIT
 };
 
 //GameManager.cpp
@@ -28,6 +31,7 @@ bool isButtonPressed(sf::Vector2f position, sf::Vector2f size, int mousePosition
 void SetButton(sf::RectangleShape& button, sf::Vector2f positionButton, sf::Vector2f sizeButton, sf::Color colorButton, sf::Color colorButtonThick, sf::Text& textButton, sf::String texte, sf::Color colorText, int sizeText);
 void changeColor(int& actualColor, sf::Color& color1, sf::Color& color2);
 void setChangeColor(sf::RectangleShape& button, sf::Text& textButton, sf::Color color1, sf::Color color2);
+void setTitle(sf::Text& titleText, sf::Vector2<float> screenResolution);
 
 //Deplacement.cpp
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime);

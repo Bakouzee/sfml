@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "windows.h"
+#include "AudioManager.h"
 #include "Arthur.h"
 #include <iostream>
 
@@ -15,6 +16,7 @@ void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer)
 		actualPlayer.tabLifeCircle[actualPlayer.actualLife - 1].setFillColor(sf::Color(0, 0, 0, 0));
 		actualPlayer.actualLife += lifeChange;
 		clockPlayer.restart();
+		PlayHurtSound();
 	}
 }
 
