@@ -25,6 +25,7 @@
 int main()
 {
 	std::cout << std::boolalpha;
+	srand(time(NULL));
 
 	// Audio and music
 	SetUpAudios();

@@ -21,11 +21,31 @@ std::vector<AttackPattern> GetAllAttacks()
 		else if (jsonColorValue == "secondary") colorsParam = ColorsParameters(ColorsParameters::Secondary);
 		else colorsParam = ColorsParameters(ColorsParameters::Mixed, value["colorsStep"]);
 
-		results.emplace_back(
-			AttackPattern(value["waveCount"], value["startRotation"], value["rotationPerWave"], 
-			              value["timeBeforeNextWave"], value["projNumber"], value["projSpeed"],
-			              radiusMinMax, colorsParam)
-		);
+
+		// Reverse the rotationPerWave and startRotation
+			// Add/Substract random value to proj speed
+		for (int i = -1; i < 2; i+=2)
+		{
+			int projNumber = value["projNumber"];
+
+			float startRotation = value["startRotation"];
+			startRotation *= i;
+			if (rand() % 2 == 0) startRotation += (rand() % int((float(projNumber) / (2 * PI)) * 100)) / 100;
+
+			float rotationPerWave = value["rotationPerWave"];
+			rotationPerWave *= i;
+
+			float projSpeed = value["projSpeed"];
+			float random = (rand() % 20) / 10;
+			if (rand() % 2 == 0) projSpeed += random;
+			else projSpeed -= random;
+
+			results.emplace_back(
+				AttackPattern(value["waveCount"], startRotation, rotationPerWave, 
+				              value["timeBeforeNextWave"], value["projNumber"], projSpeed,
+				              radiusMinMax, colorsParam)
+			);
+		}
 	}
 
 	return results;
