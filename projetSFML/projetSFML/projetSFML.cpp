@@ -270,23 +270,23 @@ int main()
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
 					playerColor = ChangeSide(playerColor, 1);
-					//bonus pour 2j
-					bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-					float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-					if (distancePlayers <= 180.f) {
-						bonus.setRotation(distancePlayers - 180.f);
-					}
-					else {
-						bonus.setRotation(distancePlayers + 180.f);
-					}
-					ChooseBonus(bonus, isShowed, timerBonus);
+					////bonus pour 2j
+					//bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+					//float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+					//if (distancePlayers <= 180.f) {
+					//	bonus.setRotation(distancePlayers - 180.f);
+					//}
+					//else {
+					//	bonus.setRotation(distancePlayers + 180.f);
+					//}
+					//ChooseBonus(bonus, isShowed, timerBonus);
 
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 					playerColor2 = ChangeSide(playerColor2, 2);
-					//bonus pour 1J
-					bonus = BonusCrea1J(playerOne.player, circleGame);
-					ChooseBonus(bonus, isShowed, timerBonus);
+					////bonus pour 1J
+					//bonus = BonusCrea1J(playerOne.player, circleGame);
+					//ChooseBonus(bonus, isShowed, timerBonus);
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
 					PlayHurtSound();
@@ -302,75 +302,23 @@ int main()
 			}
 
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
-			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
-			timerColorChange.restart();
-		}
+				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
+				timerColorChange.restart();
+			}
 			window.clear();
 
+			//Bonus Behavior
 			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
 				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-				if (distancePlayers <= 180.f) {
-					bonus.setRotation(distancePlayers - 180.f);
-				}
-				else {
-					bonus.setRotation(distancePlayers + 180.f);
-				}
-				ChooseBonus(bonus, isShowed, timerBonus);
+				SetupPositionBonus2J(bonus, playerOne.player, playerTwo.player);
+				ChooseBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
 			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, playerOne, playerTwo, !isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
-			}
-
-			//Bonus Behavior
-			if (bonus.getFillColor() == sf::Color::Red) {
-
-				float rotationBonusMin = bonus.getRotation() - 5;
-				float rotationBonusMax = bonus.getRotation() + 5;
-
-				std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
-				std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
-				if (playerOne.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-				else {
-					if (playerOne.player.getRotation() - 180 <= rotationBonusMax && playerOne.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-				if (playerTwo.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
-						isShowed = false;
-					}
-				} else {
-					if (playerTwo.player.getRotation() - 180 <= rotationBonusMax && playerTwo.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-			}
-
-			// Whatever I want to draw goes here
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
-				isShowed = false;
-			}
-			if (isShowed) {
-				window.draw(bonus);
-			}				
+			}	
 
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
@@ -379,6 +327,7 @@ int main()
 				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 				timerColorChange.restart();
 			}
+
 			window.clear();
 			// Whatever I want to draw goes here
 			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
