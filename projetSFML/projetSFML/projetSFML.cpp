@@ -321,6 +321,7 @@ int main()
 			window.draw(quitButton);
 			window.draw(quitText);
 
+				//Control Button and text
 			window.draw(IButton);
 			window.draw(IText);
 			window.draw(JButton);
@@ -333,7 +334,7 @@ int main()
 			window.draw(DText);
 			window.draw(ZButton);
 			window.draw(ZText);
-
+				//Text Tuto
 			window.draw(J1DeplacementText);
 			window.draw(J2DeplacementText);
 			window.draw(J1ColorText);
