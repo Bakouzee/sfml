@@ -50,9 +50,10 @@ void ChooseBonus(sf::CircleShape& bonus, Player& player1, Player& player2, bool 
 	showBonus = true;
 }
 
-void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& player2, bool isPlayerTwo, bool& showBonus, sf::Clock& timerBonus) {
+void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& player2, bool isPlayerTwo, bool& showBonus, sf::Clock& timerBonus, bool& speedUp, int& playerCollide) {
 	float rotationBonusMin = bonus.getRotation() - 5;
 	float rotationBonusMax = bonus.getRotation() + 5;
+
 	if (bonus.getFillColor() == sf::Color::Red && !isPlayerTwo) {
 		if (player1.player.getRotation() <= 180) {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
@@ -70,12 +71,14 @@ void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& playe
 	if (bonus.getFillColor() == sf::Color::Cyan && !isPlayerTwo) {
 		if (player1.player.getRotation() <= 180) {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				SpeedDownForSeconds(player2, showBonus);
+				speedUp = true;
+				playerCollide = 1;
 			}
 		}
 		else {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				SpeedDownForSeconds(player2, showBonus);
+				speedUp = true;
+				playerCollide = 1;
 			}
 		}
 	}
@@ -95,13 +98,13 @@ void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& playe
 		}
 
 		if (player2.player.getRotation() <= 180) {
-			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation()  >= rotationBonusMin) {
+			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
 				setLife(player2, 1, timerBonus);
 				showBonus = false;
 			}
 		}
 		else {
-			if (player2.player.getRotation()  <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
+			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
 				setLife(player2, 1, timerBonus);
 				showBonus = false;
 			}
@@ -110,37 +113,28 @@ void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& playe
 	if (bonus.getFillColor() == sf::Color::Cyan && isPlayerTwo) {
 		if (player1.player.getRotation() <= 180) {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				SpeedDownForSeconds(player2, showBonus);
+				speedUp = true;
+				playerCollide = 1;
 			}
 		}
 		else {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				SpeedDownForSeconds(player2, showBonus);
+				speedUp = true;
+				playerCollide = 1;
 			}
 		}
 
 		if (player2.player.getRotation() <= 180) {
-			if (player2.player.getRotation()  <= rotationBonusMax && player2.player.getRotation()  >= rotationBonusMin) {
-				SpeedDownForSeconds(player1, showBonus);
+			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
+				speedUp = true;
+				playerCollide = 2;
 			}
 		}
 		else {
-			if (player2.player.getRotation()  <= rotationBonusMax && player2.player.getRotation()  >= rotationBonusMin) {
-				SpeedDownForSeconds(player1, showBonus);
+			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
+				speedUp = true;
+				playerCollide = 2;
 			}
 		}
-	}
-
-
-}
-
-void SpeedDownForSeconds(Player& playerAdversary, bool& showBonus) {
-	showBonus = false;
-	sf::Clock* timerSlowD = new sf::Clock;
-	timerSlowD->restart();
-	playerAdversary.speedPlayer = 75.f;
-	if (timerSlowD->getElapsedTime().asSeconds() >= 1.5f) {
-		playerAdversary.speedPlayer = 100.f;
-		delete timerSlowD;
 	}
 }
