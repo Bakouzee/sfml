@@ -44,10 +44,12 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
+	bool speedUp = false;
 	float comboJ1 = 1.f;
 	float comboJ2 = 1.f;
 	float scoreJ1 = 0.f;
 	float scoreJ2 = 0.f;
+	int playerCollide = -1;
 
 
 	// Cercle du Jeu
@@ -90,6 +92,7 @@ int main()
 	sf::Clock timerColorChange;
 	sf::Clock timerComboJ1;
 	sf::Clock timerComboJ2;
+	sf::Clock timerSlowU;
 
 	sf::Clock timerColorChangeMenu;
 	//sf::Clock timer;
@@ -301,34 +304,6 @@ int main()
 				blackHole.currentAttackPtr->SpawnWaveIfFinished(*(blackHole.position), &entities);
 			}
 
-			//std::cout << entities.size() << std::endl;
-
-
-			//float timeChangingColors = timer.getElapsedTime().asSeconds();
-			//if (timeChangingColors >= 3) {
-			//	ChangeColorForEverything(playerColor, //color des entit�s, idC);
-			//}
-
-			//Score Animation
-			//float anim = animTimer.getElapsedTime().asSeconds();
-			//score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
-
-			/*if ((int)deltaTime % 1000 == 0 && (int)deltaTime > 0) {
-				isAnimating = true;
-				std::cout << isAnimating << std::endl;
-			}
-
-			if (isAnimating) {
-				animTimer.restart();
-				if (anim <= 1.3f) {
-					score.setCharacterSize(score.getCharacterSize() + 1);
-				} else {
-					score.setCharacterSize(30);
-					isAnimating = false;
-				}
-			}*/
-
-
 			sf::Event event;
 			while (window.pollEvent(event)) {
 				// Process any input event here
@@ -337,23 +312,10 @@ int main()
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
 					playerColor = ChangeSide(playerColor, 1);
-					//bonus pour 2j
-					bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-					float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-					if (distancePlayers <= 180.f) {
-						bonus.setRotation(distancePlayers - 180.f);
-					}
-					else {
-						bonus.setRotation(distancePlayers + 180.f);
-					}
-					ChooseBonus(bonus, isShowed, timerBonus);
 
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 					playerColor2 = ChangeSide(playerColor2, 2);
-					//bonus pour 1J
-					bonus = BonusCrea1J(playerOne.player, circleGame);
-					ChooseBonus(bonus, isShowed, timerBonus);
 				}
 				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
 					PlayHurtSound();
@@ -368,76 +330,55 @@ int main()
 				}
 			}
 
-			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
-			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
-			timerColorChange.restart();
-		}
 			window.clear();
 
+			//Bonus Behavior
 			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
 				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-				if (distancePlayers <= 180.f) {
-					bonus.setRotation(distancePlayers - 180.f);
-				}
-				else {
-					bonus.setRotation(distancePlayers + 180.f);
-				}
-				ChooseBonus(bonus, isShowed, timerBonus);
+				SetupPositionBonus2J(bonus, playerOne.player, playerTwo.player);
+				ChooseBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
-			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, playerOne, playerTwo, !isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
-			}
+			}	
 
-			//Bonus Behavior
-			if (bonus.getFillColor() == sf::Color::Red) {
-
-				float rotationBonusMin = bonus.getRotation() - 5;
-				float rotationBonusMax = bonus.getRotation() + 5;
-
-				std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
-				std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
-				if (playerOne.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-				else {
-					if (playerOne.player.getRotation() - 180 <= rotationBonusMax && playerOne.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-				if (playerTwo.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
-						isShowed = false;
-					}
-				} else {
-					if (playerTwo.player.getRotation() - 180 <= rotationBonusMax && playerTwo.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
-						isShowed = false;
-					}
-				}
-			}
-
+			window.clear();
 			// Whatever I want to draw goes here
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
+
+			if (timerBonus.getElapsedTime().asSeconds() >= 3 && isPlayerTwo) {
+				isShowed = false;
+			}
+			else if (timerBonus.getElapsedTime().asSeconds() >= 4 && !isPlayerTwo) {
 				isShowed = false;
 			}
 			if (isShowed) {
+				CollideAndApplyBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus, speedUp, playerCollide);
 				window.draw(bonus);
-			}				
+			}
+			//SpeedUp for the adversary
+			if (speedUp) {
+				isShowed = false;
+				std::cout << playerCollide << std::endl;
+				if (playerCollide == 1) {
+					playerTwo.speedPlayer = 150.f;
+					timerSlowU.restart();
+					playerCollide = -1;
+				}
+				if (playerCollide == 2){
+					playerOne.speedPlayer = 150.f;
+					timerSlowU.restart();
+					playerCollide = -1;
+				}
+				if (timerSlowU.getElapsedTime().asSeconds() >= 2.f) {
+					playerTwo.speedPlayer = 100.f;
+					playerOne.speedPlayer = 100.f;
+					speedUp = false;
+				}
+			}
+			
 
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
@@ -446,14 +387,7 @@ int main()
 				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 				timerColorChange.restart();
 			}
-			window.clear();
-			// Whatever I want to draw goes here
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
-				isShowed = false;
-			}
-			if (isShowed) {
-				window.draw(bonus);
-			}
+			
 
 			// Entities gestion
 			std::vector<Entity*> touchingPlayer1;
@@ -477,6 +411,7 @@ int main()
 						comboJ1 = 0.1f;
 					} else {
 						comboJ1 += 0.3f;
+						DestroyEntity(entite, &entities);
 						timerComboJ1.restart();
 						if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
 							comboJ1 = 0.1f;
@@ -500,6 +435,7 @@ int main()
 						comboJ2 = 0.1f;
 					} else {
 						comboJ2 += 0.3f;
+						DestroyEntity(entite, &entities);
 						timerComboJ2.restart();
 						if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
 							comboJ2 = 0.1f;

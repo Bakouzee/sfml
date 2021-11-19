@@ -9,6 +9,7 @@ struct Player
 	int numberPlayer;
 	sf::CircleShape player;
 	int actualLife;
+	float speedPlayer = 100;
 	sf::ConvexShape tabLifeCircle[3];
 	int scorePlayer = 0;
 	bool isDead = false;
@@ -41,8 +42,6 @@ sf::Vector2f CoordPlayer(sf::CircleShape& player, sf::CircleShape circleGame);
 sf::CircleShape CircleGameCrea(float positionX, float positionY);
 sf::CircleShape PlayerCrea(sf::CircleShape circleGame, int whatPlayer);
 Player NewPlayer(sf::CircleShape shape, int life, int number);
-sf::CircleShape BonusCrea1J(sf::CircleShape player1, sf::CircleShape circleGame);
-sf::CircleShape BonusCrea2J(sf::CircleShape player1, sf::CircleShape player2, sf::CircleShape circleGame);
 
 //Health.cpp
 void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer);
