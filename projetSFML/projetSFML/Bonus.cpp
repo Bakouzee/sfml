@@ -57,13 +57,13 @@ void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& playe
 	if (bonus.getFillColor() == sf::Color::Red && !isPlayerTwo) {
 		if (player1.player.getRotation() <= 180) {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				setLife(player1, 1, timerBonus);
+				player1.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}
 		else {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				setLife(player1, 1, timerBonus);
+				player1.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}
@@ -86,26 +86,26 @@ void CollideAndApplyBonus(sf::CircleShape& bonus, Player& player1, Player& playe
 	if (bonus.getFillColor() == sf::Color::Red && isPlayerTwo) {
 		if (player1.player.getRotation() <= 180) {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				setLife(player1, 1, timerBonus);
+				player1.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}
 		else {
 			if (player1.player.getRotation() <= rotationBonusMax && player1.player.getRotation() >= rotationBonusMin) {
-				setLife(player1, 1, timerBonus);
+				player1.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}
 
 		if (player2.player.getRotation() <= 180) {
 			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
-				setLife(player2, 1, timerBonus);
+				player2.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}
 		else {
 			if (player2.player.getRotation() <= rotationBonusMax && player2.player.getRotation() >= rotationBonusMin) {
-				setLife(player2, 1, timerBonus);
+				player2.AdjustLife(1, &timerBonus);
 				showBonus = false;
 			}
 		}

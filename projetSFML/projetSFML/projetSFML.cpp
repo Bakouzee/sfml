@@ -59,7 +59,7 @@ int main()
 
 	//Player
 	int playerInGame = 0;
-	bool isPlayerTwo = false;
+	bool isMultiplayer = false;
 	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
 	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
 
@@ -77,14 +77,6 @@ int main()
 	// Set players life position (UI)
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
 	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
-
-	//Gamefeel
-	int x = middleScreen.x - circleRadius;
-	int y = middleScreen.y;
-	bool arcHG = false;
-	bool arcHD = false;
-	bool arcBD = false;
-	bool arcBG = false;
 
 	//Clocks
 	#pragma region Clocks definition
@@ -189,6 +181,7 @@ int main()
 
 	sf::Text bestScore;
 	bestScore.setFont(titlefont);
+	#pragma endregion
 
 	// Game loop
 	while (window.isOpen()) {
@@ -213,7 +206,7 @@ int main()
 				if (event.mouseButton.button == sf::Mouse::Left && isButtonPressed(J2Button.getPosition(), J2Button.getSize(), event.mouseButton.x, event.mouseButton.y))
 				{
 					playerInGame = 2;
-					isPlayerTwo = true;
+					isMultiplayer = true;
 					setGameState(GameState::JEU);
 				}
 			}
@@ -256,6 +249,8 @@ int main()
 		}
 		else if (getState() == GameState::INIT)
 		{
+			#pragma region Init loop
+
 			playerOne.player.setRotation(0);
 			playerOne.isDead = false;
 			playerOne.actualLife = 3;
@@ -267,7 +262,7 @@ int main()
 			scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
 
 
-			if(isPlayerTwo)
+			if(isMultiplayer)
 			{
 				playerTwo.player.setRotation(0);
 				playerTwo.isDead = false;
@@ -283,7 +278,7 @@ int main()
 			for (int i = 0; i < 3; i++)
 			{
 				playerOne.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
-				if (isPlayerTwo)
+				if (isMultiplayer)
 					playerTwo.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
 			}
 
@@ -295,6 +290,7 @@ int main()
 			entities.clear();
 
 			setGameState(GameState::JEU);
+			#pragma endregion
 		}
 		else if(getState() == GameState::JEU)
 		{
@@ -317,23 +313,11 @@ int main()
 					if(event.key.code == sf::Keyboard::A)
 					{
 						playerColor = ChangeSide(playerColor, 1);
-						//bonus pour 2j
-						bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-						float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-						if (distancePlayers <= 180.f) {
-							bonus.setRotation(distancePlayers - 180.f);
-						}
-						else {
-							bonus.setRotation(distancePlayers + 180.f);
-						}
-						ChooseBonus(bonus, isShowed, timerBonus);
+					
 					}
 					if(event.key.code == sf::Keyboard::M)
 					{
 						playerColor2 = ChangeSide(playerColor2, 2);
-						//bonus pour 1J
-						bonus = BonusCrea1J(playerOne.player, circleGame);
-						ChooseBonus(bonus, isShowed, timerBonus);
 					}
 				}
 			}
@@ -345,11 +329,11 @@ int main()
 
 			// Set player colors
 			playerOne.SetColors(playerColor);
-			if (isPlayerTwo) playerTwo.SetColors(playerColor2);
+			if (isMultiplayer) playerTwo.SetColors(playerColor2);
 
 			// Increase player score
 			if (!playerOne.isDead) scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
-			if (!playerTwo.isDead && isPlayerTwo) scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
+			if (!playerTwo.isDead && isMultiplayer) scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
 
 			// Black hole gestion
 			#pragma region Black hole gestion
@@ -377,26 +361,26 @@ int main()
 
 			// Bonus gestion
 			#pragma region Bonus gestion
-			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isMultiplayer) {
 				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
 				SetupPositionBonus2J(bonus, playerOne.player, playerTwo.player);
-				ChooseBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
+				ChooseBonus(bonus, playerOne, playerTwo, isMultiplayer, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
-			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isMultiplayer) {
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(bonus, playerOne, playerTwo, !isPlayerTwo, isShowed, timerBonus);
+				ChooseBonus(bonus, playerOne, playerTwo, !isMultiplayer, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
 
-			if (timerBonus.getElapsedTime().asSeconds() >= 3 && isPlayerTwo) {
+			if (timerBonus.getElapsedTime().asSeconds() >= 3 && isMultiplayer) {
 				isShowed = false;
 			}
-			else if (timerBonus.getElapsedTime().asSeconds() >= 4 && !isPlayerTwo) {
+			else if (timerBonus.getElapsedTime().asSeconds() >= 4 && !isMultiplayer) {
 				isShowed = false;
 			}
 			if (isShowed) {
-				CollideAndApplyBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus, speedUp, playerCollide);
+				CollideAndApplyBonus(bonus, playerOne, playerTwo, isMultiplayer, isShowed, timerBonus, speedUp, playerCollide);
 				window.draw(bonus);
 			}
 			//SpeedUp for the adversary
@@ -419,17 +403,16 @@ int main()
 					speedUp = false;
 				}
 			}
+			#pragma endregion
 
-
-			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
-			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
+			if(!playerOne.isDead) Deplacement(playerOne, elapsedTime);
+			if(!playerTwo.isDead && isMultiplayer) Deplacement(playerTwo, elapsedTime);
 
 			// Change colors of players and projectiles periodically
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
 				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 				timerColorChange.restart();
 			}
-
 
 			// Entities gestion (entities == projectiles)
 			#pragma region Entities gestion
@@ -448,19 +431,23 @@ int main()
 			// Collision checks
 			#pragma region Collision with players check
 			// Check if there is collider touching player 1
-			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
+			if (!touchingPlayer1.empty() && !playerOne.isDead)
 			{
 				// Handle collision --> Remove life, reset bonus...
 				playerOne.OnCollisionWithEntities(&entities, touchingPlayer1,
 					playerColor, colorEntities,
 					comboJ1, timerComboJ1, &scorePlayerOne);
+
+				if (playerOne.isDead) playerInGame--;
 			}
 			// Check if there is collider touching player 2
-			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0 && isPlayerTwo)
+			if (!touchingPlayer2.empty() && !playerTwo.isDead && isMultiplayer)
 			{
 				playerTwo.OnCollisionWithEntities(&entities, touchingPlayer2,
 					playerColor2, colorEntities,
 					comboJ2, timerComboJ2, &scorePlayerTwo);
+
+				if (playerTwo.isDead) playerInGame--;
 			}
 			#pragma endregion
 
@@ -490,30 +477,21 @@ int main()
 
 				// Draw players
 					// Player 1
-			if (playerOne.actualLife > 0)
+			if (!playerOne.isDead)
 				window.draw(playerOne.player);
-			else if(!playerOne.isDead)
-			{
-				playerInGame--;
-				playerOne.isDead = true;
-			}
 					// Player 2
-			if(playerTwo.actualLife > 0 && isPlayerTwo)
+			if(!playerTwo.isDead && isMultiplayer)
 				window.draw(playerTwo.player);
-			else if(!playerTwo.isDead){
-				playerInGame--;
-				playerTwo.isDead = true;
-			}
 
 				//Display scores
 			window.draw(scorePlayerOneText);
-			if (isPlayerTwo) window.draw(scorePlayerTwoText);
+			if (isMultiplayer) window.draw(scorePlayerTwoText);
 
 				// Draw players lifes
 			for (int i = 0; i < 3; i++)
 			{
 				window.draw(playerOne.tabLifeCircle[i]);
-				if (isPlayerTwo)
+				if (isMultiplayer)
 					window.draw(playerTwo.tabLifeCircle[i]);
 			}
 
@@ -533,8 +511,8 @@ int main()
 				quitText.setPosition(screenResolution.x / 2 - screenResolution.x / 16 + (tailleButtonX / 2), screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30 + tailleButtonY + screenResolution.y / 30 + (tailleButtonY / 2));
 				setChangeColor(quitButton, quitText, sf::Color::Black, sf::Color::White);
 
-				SetText(scoreJ1FinalText, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
-				SetText(scoreJ2FinalText, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
+				SetText(scoreJ1FinalText, 1, screenResolution.ToSFVector2f(), isMultiplayer);
+				SetText(scoreJ2FinalText, 2, screenResolution.ToSFVector2f(), isMultiplayer);
 
 				scoreJ1Final.setString(std::to_string((int)scoreJ1));
 				scoreJ2Final.setString(std::to_string((int)scoreJ2));
@@ -544,7 +522,7 @@ int main()
 				else
 					joueurXWinText.setString("Player 2 won");
 
-				SetText(joueurXWinText, 0, screenResolution.ToSFVector2f(), isPlayerTwo);
+				SetText(joueurXWinText, 0, screenResolution.ToSFVector2f(), isMultiplayer);
 
 				if(GetBestScore() < scoreJ1)
 					SetBestScore(scoreJ1);
@@ -555,8 +533,8 @@ int main()
 				SetText(bestScore, 3, screenResolution.ToSFVector2f());
 
 
-				SetText(scoreJ1Final, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
-				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
+				SetText(scoreJ1Final, 1, screenResolution.ToSFVector2f(), isMultiplayer);
+				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isMultiplayer);
 				scoreJ1Final.setPosition(scoreJ1Final.getPosition().x, scoreJ1Final.getPosition().y + screenResolution.y / 24);
 				scoreJ2Final.setPosition(scoreJ2Final.getPosition().x, scoreJ2Final.getPosition().y + screenResolution.y / 24);
 			}
@@ -587,7 +565,7 @@ int main()
 			window.draw(bestScore);
 
 
-			if(isPlayerTwo)
+			if(isMultiplayer)
 			{
 				window.draw(joueurXWinText);
 				window.draw(scoreJ2FinalText);

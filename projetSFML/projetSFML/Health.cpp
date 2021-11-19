@@ -88,7 +88,6 @@ void Player::OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector
 		sf::Color entityColor = entite->primaryColor ? entitiesColors.primary : entitiesColors.secondary;
 		if (entityColor != playerColor.primary)
 		{
-			DestroyEntity(entite, allEntities);
 			takeDamage = true;
 			combo = 0.f;
 		}
@@ -99,6 +98,7 @@ void Player::OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector
 				combo = 0.f;
 			}
 		}
+		DestroyEntity(entite, allEntities);
 	}
 	if (takeDamage) AdjustLife(-1, playerScoreClock);
 }
