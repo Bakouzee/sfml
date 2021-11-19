@@ -5,11 +5,11 @@
 
 void Deplacement(Player& actualPlayer, sf::Time elapsedTime)
 {
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && actualPlayer.numberPlayer == 2) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && actualPlayer.numberPlayer == 1))
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::J) && actualPlayer.numberPlayer == 2) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && actualPlayer.numberPlayer == 1))
 	{
 		actualPlayer.player.setRotation(actualPlayer.player.getRotation() + 1 * elapsedTime.asSeconds() * actualPlayer.speedPlayer);
 	}
-	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) && actualPlayer.numberPlayer == 2 || (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && actualPlayer.numberPlayer == 1))
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::L)) && actualPlayer.numberPlayer == 2 || (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && actualPlayer.numberPlayer == 1))
 	{
 		actualPlayer.player.setRotation(actualPlayer.player.getRotation() - 1 * elapsedTime.asSeconds() * actualPlayer.speedPlayer);
 	}

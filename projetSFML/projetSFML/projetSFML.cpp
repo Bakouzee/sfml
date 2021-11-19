@@ -146,6 +146,62 @@ int main()
 	sf::Text quitText;
 	quitText.setFont(titlefont);
 	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, quitText, "Quit", sf::Color::White, 40);
+
+	float tailleBoutonTutoX = 50;
+	float tailleBoutonTutoY = 50;
+
+	sf::Text J1DeplacementText;
+	J1DeplacementText.setFont(titlefont);
+	J1DeplacementText.setPosition(screenResolution.x / 8, screenResolution.y / 8 * 6);
+	J1DeplacementText.setString("Move");
+
+	sf::Text J1ColorText;
+	J1ColorText.setFont(titlefont);
+	J1ColorText.setPosition(screenResolution.x / 8, screenResolution.y / 8 * 5 - screenResolution.y / 16);
+	J1ColorText.setString("Color");
+
+	sf::RectangleShape QButton;
+	sf::Text QText;
+	QText.setFont(titlefont);
+	SetButton(QButton, sf::Vector2f(screenResolution.x / 8 - screenResolution.x / 16, screenResolution.y / 8 * 6), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, QText, "Q", sf::Color::White, 40);
+
+	sf::RectangleShape DButton;
+	sf::Text DText;
+	DText.setFont(titlefont);
+	SetButton(DButton, sf::Vector2f(screenResolution.x / 8 + screenResolution.x / 16, screenResolution.y / 8 * 6), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, DText, "D", sf::Color::White, 40);
+
+	sf::RectangleShape ZButton;
+	sf::Text ZText;
+	ZText.setFont(titlefont);
+	SetButton(ZButton, sf::Vector2f(screenResolution.x / 8, screenResolution.y / 8 * 5), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, ZText, "Z", sf::Color::White, 40);
+
+
+	sf::Text J2DeplacementText;
+	J2DeplacementText.setFont(titlefont);
+	J2DeplacementText.setPosition(screenResolution.x / 8 * 7, screenResolution.y / 8 * 6);
+	J2DeplacementText.setString("Move");
+
+	sf::Text J2ColorText;
+	J2ColorText.setFont(titlefont);
+	J2ColorText.setPosition(screenResolution.x / 8 * 7, screenResolution.y / 8 * 5 - screenResolution.y / 16);
+	J2ColorText.setString("Color");
+
+	sf::RectangleShape JButton;
+	sf::Text JText;
+	JText.setFont(titlefont);
+	SetButton(JButton, sf::Vector2f(screenResolution.x / 8 * 7 - screenResolution.x / 16, screenResolution.y / 8 * 6), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, JText, "J", sf::Color::White, 40);
+
+	sf::RectangleShape LButton;
+	sf::Text LText;
+	LText.setFont(titlefont);
+	SetButton(LButton, sf::Vector2f(screenResolution.x / 8 * 7 + screenResolution.x / 16, screenResolution.y / 8 * 6), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, LText, "L", sf::Color::White, 40);
+
+	sf::RectangleShape IButton;
+	sf::Text IText;
+	IText.setFont(titlefont);
+	SetButton(IButton, sf::Vector2f(screenResolution.x / 8 * 7, screenResolution.y / 8 * 5), sf::Vector2f(tailleBoutonTutoX, tailleBoutonTutoY), sf::Color::Black, sf::Color::White, IText, "I", sf::Color::White, 40);
+
+
 	#pragma endregion
 
 	// End Menu vars
@@ -219,9 +275,6 @@ int main()
 				sf::Color color2;
 				changeColor(actualColor, color1, color2);
 
-				//titleText.setFillColor(color1);
-				//titleText.setOutlineColor(color2);
-
 				setChangeColor(J1Button, J1Text, color1, color2);
 				setChangeColor(J2Button, J2Text, color1, color2);
 				setChangeColor(quitButton, quitText, color1, color2);
@@ -242,6 +295,24 @@ int main()
 				// Quit button and text
 			window.draw(quitButton);
 			window.draw(quitText);
+
+			window.draw(IButton);
+			window.draw(IText);
+			window.draw(JButton);
+			window.draw(JText);
+			window.draw(LButton);
+			window.draw(LText);
+			window.draw(QButton);
+			window.draw(QText);
+			window.draw(DButton);
+			window.draw(DText);
+			window.draw(ZButton);
+			window.draw(ZText);
+
+			window.draw(J1DeplacementText);
+			window.draw(J2DeplacementText);
+			window.draw(J1ColorText);
+			window.draw(J2ColorText);
 
 			window.display();
 			#pragma endregion
@@ -292,7 +363,7 @@ int main()
 			setGameState(GameState::JEU);
 			#pragma endregion
 		}
-		else if(getState() == GameState::JEU)
+		else if (getState() == GameState::JEU)
 		{
 			#pragma region Game loop
 
@@ -310,12 +381,12 @@ int main()
 				if(event.type == sf::Event::KeyPressed)
 				{
 					// Players color change
-					if(event.key.code == sf::Keyboard::A)
+					if(event.key.code == sf::Keyboard::Z)
 					{
 						playerColor = ChangeSide(playerColor, 1);
 					
 					}
-					if(event.key.code == sf::Keyboard::M)
+					if(event.key.code == sf::Keyboard::I)
 					{
 						playerColor2 = ChangeSide(playerColor2, 2);
 					}
@@ -537,6 +608,19 @@ int main()
 				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isMultiplayer);
 				scoreJ1Final.setPosition(scoreJ1Final.getPosition().x, scoreJ1Final.getPosition().y + screenResolution.y / 24);
 				scoreJ2Final.setPosition(scoreJ2Final.getPosition().x, scoreJ2Final.getPosition().y + screenResolution.y / 24);
+
+				timerColorChangeMenu.restart();
+			}
+
+			if (timerColorChangeMenu.getElapsedTime().asSeconds() > 5)
+			{
+				sf::Color color1;
+				sf::Color color2;
+				changeColor(actualColor, color1, color2);
+
+				setChangeColor(retryButton, retryText, color1, color2);
+				setChangeColor(quitButton, quitText, color1, color2);
+				timerColorChangeMenu.restart();
 			}
 
 
