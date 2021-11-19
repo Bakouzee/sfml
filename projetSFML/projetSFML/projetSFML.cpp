@@ -265,11 +265,28 @@ int main()
 					isMultiplayer = true;
 					setGameState(GameState::JEU);
 				}
+				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || (sf::Keyboard::isKeyPressed(sf::Keyboard::I)))
+				{
+					sf::Color color1;
+					sf::Color color2;
+					changeColor(actualColor, color1, color2);
+
+					setChangeColor(J1Button, J1Text, color1, color2);
+					setChangeColor(J2Button, J2Text, color1, color2);
+					setChangeColor(quitButton, quitText, color1, color2);
+
+					setChangeColor(IButton, IText, color1, color2);
+					setChangeColor(JButton, JText, color1, color2);
+					setChangeColor(LButton, LText, color1, color2);
+					setChangeColor(QButton, QText, color1, color2);
+					setChangeColor(ZButton, ZText, color1, color2);
+					setChangeColor(DButton, DText, color1, color2);
+				}
 			}
 			#pragma endregion
 
 			// Change colors of the buttons with time
-			if (timerColorChangeMenu.getElapsedTime().asSeconds() > 5)
+			if (timerColorChangeMenu.getElapsedTime().asSeconds() > 10)
 			{
 				sf::Color color1;
 				sf::Color color2;
@@ -278,6 +295,14 @@ int main()
 				setChangeColor(J1Button, J1Text, color1, color2);
 				setChangeColor(J2Button, J2Text, color1, color2);
 				setChangeColor(quitButton, quitText, color1, color2);
+
+				setChangeColor(IButton, IText, color1, color2);
+				setChangeColor(JButton, JText, color1, color2);
+				setChangeColor(LButton, LText, color1, color2);
+				setChangeColor(QButton, QText, color1, color2);
+				setChangeColor(ZButton, ZText, color1, color2);
+				setChangeColor(DButton, DText, color1, color2);
+
 				timerColorChangeMenu.restart();
 			}
 
