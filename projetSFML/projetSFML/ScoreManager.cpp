@@ -3,20 +3,42 @@
 #include "Arthur.h"
 #include <iostream>
 
-sf::Text SetText(int numberPlayer, float screenResolutionX)
+void SetText(sf::Text& actualText, int numberPlayer, sf::Vector2f screenResolution, bool isPlayerTwoActive)
 {
-	sf::Text actualText;
 	actualText.setCharacterSize(20);
-	if(numberPlayer == 1)
+	actualText.setOrigin(actualText.getGlobalBounds().width / 2, actualText.getGlobalBounds().height / 2 + 5);
+	if(getState() == GameState::MENU || getState() == GameState::JEU)
 	{
-		actualText.setPosition(40, 30);
+		if(numberPlayer == 1)
+		{
+			actualText.setPosition(screenResolution.x / 64, screenResolution.y / 30);
+		}
+		else
+		{
+			actualText.setPosition(screenResolution.x / 64 * 57, screenResolution.y / 30);
+		}
 	}
-	else
+	else if(getState() == GameState::FIN)
 	{
-		actualText.setPosition(screenResolutionX - 180, 30);
+		actualText.setCharacterSize(40);
+		if(isPlayerTwoActive)
+		{
+			if(numberPlayer == 1)
+			{
+				actualText.setPosition(screenResolution.x / 9 * 2, screenResolution.y / 3);
+			}
+			else
+			{
+				actualText.setPosition(screenResolution.x / 8 * 6, screenResolution.y / 3);
+			}
+		}
+		else if(numberPlayer == 1)
+		{
+			actualText.setPosition(screenResolution.x / 2, screenResolution.y / 4);
+		}
 	}
-	return actualText;
 }
+
 
 float SetScore(float actualTime, sf::Text& actualText, int numberPlayer, float combo, float score)
 {

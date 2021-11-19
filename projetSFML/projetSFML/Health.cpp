@@ -46,7 +46,6 @@ sf::ConvexShape lifeCircle()
 	heart.setFillColor(sf::Color::Red);
 	heart.setOutlineThickness(2);
 	heart.setOutlineColor(sf::Color::White);
-	//newLifeCircle.setOrigin(circleLifeRadius, circleLifeRadius);
 	return heart;
 }
 

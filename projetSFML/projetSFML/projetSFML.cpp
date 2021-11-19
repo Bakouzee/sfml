@@ -99,9 +99,11 @@ int main()
 	//Score
 	sf::Font arial;
 	arial.loadFromFile(getAssetPath() + "\\arial.ttf");
-	sf::Text scorePlayerOneText = SetText(1, screenResolution.x);
+	sf::Text scorePlayerOneText;
+	SetText(scorePlayerOneText, 1, screenResolution.ToSFVector2f());
 	scorePlayerOneText.setFont(arial);
-	sf::Text scorePlayerTwoText = SetText(2, screenResolution.x);
+	sf::Text scorePlayerTwoText;
+	SetText(scorePlayerTwoText,2, screenResolution.ToSFVector2f());
 	scorePlayerTwoText.setFont(arial);
 
 	//Initialize balck holes and attacks
@@ -146,6 +148,23 @@ int main()
 	sf::Text retryText;
 	retryText.setFont(titlefont);
 	SetButton(retryButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, retryText, "Retry", sf::Color::White, 40);
+
+
+	sf::Text scoreJ1FinalText;
+	scoreJ1FinalText.setFont(titlefont);
+	scoreJ1FinalText.setString("Joueur 1");
+
+	sf::Text scoreJ1Final;
+	scoreJ1Final.setFont(titlefont);
+
+
+	sf::Text scoreJ2FinalText;
+	scoreJ2FinalText.setFont(titlefont);
+	scoreJ2FinalText.setString("Joueur 2");
+
+	sf::Text scoreJ2Final;
+	scoreJ2Final.setFont(titlefont);
+
 
 	// Game loop
 	while (window.isOpen()) {
@@ -419,7 +438,7 @@ int main()
 				if (takeDamage) setLife(playerOne, -1, scorePlayerOne);				
 			}
 			// Check if there is collider touching player 2
-			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0)
+			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0 && isPlayerTwo)
 			{
 				bool takeDamage = false;
 
@@ -533,15 +552,15 @@ int main()
 			}
 		}*/
 
-		//Affichage score
-		window.draw(scorePlayerOneText);
-		window.draw(scorePlayerTwoText);
-		//Affichage score
-		window.draw(scorePlayerOneText);
-		if (isPlayerTwo)
+			//Affichage score
+			window.draw(scorePlayerOneText);
 			window.draw(scorePlayerTwoText);
+			//Affichage score
+			window.draw(scorePlayerOneText);
+			if (isPlayerTwo)
+				window.draw(scorePlayerTwoText);
 
-		window.display();
+			window.display();
 
 		}
 		else if (getState() == GameState::FIN)
@@ -551,6 +570,26 @@ int main()
 				initEnd = true;
 				quitButton.setPosition(quitButton.getPosition().x, quitButton.getPosition().y + tailleButtonY + screenResolution.y / 30);
 				quitText.setPosition(quitButton.getPosition().x + (tailleButtonX / 2), quitButton.getPosition().y + (tailleButtonY / 2));
+				setChangeColor(quitButton, quitText, sf::Color::Black, sf::Color::White);
+
+				SetText(scoreJ1FinalText, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
+				SetText(scoreJ2FinalText, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
+
+				scoreJ1Final.setString(std::to_string((int)scoreJ1));
+				scoreJ2Final.setString(std::to_string((int)scoreJ2));
+				SetText(scoreJ1Final, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
+				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
+				scoreJ1Final.setPosition(scoreJ1Final.getPosition().x, scoreJ1Final.getPosition().y + screenResolution.y / 24);
+				scoreJ2Final.setPosition(scoreJ2Final.getPosition().x, scoreJ2Final.getPosition().y + screenResolution.y / 24);
+			}
+
+
+			sf::Event event;
+			while (window.pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || isButtonPressed(quitButton.getPosition(), quitButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
+					window.close();
+				}
 			}
 
 
@@ -560,6 +599,16 @@ int main()
 
 			window.draw(retryButton);
 			window.draw(retryText);
+
+			window.draw(scoreJ1FinalText);
+			window.draw(scoreJ1Final);
+
+			if(isPlayerTwo)
+			{
+				window.draw(scoreJ2FinalText);
+				window.draw(scoreJ2Final);
+			}
+
 			window.display();
 		}
 	}
