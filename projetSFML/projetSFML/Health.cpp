@@ -57,13 +57,13 @@ void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float s
 
 	if(actualPlayer.numberPlayer == 1)
 	{
-		posX = 50;
+		posX = 80;
 		offSet = 20;
 		multiplicateur = 1;
 	}
 	else
 	{
-		posX = screenResolutionX - 50;
+		posX = screenResolutionX - 80;
 		offSet = -20;
 		multiplicateur = -1;
 	}

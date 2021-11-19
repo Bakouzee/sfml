@@ -153,7 +153,7 @@ int main()
 
 	sf::Text scoreJ1FinalText;
 	scoreJ1FinalText.setFont(titlefont);
-	scoreJ1FinalText.setString("Joueur 1");
+	scoreJ1FinalText.setString("Player 1");
 
 	sf::Text scoreJ1Final;
 	scoreJ1Final.setFont(titlefont);
@@ -161,11 +161,16 @@ int main()
 
 	sf::Text scoreJ2FinalText;
 	scoreJ2FinalText.setFont(titlefont);
-	scoreJ2FinalText.setString("Joueur 2");
+	scoreJ2FinalText.setString("Player 2");
 
 	sf::Text scoreJ2Final;
 	scoreJ2Final.setFont(titlefont);
 
+	sf::Text joueurXWinText;
+	joueurXWinText.setFont(titlefont);
+
+	sf::Text bestScore;
+	bestScore.setFont(titlefont);
 
 	// Game loop
 	while (window.isOpen()) {
@@ -218,6 +223,48 @@ int main()
 			window.draw(quitText);
 
 			window.display();
+		}
+		else if (getState() == GameState::INIT)
+		{
+			playerOne.player.setRotation(0);
+			playerOne.isDead = false;
+			playerOne.actualLife = 3;
+			playerInGame++;
+			scoreJ1 = 0;
+			comboJ1 = 0.1;
+			scorePlayerOne.restart();
+			timerComboJ1.restart();
+			scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
+
+
+			if(isPlayerTwo)
+			{
+				playerTwo.player.setRotation(0);
+				playerTwo.isDead = false;
+				playerTwo.actualLife = 3;
+				playerInGame++;
+				scoreJ2 = 0;
+				comboJ2 = 0.1;
+				scorePlayerTwo.restart();
+				timerComboJ2.restart();
+				scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
+			}
+
+			for (int i = 0; i < 3; i++)
+			{
+				playerOne.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
+				if (isPlayerTwo)
+					playerTwo.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
+			}
+
+			clock.restart();
+			timerBonus.restart();
+			timerSpawnBonus.restart();
+			timerColorChange.restart();
+
+			entities.clear();
+			
+			setGameState(GameState::JEU);
 		}
 		else if(getState() == GameState::JEU)
 		{
@@ -427,12 +474,12 @@ int main()
 					{
 						DestroyEntity(entite, &entities);
 						takeDamage = true;
-						comboJ1 = 0.f;
+						comboJ1 = 0.1f;
 					} else {
 						comboJ1 += 0.3f;
 						timerComboJ1.restart();
 						if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
-							comboJ1 = 0.f;
+							comboJ1 = 0.1f;
 						}
 					}
 				}
@@ -450,12 +497,12 @@ int main()
 					{
 						DestroyEntity(entite, &entities);
 						takeDamage = true;
-						comboJ2 = 0.f;
+						comboJ2 = 0.1f;
 					} else {
 						comboJ2 += 0.3f;
 						timerComboJ2.restart();
 						if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
-							comboJ2 = 0.f;
+							comboJ2 = 0.1f;
 						}
 					}
 				}
@@ -555,9 +602,6 @@ int main()
 
 			//Affichage score
 			window.draw(scorePlayerOneText);
-			window.draw(scorePlayerTwoText);
-			//Affichage score
-			window.draw(scorePlayerOneText);
 			if (isPlayerTwo)
 				window.draw(scorePlayerTwoText);
 
@@ -569,8 +613,8 @@ int main()
 			if(!initEnd)
 			{
 				initEnd = true;
-				quitButton.setPosition(quitButton.getPosition().x, quitButton.getPosition().y + tailleButtonY + screenResolution.y / 30);
-				quitText.setPosition(quitButton.getPosition().x + (tailleButtonX / 2), quitButton.getPosition().y + (tailleButtonY / 2));
+				quitButton.setPosition(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30 + tailleButtonY + screenResolution.y / 30);
+				quitText.setPosition(screenResolution.x / 2 - screenResolution.x / 16 + (tailleButtonX / 2), screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30 + tailleButtonY + screenResolution.y / 30 + (tailleButtonY / 2));
 				setChangeColor(quitButton, quitText, sf::Color::Black, sf::Color::White);
 
 				SetText(scoreJ1FinalText, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
@@ -578,6 +622,23 @@ int main()
 
 				scoreJ1Final.setString(std::to_string((int)scoreJ1));
 				scoreJ2Final.setString(std::to_string((int)scoreJ2));
+
+				if (scoreJ1 > scoreJ2)
+					joueurXWinText.setString("Player 1 won");
+				else
+					joueurXWinText.setString("Player 2 won");
+
+				SetText(joueurXWinText, 0, screenResolution.ToSFVector2f(), isPlayerTwo);
+
+				if(GetBestScore() < scoreJ1)
+					SetBestScore(scoreJ1);
+				else if(GetBestScore() < scoreJ2)
+					SetBestScore(scoreJ2);
+
+				bestScore.setString("Best Score\n " + std::to_string(GetBestScore()));
+				SetText(bestScore, 3, screenResolution.ToSFVector2f());
+				
+				
 				SetText(scoreJ1Final, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
 				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
 				scoreJ1Final.setPosition(scoreJ1Final.getPosition().x, scoreJ1Final.getPosition().y + screenResolution.y / 24);
@@ -590,6 +651,9 @@ int main()
 			{
 				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || isButtonPressed(quitButton.getPosition(), quitButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
 					window.close();
+				}
+				else if (isButtonPressed(retryButton.getPosition(), retryButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
+					setGameState(GameState::INIT);
 				}
 			}
 
@@ -604,8 +668,12 @@ int main()
 			window.draw(scoreJ1FinalText);
 			window.draw(scoreJ1Final);
 
+			window.draw(bestScore);
+
+
 			if(isPlayerTwo)
 			{
+				window.draw(joueurXWinText);
 				window.draw(scoreJ2FinalText);
 				window.draw(scoreJ2Final);
 			}
