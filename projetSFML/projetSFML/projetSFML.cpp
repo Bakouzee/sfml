@@ -47,10 +47,12 @@ int main()
 	#pragma endregion
 
 	bool isShowed = false;
+	bool speedUp = false;
 	float comboJ1 = 1.f;
 	float comboJ2 = 1.f;
 	float scoreJ1 = 0.f;
 	float scoreJ2 = 0.f;
+	int playerCollide = -1;
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -95,6 +97,7 @@ int main()
 	sf::Clock timerColorChange;
 	sf::Clock timerComboJ1;
 	sf::Clock timerComboJ2;
+	sf::Clock timerSlowU;
 
 	sf::Clock timerColorChangeMenu;
 	//sf::Clock timer;
@@ -167,8 +170,8 @@ int main()
 		// "Joueur 1 score :"
 	sf::Text scoreJ1FinalText;
 	scoreJ1FinalText.setFont(titlefont);
-	scoreJ1FinalText.setString("Joueur 1");
-		// Actual score display
+	scoreJ1FinalText.setString("Player 1");
+
 	sf::Text scoreJ1Final;
 	scoreJ1Final.setFont(titlefont);
 
@@ -176,11 +179,16 @@ int main()
 		// "Joueur 2 score :"
 	sf::Text scoreJ2FinalText;
 	scoreJ2FinalText.setFont(titlefont);
-	scoreJ2FinalText.setString("Joueur 2");
-		// Actual score display
+	scoreJ2FinalText.setString("Player 2");
+
 	sf::Text scoreJ2Final;
 	scoreJ2Final.setFont(titlefont);
-	#pragma endregion
+
+	sf::Text joueurXWinText;
+	joueurXWinText.setFont(titlefont);
+
+	sf::Text bestScore;
+	bestScore.setFont(titlefont);
 
 	// Game loop
 	while (window.isOpen()) {
@@ -246,6 +254,48 @@ int main()
 			#pragma endregion
 			#pragma endregion
 		}
+		else if (getState() == GameState::INIT)
+		{
+			playerOne.player.setRotation(0);
+			playerOne.isDead = false;
+			playerOne.actualLife = 3;
+			playerInGame++;
+			scoreJ1 = 0;
+			comboJ1 = 0.1;
+			scorePlayerOne.restart();
+			timerComboJ1.restart();
+			scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
+
+
+			if(isPlayerTwo)
+			{
+				playerTwo.player.setRotation(0);
+				playerTwo.isDead = false;
+				playerTwo.actualLife = 3;
+				playerInGame++;
+				scoreJ2 = 0;
+				comboJ2 = 0.1;
+				scorePlayerTwo.restart();
+				timerComboJ2.restart();
+				scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
+			}
+
+			for (int i = 0; i < 3; i++)
+			{
+				playerOne.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
+				if (isPlayerTwo)
+					playerTwo.tabLifeCircle[i].setFillColor(sf::Color(180, 0, 0, 255));
+			}
+
+			clock.restart();
+			timerBonus.restart();
+			timerSpawnBonus.restart();
+			timerColorChange.restart();
+
+			entities.clear();
+
+			setGameState(GameState::JEU);
+		}
 		else if(getState() == GameState::JEU)
 		{
 			#pragma region Game loop
@@ -291,6 +341,7 @@ int main()
 
 			// Restart clock to get elapsedTime == deltaTime
 			sf::Time elapsedTime = clock.restart();
+			window.clear();
 
 			// Set player colors
 			playerOne.SetColors(playerColor);
@@ -328,63 +379,48 @@ int main()
 			#pragma region Bonus gestion
 			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
 				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-				if (distancePlayers <= 180.f) {
-					bonus.setRotation(distancePlayers - 180.f);
-				}
-				else {
-					bonus.setRotation(distancePlayers + 180.f);
-				}
-				ChooseBonus(bonus, isShowed, timerBonus);
+				SetupPositionBonus2J(bonus, playerOne.player, playerTwo.player);
+				ChooseBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
-			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
 				bonus = BonusCrea1J(playerOne.player, circleGame);
-				ChooseBonus(bonus, isShowed, timerBonus);
+				ChooseBonus(bonus, playerOne, playerTwo, !isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
 
-			//Bonus Behavior
-			if (bonus.getFillColor() == sf::Color::Red) {
-
-				float rotationBonusMin = bonus.getRotation() - 5;
-				float rotationBonusMax = bonus.getRotation() + 5;
-
-				std::cout << "Bonus rotation : " << rotationBonusMin << ", " << rotationBonusMax << "[" << bonus.getRotation() << "]" << std::endl;
-				std::cout << "Player rotation : " << playerOne.player.getRotation() + 180 << std::endl;
-				if (playerOne.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						playerOne.AdjustLife(1, &timerBonus);
-						isShowed = false;
-					}
+			if (timerBonus.getElapsedTime().asSeconds() >= 3 && isPlayerTwo) {
+				isShowed = false;
+			}
+			else if (timerBonus.getElapsedTime().asSeconds() >= 4 && !isPlayerTwo) {
+				isShowed = false;
+			}
+			if (isShowed) {
+				CollideAndApplyBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus, speedUp, playerCollide);
+				window.draw(bonus);
+			}
+			//SpeedUp for the adversary
+			if (speedUp) {
+				isShowed = false;
+				std::cout << playerCollide << std::endl;
+				if (playerCollide == 1) {
+					playerTwo.speedPlayer = 150.f;
+					timerSlowU.restart();
+					playerCollide = -1;
 				}
-				else {
-					if (playerOne.player.getRotation() - 180 <= rotationBonusMax && playerOne.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						playerOne.AdjustLife(1, &timerBonus);
-						isShowed = false;
-					}
+				if (playerCollide == 2){
+					playerOne.speedPlayer = 150.f;
+					timerSlowU.restart();
+					playerCollide = -1;
 				}
-				if (playerTwo.player.getRotation() <= 180) {
-					std::cout << " - 180" << std::endl;
-					if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						playerTwo.AdjustLife(1, &timerBonus);
-						isShowed = false;
-					}
-				} else {
-					if (playerTwo.player.getRotation() - 180 <= rotationBonusMax && playerTwo.player.getRotation() - 180 >= rotationBonusMin) {
-						std::cout << "hit" << std::endl;
-						playerTwo.AdjustLife(1, &timerBonus);
-						isShowed = false;
-					}
+				if (timerSlowU.getElapsedTime().asSeconds() >= 2.f) {
+					playerTwo.speedPlayer = 100.f;
+					playerOne.speedPlayer = 100.f;
+					speedUp = false;
 				}
 			}
-			#pragma endregion
 
-			// Players deplacement
+
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
 
@@ -394,7 +430,6 @@ int main()
 				timerColorChange.restart();
 			}
 
-			window.clear();
 
 			// Entities gestion (entities == projectiles)
 			#pragma region Entities gestion
@@ -405,7 +440,7 @@ int main()
 				// Big function moving, calculating new radius, drawing, checking collision with players, destroying entities too far
 			HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
 				Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
-				Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	
+				Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),
 				20,	&touchingPlayer1, &touchingPlayer2, colorEntities
 			);
 			#pragma endregion
@@ -416,8 +451,8 @@ int main()
 			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
 			{
 				// Handle collision --> Remove life, reset bonus...
-				playerOne.OnCollisionWithEntities(&entities, touchingPlayer1, 
-					playerColor, colorEntities, 
+				playerOne.OnCollisionWithEntities(&entities, touchingPlayer1,
+					playerColor, colorEntities,
 					comboJ1, timerComboJ1, &scorePlayerOne);
 			}
 			// Check if there is collider touching player 2
@@ -494,8 +529,8 @@ int main()
 			if(!initEnd)
 			{
 				initEnd = true;
-				quitButton.setPosition(quitButton.getPosition().x, quitButton.getPosition().y + tailleButtonY + screenResolution.y / 30);
-				quitText.setPosition(quitButton.getPosition().x + (tailleButtonX / 2), quitButton.getPosition().y + (tailleButtonY / 2));
+				quitButton.setPosition(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30 + tailleButtonY + screenResolution.y / 30);
+				quitText.setPosition(screenResolution.x / 2 - screenResolution.x / 16 + (tailleButtonX / 2), screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30 + tailleButtonY + screenResolution.y / 30 + (tailleButtonY / 2));
 				setChangeColor(quitButton, quitText, sf::Color::Black, sf::Color::White);
 
 				SetText(scoreJ1FinalText, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
@@ -503,6 +538,23 @@ int main()
 
 				scoreJ1Final.setString(std::to_string((int)scoreJ1));
 				scoreJ2Final.setString(std::to_string((int)scoreJ2));
+
+				if (scoreJ1 > scoreJ2)
+					joueurXWinText.setString("Player 1 won");
+				else
+					joueurXWinText.setString("Player 2 won");
+
+				SetText(joueurXWinText, 0, screenResolution.ToSFVector2f(), isPlayerTwo);
+
+				if(GetBestScore() < scoreJ1)
+					SetBestScore(scoreJ1);
+				else if(GetBestScore() < scoreJ2)
+					SetBestScore(scoreJ2);
+
+				bestScore.setString("Best Score\n " + std::to_string(GetBestScore()));
+				SetText(bestScore, 3, screenResolution.ToSFVector2f());
+
+
 				SetText(scoreJ1Final, 1, screenResolution.ToSFVector2f(), isPlayerTwo);
 				SetText(scoreJ2Final, 2, screenResolution.ToSFVector2f(), isPlayerTwo);
 				scoreJ1Final.setPosition(scoreJ1Final.getPosition().x, scoreJ1Final.getPosition().y + screenResolution.y / 24);
@@ -515,6 +567,9 @@ int main()
 			{
 				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || isButtonPressed(quitButton.getPosition(), quitButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
 					window.close();
+				}
+				else if (isButtonPressed(retryButton.getPosition(), retryButton.getSize(), event.mouseButton.x, event.mouseButton.y)) {
+					setGameState(GameState::INIT);
 				}
 			}
 
@@ -529,8 +584,12 @@ int main()
 			window.draw(scoreJ1FinalText);
 			window.draw(scoreJ1Final);
 
+			window.draw(bestScore);
+
+
 			if(isPlayerTwo)
 			{
+				window.draw(joueurXWinText);
 				window.draw(scoreJ2FinalText);
 				window.draw(scoreJ2Final);
 			}
