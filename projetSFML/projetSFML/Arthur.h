@@ -1,6 +1,9 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include "AudioManager.h"
+#include "Entities.h"
 
-const float PI = 3.14159265358979323846;
+const float PI = 3.14159265358979323846f;
 const float circleRadius = 425.0f;
 const float playerRadius = 25.0f;
 
@@ -10,9 +13,17 @@ struct Player
 	sf::CircleShape player;
 	int actualLife;
 	sf::ConvexShape tabLifeCircle[3];
+
 	int scorePlayer = 0;
+	void AdjustLife(int lifeChange, sf::Clock* playerScoreClock);
+
 	bool isDead = false;
+
+	void SetColors(const Colors& colors);
+
+	void OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector<Entity*> entitiesColliding, const Colors& playerColor, const Colors& entitiesColors, float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock);
 };
+
 
 enum GameState
 {
@@ -45,7 +56,6 @@ sf::CircleShape BonusCrea1J(sf::CircleShape player1, sf::CircleShape circleGame)
 sf::CircleShape BonusCrea2J(sf::CircleShape player1, sf::CircleShape player2, sf::CircleShape circleGame);
 
 //Health.cpp
-void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer);
 sf::ConvexShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
 

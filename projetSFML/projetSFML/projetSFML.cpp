@@ -7,12 +7,13 @@
 #include <vector>
 #include <string>
 
+#include "2D.h"
+
 #include "AudioManager.h"
 #include "Colors.h"
 
-#include "Arthur.h"
-#include "2D.h"
 #include "Entities.h"
+#include "Arthur.h"
 #include "BlackHole.h"
 #include "AssetsPath.h"
 
@@ -24,6 +25,7 @@
 
 int main()
 {
+	// Better random and bool display
 	std::cout << std::boolalpha;
 	srand(time(NULL));
 
@@ -31,24 +33,24 @@ int main()
 	SetUpAudios();
 	PlayGameMusic();
 
-	std::list<Entity> entities;
 
 	//bool isAnimating = false;
 
 	// Window
+	#pragma region Window definition
 	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Default, settings); //, sf::Style::Fullscreen
 	window.setVerticalSyncEnabled(true);
+	#pragma endregion
 
 	bool isShowed = false;
 	float comboJ1 = 1.f;
 	float comboJ2 = 1.f;
 	float scoreJ1 = 0.f;
 	float scoreJ2 = 0.f;
-
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -59,7 +61,8 @@ int main()
 	Player playerOne = NewPlayer(PlayerCrea(circleGame, 1), 3, 1);
 	Player playerTwo = NewPlayer(PlayerCrea(circleGame, 2), 3, 2);
 
-	//ColorID idC = ColorID::BLACK;
+	// Pairs of color defintion --> apllied to projectiles and players
+	#pragma region Pairs of color definitions
 	Colors playerColor = { sf::Color::Black, sf::Color::White };
 	Colors playerColor2 = { sf::Color::Black, sf::Color::White };
 	Colors colorEntities = { sf::Color::Black, sf::Color::White };
@@ -67,8 +70,9 @@ int main()
 	playerTwo.player.setOutlineThickness(3);
 
 	ColorID idC = ColorID::BLACK;
+	#pragma endregion
 
-	//Point de vie Affichage
+	// Set players life position (UI)
 	SetPositionLifeCircle(playerOne, 20, screenResolution.x);
 	SetPositionLifeCircle(playerTwo, 20, screenResolution.x);
 
@@ -80,7 +84,8 @@ int main()
 	bool arcBD = false;
 	bool arcBG = false;
 
-	//Clock
+	//Clocks
+	#pragma region Clocks definition
 	sf::Clock clock;
 	sf::Clock scorePlayerOne;
 	sf::Clock scorePlayerTwo;
@@ -93,11 +98,13 @@ int main()
 
 	sf::Clock timerColorChangeMenu;
 	//sf::Clock timer;
+	#pragma endregion
 
 	//Bonus
 	sf::CircleShape bonus;
 
 	//Score
+	#pragma region Score fonts and texts
 	sf::Font arial;
 	arial.loadFromFile(getAssetPath() + "\\arial.ttf");
 	sf::Text scorePlayerOneText;
@@ -106,15 +113,19 @@ int main()
 	sf::Text scorePlayerTwoText;
 	SetText(scorePlayerTwoText,2, screenResolution.ToSFVector2f());
 	scorePlayerTwoText.setFont(arial);
+	#pragma endregion
 
-	//Initialize balck holes and attacks
+	//Initialize balck holes (struct instance managing projectiles creation)
+	#pragma region Initialize black hole
 		// Create attack
 	std::vector<AttackPattern> results = GetAllAttacks();
 		// Create black hole
 	BlackHole blackHole(middleScreen, 0.5f, &results);
+	#pragma endregion
+	std::list<Entity> entities;
 
-
-	//GESTION DU MENU
+	// Main menu vars
+	#pragma region Main menu buttons
 	int actualColor = 1;
 
 	sf::Font titlefont;
@@ -140,37 +151,45 @@ int main()
 	sf::Text quitText;
 	quitText.setFont(titlefont);
 	SetButton(quitButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, quitText, "Quit", sf::Color::White, 40);
+	#pragma endregion
 
-
-	//GESTION MENU DE FIN
+	// End Menu vars
+	#pragma region End menu
 	bool initEnd = false;
 
+	// Retry button
 	sf::RectangleShape retryButton;
 	sf::Text retryText;
 	retryText.setFont(titlefont);
 	SetButton(retryButton, sf::Vector2f(screenResolution.x / 2 - screenResolution.x / 16, screenResolution.y / 2 + tailleButtonY + screenResolution.y / 30), sf::Vector2f(tailleButtonX, tailleButtonY), sf::Color::Black, sf::Color::White, retryText, "Retry", sf::Color::White, 40);
 
-
+	// Player 1 score
+		// "Joueur 1 score :"
 	sf::Text scoreJ1FinalText;
 	scoreJ1FinalText.setFont(titlefont);
 	scoreJ1FinalText.setString("Joueur 1");
-
+		// Actual score display
 	sf::Text scoreJ1Final;
 	scoreJ1Final.setFont(titlefont);
 
-
+	// Player 2 score
+		// "Joueur 2 score :"
 	sf::Text scoreJ2FinalText;
 	scoreJ2FinalText.setFont(titlefont);
 	scoreJ2FinalText.setString("Joueur 2");
-
+		// Actual score display
 	sf::Text scoreJ2Final;
 	scoreJ2Final.setFont(titlefont);
-
+	#pragma endregion
 
 	// Game loop
 	while (window.isOpen()) {
+
 		if(getState() == GameState::MENU)
 		{
+			#pragma region Main Menu loop
+			// Inputs gestion
+			#pragma region Inputs gestion
 			sf::Event event;
 			while (window.pollEvent(event))
 			{
@@ -190,7 +209,9 @@ int main()
 					setGameState(GameState::JEU);
 				}
 			}
+			#pragma endregion
 
+			// Change colors of the buttons with time
 			if (timerColorChangeMenu.getElapsedTime().asSeconds() > 5)
 			{
 				sf::Color color1;
@@ -206,127 +227,105 @@ int main()
 				timerColorChangeMenu.restart();
 			}
 
+			// Clear/Draw/Display window
+			#pragma region Window gestion
 			window.clear();
 
-			//Affichage Arthur
+				// Title
 			window.draw(titleText);
+				// Play buttons and texts
 			window.draw(J1Button);
-			window.draw(J2Button);
-			window.draw(quitButton);
 			window.draw(J1Text);
+			window.draw(J2Button);
 			window.draw(J2Text);
+				// Quit button and text
+			window.draw(quitButton);
 			window.draw(quitText);
 
 			window.display();
+			#pragma endregion
+			#pragma endregion
 		}
 		else if(getState() == GameState::JEU)
 		{
-			//R�initialise la couleur du player
-			playerOne.player.setFillColor(playerColor.primary);
-			playerOne.player.setOutlineColor(playerColor.secondary);
-			if(isPlayerTwo)
-			{
-				playerTwo.player.setFillColor(playerColor2.primary);
-				playerTwo.player.setOutlineColor(playerColor2.secondary);
-			}
+			#pragma region Game loop
 
-			// Clock
-			sf::Time elapsedTime = clock.restart(); // elapsedTime.asSeconds() pour l'utiliser
-			if (playerOne.actualLife > 0)
-			{
-				scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
+			// Inputs gestion
+			#pragma region Inputs gestion
+			sf::Event event;
+			while (window.pollEvent(event)) {
+
+				// Close window
+				if (event.type == sf::Event::Closed) {
+					window.close();
+				}
+
+				// Players controls
+				if(event.type == sf::Event::KeyPressed)
+				{
+					// Players color change
+					if(event.key.code == sf::Keyboard::A)
+					{
+						playerColor = ChangeSide(playerColor, 1);
+						//bonus pour 2j
+						bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
+						float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
+						if (distancePlayers <= 180.f) {
+							bonus.setRotation(distancePlayers - 180.f);
+						}
+						else {
+							bonus.setRotation(distancePlayers + 180.f);
+						}
+						ChooseBonus(bonus, isShowed, timerBonus);
+					}
+					if(event.key.code == sf::Keyboard::M)
+					{
+						playerColor2 = ChangeSide(playerColor2, 2);
+						//bonus pour 1J
+						bonus = BonusCrea1J(playerOne.player, circleGame);
+						ChooseBonus(bonus, isShowed, timerBonus);
+					}
+				}
 			}
-			if (playerTwo.actualLife > 0 && isPlayerTwo)
-			{
-				scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
-			}
+			#pragma endregion
+
+			// Restart clock to get elapsedTime == deltaTime
+			sf::Time elapsedTime = clock.restart();
+
+			// Set player colors
+			playerOne.SetColors(playerColor);
+			if (isPlayerTwo) playerTwo.SetColors(playerColor2);
+
+			// Increase player score
+			if (!playerOne.isDead) scoreJ1 = SetScore(scorePlayerOne.getElapsedTime().asSeconds(), scorePlayerOneText, 1, comboJ1, scoreJ1);
+			if (!playerTwo.isDead && isPlayerTwo) scoreJ2 = SetScore(scorePlayerTwo.getElapsedTime().asSeconds(), scorePlayerTwoText, 2, comboJ2, scoreJ2);
 
 			// Black hole gestion
+			#pragma region Black hole gestion
+				// Launch new attacks when current attack finished
 			if(blackHole.attackTimer <= 0)
 			{
 				blackHole.LaunchNewAttack(&entities);
 			}
 			else
 			{
+				// Decrease the current attack timer
 				blackHole.attackTimer = blackHole.attackTimer - elapsedTime.asSeconds();
 
+				// Decrease the timer of the current attack's current wave --> if the timer below 0 --> new wave of the attack is launched
 				blackHole.currentAttackPtr->waveTimer = blackHole.currentAttackPtr->waveTimer - elapsedTime.asSeconds();
 				blackHole.currentAttackPtr->SpawnWaveIfFinished(*(blackHole.position), &entities);
 			}
+			#pragma endregion
 
-			//std::cout << entities.size() << std::endl;
-
-
-			//float timeChangingColors = timer.getElapsedTime().asSeconds();
-			//if (timeChangingColors >= 3) {
-			//	ChangeColorForEverything(playerColor, //color des entit�s, idC);
-			//}
-
-			//Score Animation
-			//float anim = animTimer.getElapsedTime().asSeconds();
-			//score.setOrigin(score.getLocalBounds().width / 2, score.getLocalBounds().height / 2);
-
-			/*if ((int)deltaTime % 1000 == 0 && (int)deltaTime > 0) {
-				isAnimating = true;
-				std::cout << isAnimating << std::endl;
-			}
-
-			if (isAnimating) {
-				animTimer.restart();
-				if (anim <= 1.3f) {
-					score.setCharacterSize(score.getCharacterSize() + 1);
-				} else {
-					score.setCharacterSize(30);
-					isAnimating = false;
-				}
-			}*/
-
-
-			sf::Event event;
-			while (window.pollEvent(event)) {
-				// Process any input event here
-				if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-					window.close();
-				}
-				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
-					playerColor = ChangeSide(playerColor, 1);
-					//bonus pour 2j
-					bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
-					float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
-					if (distancePlayers <= 180.f) {
-						bonus.setRotation(distancePlayers - 180.f);
-					}
-					else {
-						bonus.setRotation(distancePlayers + 180.f);
-					}
-					ChooseBonus(bonus, isShowed, timerBonus);
-
-				}
-				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
-					playerColor2 = ChangeSide(playerColor2, 2);
-					//bonus pour 1J
-					bonus = BonusCrea1J(playerOne.player, circleGame);
-					ChooseBonus(bonus, isShowed, timerBonus);
-				}
-				if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
-					PlayHurtSound();
-				}
-				else if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-				{
-					float angle = rand();
-					float speed = rand() % 25 + 50;
-					Vector2 dir = Vector2(cos(angle), sin(angle));
-					bool primaryColor = rand() % 2 == 0;
-					entities.push_back(Entity(middleScreen, dir, speed, primaryColor, MinMax(5, 20)));
-				}
-			}
-
+			// Change world colors periodically
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
 			ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 			timerColorChange.restart();
-		}
-			window.clear();
+			}
 
+			// Bonus gestion
+			#pragma region Bonus gestion
 			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && isPlayerTwo) {
 				bonus = BonusCrea2J(playerOne.player, playerTwo.player, circleGame);
 				float distancePlayers = (playerOne.player.getRotation() + playerTwo.player.getRotation()) / 2;
@@ -357,14 +356,14 @@ int main()
 					std::cout << " - 180" << std::endl;
 					if (playerOne.player.getRotation() + 180 <= rotationBonusMax && playerOne.player.getRotation() + 180 >= rotationBonusMin) {
 						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
+						playerOne.AdjustLife(1, &timerBonus);
 						isShowed = false;
 					}
 				}
 				else {
 					if (playerOne.player.getRotation() - 180 <= rotationBonusMax && playerOne.player.getRotation() - 180 >= rotationBonusMin) {
 						std::cout << "hit" << std::endl;
-						setLife(playerOne, 1, timerBonus);
+						playerOne.AdjustLife(1, &timerBonus);
 						isShowed = false;
 					}
 				}
@@ -372,35 +371,81 @@ int main()
 					std::cout << " - 180" << std::endl;
 					if (playerTwo.player.getRotation() + 180 <= rotationBonusMax && playerTwo.player.getRotation() + 180 >= rotationBonusMin) {
 						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
+						playerTwo.AdjustLife(1, &timerBonus);
 						isShowed = false;
 					}
 				} else {
 					if (playerTwo.player.getRotation() - 180 <= rotationBonusMax && playerTwo.player.getRotation() - 180 >= rotationBonusMin) {
 						std::cout << "hit" << std::endl;
-						setLife(playerTwo, 1, timerBonus);
+						playerTwo.AdjustLife(1, &timerBonus);
 						isShowed = false;
 					}
 				}
 			}
+			#pragma endregion
 
-			// Whatever I want to draw goes here
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
-				isShowed = false;
-			}
-			if (isShowed) {
-				window.draw(bonus);
-			}				
-
+			// Players deplacement
 			if(playerOne.actualLife > 0) Deplacement(playerOne, elapsedTime);
 			if(playerTwo.actualLife > 0 && isPlayerTwo) Deplacement(playerTwo, elapsedTime);
 
+			// Change colors of players and projectiles periodically
 			if (timerColorChange.getElapsedTime().asSeconds() >= 10) {
 				ChangeColorForEverything(playerColor, playerColor2, colorEntities, idC);
 				timerColorChange.restart();
 			}
+
 			window.clear();
-			// Whatever I want to draw goes here
+
+			// Entities gestion (entities == projectiles)
+			#pragma region Entities gestion
+				// vectors meant to contain pointers of entities colliding with players
+			std::vector<Entity*> touchingPlayer1;
+			std::vector<Entity*> touchingPlayer2;
+
+				// Big function moving, calculating new radius, drawing, checking collision with players, destroying entities too far
+			HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
+				Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
+				Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	
+				20,	&touchingPlayer1, &touchingPlayer2, colorEntities
+			);
+			#pragma endregion
+
+			// Collision checks
+			#pragma region Collision with players check
+			// Check if there is collider touching player 1
+			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
+			{
+				// Handle collision --> Remove life, reset bonus...
+				playerOne.OnCollisionWithEntities(&entities, touchingPlayer1, 
+					playerColor, colorEntities, 
+					comboJ1, timerComboJ1, &scorePlayerOne);
+			}
+			// Check if there is collider touching player 2
+			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0 && isPlayerTwo)
+			{
+				playerTwo.OnCollisionWithEntities(&entities, touchingPlayer2,
+					playerColor2, colorEntities,
+					comboJ2, timerComboJ2, &scorePlayerTwo);
+			}
+			#pragma endregion
+
+			// Check if game finished
+			if(playerInGame == 0)
+			{
+				setGameState(GameState::FIN);
+				initEnd = false;
+			}
+
+			// Clear/Draw/Display
+			#pragma region Window gestion
+
+				// Circle path of the players
+			window.draw(circleGame);
+
+				// Draw entities
+			//DrawEntities(&entities, &window, colorEntities);
+
+				// Draw bonus
 			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
 				isShowed = false;
 			}
@@ -408,63 +453,8 @@ int main()
 				window.draw(bonus);
 			}
 
-			// Entities gestion
-			std::vector<Entity*> touchingPlayer1;
-			std::vector<Entity*> touchingPlayer2;
-			HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
-			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
-			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	20,	&touchingPlayer1, &touchingPlayer2, colorEntities);
-
-			// Check if there is collider touching player 1
-			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)
-			{
-				bool takeDamage = false;
-
-				for (Entity* entite : touchingPlayer1)
-				{
-					sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
-					if (entityColor != playerColor.primary)
-					{
-						DestroyEntity(entite, &entities);
-						takeDamage = true;
-						comboJ1 = 0.f;
-					} else {
-						comboJ1 += 0.3f;
-						timerComboJ1.restart();
-						if (timerComboJ1.getElapsedTime().asSeconds() >= 1.5f) {
-							comboJ1 = 0.f;
-						}
-					}
-				}
-				if (takeDamage) setLife(playerOne, -1, scorePlayerOne);				
-			}
-			// Check if there is collider touching player 2
-			if (!touchingPlayer2.empty() && playerTwo.actualLife > 0 && isPlayerTwo)
-			{
-				bool takeDamage = false;
-
-				for (Entity* entite : touchingPlayer2)
-				{
-					sf::Color entityColor = entite->primaryColor ? colorEntities.primary : colorEntities.secondary;
-					if (entityColor != playerColor2.primary)
-					{
-						DestroyEntity(entite, &entities);
-						takeDamage = true;
-						comboJ2 = 0.f;
-					} else {
-						comboJ2 += 0.3f;
-						timerComboJ2.restart();
-						if (timerComboJ2.getElapsedTime().asSeconds() >= 1.5f) {
-							comboJ2 = 0.f;
-						}
-					}
-				}
-				if (takeDamage) setLife(playerTwo, -1, scorePlayerTwo);				
-			}
-
-			//Affichage Arthur
-			window.draw(circleGame);
-
+				// Draw players
+					// Player 1
 			if (playerOne.actualLife > 0)
 				window.draw(playerOne.player);
 			else if(!playerOne.isDead)
@@ -472,7 +462,7 @@ int main()
 				playerInGame--;
 				playerOne.isDead = true;
 			}
-
+					// Player 2
 			if(playerTwo.actualLife > 0 && isPlayerTwo)
 				window.draw(playerTwo.player);
 			else if(!playerTwo.isDead){
@@ -480,12 +470,11 @@ int main()
 				playerTwo.isDead = true;
 			}
 
-			if(playerInGame == 0)
-			{
-				setGameState(GameState::FIN);
-				initEnd = false;
-			}
-			
+				//Display scores
+			window.draw(scorePlayerOneText);
+			if (isPlayerTwo) window.draw(scorePlayerTwoText);
+
+				// Draw players lifes
 			for (int i = 0; i < 3; i++)
 			{
 				window.draw(playerOne.tabLifeCircle[i]);
@@ -493,79 +482,15 @@ int main()
 					window.draw(playerTwo.tabLifeCircle[i]);
 			}
 
-		//Gamefeel
-		/*for (int i = 0; i < 360; i++) {
-			sf::Vertex vertexCenter;
-			vertexCenter.position = sf::Vector2f(middleScreen.x, middleScreen.y);
-			vertexCenter.color = sf::Color::Black;
-
-			sf::Vertex vertexCircle;
-			vertexCircle.position = sf::Vector2f(x, y);
-			vertexCircle.color = sf::Color::Red;
-
-			sf::VertexArray line(sf::LineStrip, 2);
-			line[0].position = vertexCenter.position;
-			line[0].color = vertexCenter.color;
-			line[1].position = vertexCircle.position;
-			line[1].color = vertexCircle.color;
-
-			window.draw(line);
-
-			if (x == middleScreen.x - circleRadius && y == middleScreen.y) {
-				arcHG = true;
-				arcHD = false;
-				arcBD = false;
-				arcBG = false;
-			}
-			if (arcHG) {
-				x += 1;
-				y -= 1;
-			}
-			if (x == middleScreen.x && y == middleScreen.y - circleRadius) {
-				arcHG = false;
-				arcHD = true;
-				arcBD = false;
-				arcBG = false;
-			}
-			if (arcHD) {
-				x += 1;
-				y += 1;
-			}
-			if (x == middleScreen.x + circleRadius && y == middleScreen.y) {
-				arcHG = false;
-				arcHD = false;
-				arcBD = true;
-				arcBG = false;
-			}
-			if (arcBD) {
-				x -= 1;
-				y += 1;
-			}
-			if (x == middleScreen.x && y == middleScreen.y + circleRadius) {
-				arcHG = false;
-				arcHD = false;
-				arcBD = false;
-				arcBG = true;
-			}
-			if (arcBG) {
-				x -= 1;
-				y -= 1;
-			}
-		}*/
-
-			//Affichage score
-			window.draw(scorePlayerOneText);
-			window.draw(scorePlayerTwoText);
-			//Affichage score
-			window.draw(scorePlayerOneText);
-			if (isPlayerTwo)
-				window.draw(scorePlayerTwoText);
-
 			window.display();
+			#pragma endregion
 
+			#pragma endregion
 		}
 		else if (getState() == GameState::FIN)
 		{
+			#pragma region End menu loop
+
 			if(!initEnd)
 			{
 				initEnd = true;
@@ -611,6 +536,7 @@ int main()
 			}
 
 			window.display();
+			#pragma endregion
 		}
 	}
 }

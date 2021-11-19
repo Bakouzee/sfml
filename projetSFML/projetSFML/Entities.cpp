@@ -94,6 +94,15 @@ void DrawEntity(Entity* entityPtr, sf::RenderWindow* windowPtr, Colors& colors)
 	// Draw
 	windowPtr->draw(circle);
 }
+void MoveEntity(Entity* entityPtr, float deltaTime, float gameRadius)
+{
+	if (entityPtr->direction->IsZero()) return;
+	entityPtr->Move(deltaTime, gameRadius);
+}
+bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius)
+{
+	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentPixelRadius;
+}
 void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr)
 {
 	auto it = entitiesPtr->begin();
@@ -106,15 +115,6 @@ void DestroyEntity(Entity* toDeleteEntity, std::list<Entity>* entitiesPtr)
 		}
 		else it++;
 	}
-}
-void MoveEntity(Entity* entityPtr, float deltaTime, float gameRadius)
-{
-	if (entityPtr->direction->IsZero()) return;
-	entityPtr->Move(deltaTime, gameRadius);
-}
-bool IsInCollisionWithPlayer(Entity* entityPtr, Vector2& playerPos, float& playerRadius)
-{
-	return Vector2::GetDistance(*entityPtr->position, playerPos) <= playerRadius + entityPtr->currentPixelRadius;
 }
 
 void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Vector2 gameCenter, float gameRadius, float deltaTime,
@@ -131,7 +131,7 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 		entityPtr->UpdateCurrentPixelRadius(gameCenter, gameRadius);
 
 		// Draw entity
-		DrawEntity(entityPtr, windowPtr, colors);
+		DrawEntity(entityPtr, windowPtr, colors); // --> Stopped drawing for better readability in main func
 
 		// Check if too far --> destroy
 		// else continue the entity update
@@ -166,4 +166,11 @@ void HandleEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Ve
 		}
 	}
 }
+//void DrawEntities(std::list<Entity>* entities, sf::RenderWindow* windowPtr, Colors& entitiesColors)
+//{
+//	for (Entity entity : *entities)
+//	{
+//		DrawEntity(&entity, windowPtr, entitiesColors);
+//	}
+//}
 #pragma endregion
