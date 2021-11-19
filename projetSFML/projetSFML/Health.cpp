@@ -1,24 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include "windows.h"
-#include "AudioManager.h"
 #include "Arthur.h"
-#include <iostream>
-
-void setLife(Player& actualPlayer, int lifeChange, sf::Clock clockPlayer)
-{
-	if(lifeChange == 1 && actualPlayer.actualLife != 3)
-	{
-		actualPlayer.tabLifeCircle[actualPlayer.actualLife].setFillColor(sf::Color(180, 0, 0, 255));
-		actualPlayer.actualLife += lifeChange;
-	}
-	else if(lifeChange == -1 && actualPlayer.actualLife != 0)
-	{
-		actualPlayer.tabLifeCircle[actualPlayer.actualLife - 1].setFillColor(sf::Color(0, 0, 0, 0));
-		actualPlayer.actualLife += lifeChange;
-		clockPlayer.restart();
-		PlayHurtSound();
-	}
-}
 
 sf::ConvexShape lifeCircle()
 {
@@ -57,13 +37,13 @@ void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float s
 
 	if(actualPlayer.numberPlayer == 1)
 	{
-		posX = 50;
+		posX = 80;
 		offSet = 20;
 		multiplicateur = 1;
 	}
 	else
 	{
-		posX = screenResolutionX - 50;
+		posX = screenResolutionX - 80;
 		offSet = -20;
 		multiplicateur = -1;
 	}
@@ -73,4 +53,52 @@ void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float s
 		actualPlayer.tabLifeCircle[i].setPosition(posX, 120);
 		posX += multiplicateur * circleLifeRadius * 2 + offSet;
 	}
+}
+
+void Player::AdjustLife(int lifeChange, sf::Clock* playerScoreClock)
+{
+	if (lifeChange == 1 && actualLife != 3)
+	{
+		tabLifeCircle[actualLife].setFillColor(sf::Color(180, 0, 0, 255));
+		actualLife += lifeChange;
+	}
+	else if (lifeChange == -1 && actualLife != 0)
+	{
+		tabLifeCircle[actualLife - 1].setFillColor(sf::Color(0, 0, 0, 0));
+		actualLife += lifeChange;
+		playerScoreClock->restart();
+		PlayHurtSound();
+	}
+
+	if (actualLife <= 0) isDead = true;
+}
+void Player::SetColors(const Colors& colors)
+{
+	player.setFillColor(colors.primary);
+	player.setOutlineColor(colors.secondary);
+}
+void Player::OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector<Entity*> entitiesColliding,
+	const Colors& playerColor, const Colors& entitiesColors, 
+	float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock)
+{
+	bool takeDamage = false;
+
+	for (Entity* entite : entitiesColliding)
+	{
+		sf::Color entityColor = entite->primaryColor ? entitiesColors.primary : entitiesColors.secondary;
+		if (entityColor != playerColor.primary)
+		{
+			takeDamage = true;
+			combo = 0.f;
+		}
+		else {
+			combo += 0.3f;
+			comboTimer.restart();
+			if (comboTimer.getElapsedTime().asSeconds() >= 1.5f) {
+				combo = 0.f;
+			}
+		}
+		DestroyEntity(entite, allEntities);
+	}
+	if (takeDamage) AdjustLife(-1, playerScoreClock);
 }

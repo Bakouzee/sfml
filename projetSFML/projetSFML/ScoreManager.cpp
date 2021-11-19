@@ -11,7 +11,7 @@ void SetText(sf::Text& actualText, int numberPlayer, sf::Vector2f screenResoluti
 	{
 		if(numberPlayer == 1)
 		{
-			actualText.setPosition(screenResolution.x / 64, screenResolution.y / 30);
+			actualText.setPosition(screenResolution.x / 64 * 2, screenResolution.y / 30);
 		}
 		else
 		{
@@ -23,7 +23,11 @@ void SetText(sf::Text& actualText, int numberPlayer, sf::Vector2f screenResoluti
 		actualText.setCharacterSize(40);
 		if(isPlayerTwoActive)
 		{
-			if(numberPlayer == 1)
+			if (numberPlayer == 0)
+			{
+				actualText.setPosition(screenResolution.x / 2 - 30, screenResolution.y / 7);
+			}
+			else if(numberPlayer == 1)
 			{
 				actualText.setPosition(screenResolution.x / 9 * 2, screenResolution.y / 3);
 			}
@@ -34,7 +38,11 @@ void SetText(sf::Text& actualText, int numberPlayer, sf::Vector2f screenResoluti
 		}
 		else if(numberPlayer == 1)
 		{
-			actualText.setPosition(screenResolution.x / 2, screenResolution.y / 4);
+			actualText.setPosition(screenResolution.x / 2 - 30, screenResolution.y / 7);
+		}
+		else if (numberPlayer == 3)
+		{
+			actualText.setPosition(screenResolution.x / 2 - 30, screenResolution.y / 7 * 3);
 		}
 	}
 }
