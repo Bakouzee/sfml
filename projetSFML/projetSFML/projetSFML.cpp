@@ -40,7 +40,7 @@ int main()
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole", sf::Style::Default, settings); //, sf::Style::Fullscreen
+	sf::RenderWindow window(sf::VideoMode(screenResolution.x, screenResolution.y), "Mega Black Hole"); //, sf::Style::Fullscreen
 	window.setVerticalSyncEnabled(true);
 
 	bool isShowed = false;
@@ -315,7 +315,7 @@ int main()
 				ChooseBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
 			}
-			else if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
+			if (timerSpawnBonus.getElapsedTime().asSeconds() >= 8 && !isPlayerTwo) {
 				bonus = BonusCrea1J(playerOne.player, circleGame);
 				ChooseBonus(bonus, playerOne, playerTwo, !isPlayerTwo, isShowed, timerBonus);
 				timerSpawnBonus.restart();
@@ -331,19 +331,23 @@ int main()
 
 			window.clear();
 			// Whatever I want to draw goes here
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
+			if (timerBonus.getElapsedTime().asSeconds() >= 3 && isPlayerTwo) {
+				isShowed = false;
+			}
+			else if (timerBonus.getElapsedTime().asSeconds() >= 4 && !isPlayerTwo) {
 				isShowed = false;
 			}
 			if (isShowed) {
+				CollideAndApplyBonus(bonus, playerOne, playerTwo, isPlayerTwo, isShowed, timerBonus);
 				window.draw(bonus);
 			}
 
 			// Entities gestion
 			std::vector<Entity*> touchingPlayer1;
 			std::vector<Entity*> touchingPlayer2;
-			HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
+			/*HandleEntities(&entities, &window, middleScreen, circleRadius, elapsedTime.asSeconds(),
 			Vector2::FromSFVector2f(CoordPlayer(playerOne.player, circleGame)),
-			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	20,	&touchingPlayer1, &touchingPlayer2, colorEntities);
+			Vector2::FromSFVector2f(CoordPlayer(playerTwo.player, circleGame)),	20,	&touchingPlayer1, &touchingPlayer2, colorEntities);*/
 
 			// Check if there is collider touching player 1
 			if (!touchingPlayer1.empty() && playerOne.actualLife > 0)

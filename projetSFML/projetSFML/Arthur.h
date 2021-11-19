@@ -9,6 +9,7 @@ struct Player
 	int numberPlayer;
 	sf::CircleShape player;
 	int actualLife;
+	float speedPlayer = 100;
 	sf::ConvexShape tabLifeCircle[3];
 	int scorePlayer = 0;
 	bool isDead = false;
