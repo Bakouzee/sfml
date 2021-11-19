@@ -49,7 +49,7 @@ sf::ConvexShape lifeCircle();
 void SetPositionLifeCircle(Player& actualPlayer, float circleLifeRadius, float screenResolutionX);
 
 //ScoreManager.cpp
-sf::Text SetText(int numberPlayer, float screenResolutionX);
+void SetText(sf::Text& actualText, int numberPlayer, sf::Vector2f screenResolution, bool isPlayerTwoActive = false);
 float SetScore(float actualTime, sf::Text& actualText, int numberPlayer, float combo, float score);
 
 
