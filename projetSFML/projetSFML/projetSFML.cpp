@@ -38,7 +38,7 @@ int main()
 
 	// Window
 	#pragma region Window definition
-	Vector2 screenResolution(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+	Vector2 screenResolution(1080, 720);
 	Vector2 middleScreen(screenResolution.x / 2, screenResolution.y / 2);
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
@@ -53,6 +53,8 @@ int main()
 	float scoreJ1 = 0.f;
 	float scoreJ2 = 0.f;
 	int playerCollide = -1;
+	int i = 0;
+	bool takeDamage = false;
 
 	// Cercle du Jeu
 	sf::CircleShape circleGame = CircleGameCrea(middleScreen.x, middleScreen.y);
@@ -90,9 +92,11 @@ int main()
 	sf::Clock timerComboJ1;
 	sf::Clock timerComboJ2;
 	sf::Clock timerSlowU;
+	sf::Clock timerInvincibilityJ1;
+	sf::Clock timerInvincibilityJ2;
+
 
 	sf::Clock timerColorChangeMenu;
-	//sf::Clock timer;
 	#pragma endregion
 
 	//Bonus
@@ -483,9 +487,13 @@ int main()
 			//SpeedUp for the adversary
 			if (speedUp) {
 				isShowed = false;
-				std::cout << playerCollide << std::endl;
 				if (playerCollide == 1) {
 					playerTwo.speedPlayer = 150.f;
+					timerSlowU.restart();
+					playerCollide = -1;
+				}
+				if (playerCollide == 1 && !isMultiplayer) {
+					playerOne.speedPlayer = 75.f;
 					timerSlowU.restart();
 					playerCollide = -1;
 				}
@@ -528,21 +536,21 @@ int main()
 			// Collision checks
 			#pragma region Collision with players check
 			// Check if there is collider touching player 1
-			if (!touchingPlayer1.empty() && !playerOne.isDead)
+			if (!touchingPlayer1.empty() && !playerOne.isDead && playerOne.takeDamage == false)
 			{
 				// Handle collision --> Remove life, reset bonus...
 				playerOne.OnCollisionWithEntities(&entities, touchingPlayer1,
 					playerColor, colorEntities,
-					comboJ1, timerComboJ1, &scorePlayerOne);
-
+					comboJ1, timerComboJ1, &scorePlayerOne, playerOne);
+				
 				if (playerOne.isDead) playerInGame--;
 			}
 			// Check if there is collider touching player 2
-			if (!touchingPlayer2.empty() && !playerTwo.isDead && isMultiplayer)
+			if (!touchingPlayer2.empty() && !playerTwo.isDead && isMultiplayer && playerTwo.takeDamage == false)
 			{
 				playerTwo.OnCollisionWithEntities(&entities, touchingPlayer2,
 					playerColor2, colorEntities,
-					comboJ2, timerComboJ2, &scorePlayerTwo);
+					comboJ2, timerComboJ2, &scorePlayerTwo, playerTwo);
 
 				if (playerTwo.isDead) playerInGame--;
 			}
@@ -564,21 +572,48 @@ int main()
 				// Draw entities
 			//DrawEntities(&entities, &window, colorEntities);
 
-				// Draw bonus
-			if (timerBonus.getElapsedTime().asSeconds() >= 3) {
-				isShowed = false;
-			}
-			if (isShowed) {
-				window.draw(bonus);
-			}
-
 				// Draw players
-					// Player 1
-			if (!playerOne.isDead)
-				window.draw(playerOne.player);
-					// Player 2
-			if(!playerTwo.isDead && isMultiplayer)
-				window.draw(playerTwo.player);
+					// Player 1 & invulnerability
+			if (!playerOne.isDead) {
+				if (playerOne.takeDamage) {
+					float resultJ1 = fmodf(timerInvincibilityJ1.getElapsedTime().asSeconds(), 0.4f);
+					std::cout << resultJ1 << std::endl;
+
+					if (resultJ1 <= 0.2f) {
+						window.draw(playerOne.player);
+						std::cout << "Draw" << std::endl;
+					}
+					if ((int)timerInvincibilityJ1.getElapsedTime().asSeconds() >= 3.f) {
+						playerOne.takeDamage = false;
+						std::cout << takeDamage << std::endl;
+					}
+				}
+				else {
+					timerInvincibilityJ1.restart();
+
+					window.draw(playerOne.player);
+				}
+			}
+					// Player 2 & invulnerability
+			if (!playerTwo.isDead && isMultiplayer) {
+				if (playerTwo.takeDamage) {
+					float resultJ2 = fmodf(timerInvincibilityJ2.getElapsedTime().asSeconds(), 0.4f);
+					std::cout << resultJ2 << std::endl;
+
+					if (resultJ2 <= 0.2f) {
+						window.draw(playerTwo.player);
+						std::cout << "Draw" << std::endl;
+					}
+					if ((int)timerInvincibilityJ2.getElapsedTime().asSeconds() >= 3.f) {
+						playerTwo.takeDamage = false;
+						std::cout << takeDamage << std::endl;
+					}
+				}
+				else {
+					timerInvincibilityJ2.restart();
+					window.draw(playerTwo.player);
+				}
+			}
 
 				//Display scores
 			window.draw(scorePlayerOneText);

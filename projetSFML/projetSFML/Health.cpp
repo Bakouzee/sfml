@@ -79,26 +79,32 @@ void Player::SetColors(const Colors& colors)
 }
 void Player::OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector<Entity*> entitiesColliding,
 	const Colors& playerColor, const Colors& entitiesColors, 
-	float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock)
+	float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock, Player& playerColliding)
 {
 	bool takeDamage = false;
 
-	for (Entity* entite : entitiesColliding)
-	{
-		sf::Color entityColor = entite->primaryColor ? entitiesColors.primary : entitiesColors.secondary;
-		if (entityColor != playerColor.primary)
+	if (playerColliding.takeDamage == false) {
+		for (Entity* entite : entitiesColliding)
 		{
-			takeDamage = true;
-			combo = 0.f;
-		}
-		else {
-			combo += 0.3f;
-			comboTimer.restart();
-			if (comboTimer.getElapsedTime().asSeconds() >= 1.5f) {
+			sf::Color entityColor = entite->primaryColor ? entitiesColors.primary : entitiesColors.secondary;
+			if (entityColor != playerColor.primary)
+			{
+				takeDamage = true;
+				playerColliding.takeDamage = true;
 				combo = 0.f;
 			}
+			else {
+				combo += 0.3f;
+				comboTimer.restart();
+				if (comboTimer.getElapsedTime().asSeconds() >= 1.5f) {
+					combo = 0.f;
+				}
+			}
+			DestroyEntity(entite, allEntities);
 		}
-		DestroyEntity(entite, allEntities);
+		if (takeDamage) {
+			AdjustLife(-1, playerScoreClock);
+		}
 	}
-	if (takeDamage) AdjustLife(-1, playerScoreClock);
+	
 }

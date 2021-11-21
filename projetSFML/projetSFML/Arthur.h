@@ -19,10 +19,11 @@ struct Player
 	void AdjustLife(int lifeChange, sf::Clock* playerScoreClock);
 
 	bool isDead = false;
+	bool takeDamage = false;
 
 	void SetColors(const Colors& colors);
 
-	void OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector<Entity*> entitiesColliding, const Colors& playerColor, const Colors& entitiesColors, float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock);
+	void OnCollisionWithEntities(std::list<Entity>* allEntities, std::vector<Entity*> entitiesColliding, const Colors& playerColor, const Colors& entitiesColors, float& combo, sf::Clock& comboTimer, sf::Clock* playerScoreClock, Player& playerColliding);
 };
 
 
